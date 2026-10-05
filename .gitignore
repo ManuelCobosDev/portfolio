@@ -1,0 +1,30 @@
+# build output
+dist/
+.astro/
+
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# environment
+.env
+.env.production
+
+# macOS / Windows
+.DS_Store
+Thumbs.db
+
+# local env files
+.env.local
+.env.*.local
+
+# Playwright
+test-results/
+playwright-report/
+.playwright/
+.lighthouseci/

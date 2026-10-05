@@ -1,0 +1,428 @@
+/**
+ * qa.mjs — Quality gates for the built site (section 12.1 of the brief).
+ * Runs against dist/ and exits non-zero on any failure.
+ */
+import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
+import { join, relative, sep } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { gzipSync } from 'node:zlib';
+import * as cheerio from 'cheerio';
+import sharp from 'sharp';
+
+const root = fileURLToPath(new URL('..', import.meta.url));
+const dist = join(root, 'dist');
+const SITE = 'https://manuelcobos.dev';
+
+const failures = [];
+const fail = (msg) => failures.push(msg);
+
+const gzip = (buf) => gzipSync(buf).length;
+
+/** Recursively list files under dist. */
+function walk(dir) {
+  const out = [];
+  for (const name of readdirSync(dir)) {
+    const full = join(dir, name);
+    if (statSync(full).isDirectory()) out.push(...walk(full));
+    else out.push(full);
+  }
+  return out;
+}
+
+const allFiles = walk(dist);
+const htmlFiles = allFiles.filter((f) => f.endsWith('.html'));
+
+/** Derive the public URL of a dist file. */
+function urlOfFile(file) {
+  let rel = relative(dist, file).split(sep).join('/');
+  if (rel === '404.html') return `${SITE}/404.html`;
+  if (rel === 'index.html') return `${SITE}/`;
+  if (rel.endsWith('/index.html')) {
+    const dir = rel.slice(0, -'index.html'.length);
+    return `${SITE}/${dir}`;
+  }
+  return `${SITE}/${rel}`;
+}
+
+const FORBIDDEN_CI = [
+  'lorem',
+  'ipsum',
+  'example.com',
+  '[object object]',
+  'manuelcobos200324',
+  'manuelcobos24',
+  'proiectus',
+  'coming soon',
+  'próximamente',
+  'under construction',
+  'en construcción',
+];
+
+const FORBIDDEN_CS = ['TODO', 'FIXME', 'NaN', 'undefined'];
+
+// ---------------------------------------------------------------------------
+// Load all pages
+// ---------------------------------------------------------------------------
+const pages = [];
+for (const file of htmlFiles) {
+  const html = readFileSync(file, 'utf-8');
+  const $ = cheerio.load(html);
+  pages.push({ file, url: urlOfFile(file), $, html, is404: file.endsWith(join(dist, '404.html')) });
+}
+const byUrl = new Map(pages.map((p) => [p.url, p]));
+
+const jsonLdFromPage = (p) => {
+  const nodes = [];
+  p.$('script[type="application/ld+json"]').each((_, el) => {
+    try {
+      const data = JSON.parse(p.$(el).html());
+      nodes.push(data);
+    } catch (err) {
+      fail(`${p.url}: JSON-LD does not parse: ${err.message}`);
+    }
+  });
+  return nodes;
+};
+
+// ---------------------------------------------------------------------------
+// Per-page checks
+// ---------------------------------------------------------------------------
+const titles = [];
+const descriptions = [];
+for (const p of pages) {
+  const $ = p.$;
+  const isHome = p.url === `${SITE}/` || p.url === `${SITE}/en/`;
+
+  if (p.is404) {
+    const robots = $('meta[name="robots"]').attr('content') ?? '';
+    if (!robots.includes('noindex')) fail(`${p.url}: 404 page must be noindex.`);
+    continue;
+  }
+
+  // 1. Headings
+  const headings = [];
+  $('h1,h2,h3,h4,h5,h6').each((_, el) => headings.push(Number(el.tagName[1])));
+  const h1Count = headings.filter((h) => h === 1).length;
+  if (h1Count !== 1) fail(`${p.url}: expected exactly one h1, found ${h1Count}.`);
+  for (let i = 0; i < headings.length - 1; i++) {
+    if (headings[i + 1] > headings[i] + 1) {
+      fail(`${p.url}: heading level skips from h${headings[i]} to h${headings[i + 1]}.`);
+    }
+  }
+
+  // 2. Title and description
+  const title = $('title').text().trim();
+  const description = $('meta[name="description"]').attr('content') ?? '';
+  if (title.length < 25 || title.length > 65) fail(`${p.url}: title length ${title.length} out of 25–65.`);
+  if (description.length < 100 || description.length > 160) {
+    fail(`${p.url}: meta description length ${description.length} out of 100–160.`);
+  }
+  titles.push(title);
+  descriptions.push(description);
+
+  // 3. Canonical
+  const canonical = $('link[rel="canonical"]').attr('href') ?? '';
+  if (!canonical.startsWith(`${SITE}/`)) fail(`${p.url}: canonical "${canonical}" not on site domain.`);
+  if (canonical !== p.url) fail(`${p.url}: canonical "${canonical}" does not equal own URL.`);
+
+  // 4. html lang
+  const lang = $('html').attr('lang') ?? '';
+  const expectedLang = p.url.startsWith(`${SITE}/en/`) ? 'en' : 'es-ES';
+  if (lang !== expectedLang) fail(`${p.url}: html lang "${lang}" expected "${expectedLang}".`);
+
+  // 5. hreflang reciprocity
+  const hreflangs = [];
+  $('link[rel="alternate"][hreflang]').each((_, el) => {
+    hreflangs.push({ lang: $(el).attr('hreflang'), href: $(el).attr('href') });
+  });
+  for (const need of ['es-ES', 'en', 'x-default']) {
+    if (!hreflangs.some((h) => h.lang === need)) fail(`${p.url}: missing hreflang "${need}".`);
+  }
+  for (const h of hreflangs) {
+    if (!h.href?.startsWith(SITE)) fail(`${p.url}: hreflang "${h.lang}" not absolute.`);
+    const target = byUrl.get(h.href);
+    if (!target) {
+      fail(`${p.url}: hreflang target ${h.href} does not exist.`);
+    } else {
+      const back = [];
+      target.$('link[rel="alternate"][hreflang]').each((_, el) => back.push(target.$(el).attr('href')));
+      if (!back.includes(p.url)) fail(`${p.url}: hreflang ${h.href} does not link back.`);
+    }
+  }
+
+  // 6. OG and Twitter
+  for (const sel of [
+    'meta[property="og:title"]',
+    'meta[property="og:description"]',
+    'meta[property="og:url"]',
+    'meta[property="og:image"]',
+    'meta[property="og:image:width"]',
+    'meta[property="og:image:height"]',
+    'meta[property="og:image:alt"]',
+    'meta[name="twitter:card"]',
+  ]) {
+    if (!$(sel).attr('content')) fail(`${p.url}: missing ${sel}.`);
+  }
+  const ogImage = $('meta[property="og:image"]').attr('content') ?? '';
+  const ogImageFile = join(dist, ogImage.replace(SITE, '').split('/').filter(Boolean).join(sep));
+  if (existsSync(ogImageFile)) {
+    try {
+      const meta = await sharp(ogImageFile).metadata();
+      if (meta.width !== 1200 || meta.height !== 630) {
+        fail(`${p.url}: og:image ${ogImage} is ${meta.width}x${meta.height}, expected 1200x630.`);
+      }
+    } catch {
+      fail(`${p.url}: og:image ${ogImage} cannot be read.`);
+    }
+  } else {
+    fail(`${p.url}: og:image ${ogImage} file missing in dist.`);
+  }
+
+  // 7. JSON-LD
+  const jsonLd = jsonLdFromPage(p);
+  if (jsonLd.length === 0) fail(`${p.url}: no JSON-LD present.`);
+  const ids = new Set();
+  for (const doc of jsonLd) {
+    const graph = doc['@graph'] ?? [doc];
+    for (const node of graph) {
+      if (!node['@type']) fail(`${p.url}: JSON-LD node missing @type.`);
+      if (node['@id']) {
+        if (ids.has(node['@id'])) fail(`${p.url}: duplicate JSON-LD @id ${node['@id']}.`);
+        ids.add(node['@id']);
+      }
+      const str = JSON.stringify(node);
+      const urls = str.match(/"https?:\/\/[^"]+"/g) ?? [];
+      for (const u of urls) {
+        if (!u.startsWith('"http')) fail(`${p.url}: JSON-LD URL not absolute: ${u}`);
+      }
+      if (node['@type'] === 'Person') {
+        if (node.name !== 'Manuel Cobos Solís') fail(`${p.url}: Person name incorrect.`);
+        const sameAs = JSON.stringify(node.sameAs ?? []);
+        if (!sameAs.includes('github.com/ManuelCobosDev') || !sameAs.includes('linkedin.com/in/manuelcobos')) {
+          fail(`${p.url}: Person sameAs missing profiles.`);
+        }
+        if (node.address?.addressLocality !== 'Cáceres') fail(`${p.url}: Person addressLocality incorrect.`);
+      }
+    }
+  }
+
+  // 8. Images
+  $('img').each((_, el) => {
+    if (!$(el).attr('alt') && $(el).attr('alt') !== '') fail(`${p.url}: img missing alt.`);
+    if (!$(el).attr('width') || !$(el).attr('height')) fail(`${p.url}: img missing width/height.`);
+  });
+  $('svg[aria-hidden="true"]').each(() => {});
+
+  // 9. Landmarks
+  if ($('main').length !== 1) fail(`${p.url}: expected exactly one <main>.`);
+  if ($('header').length !== 1) fail(`${p.url}: expected exactly one banner <header>.`);
+  if ($('footer').length !== 1) fail(`${p.url}: expected exactly one <footer>.`);
+  if ($('nav[aria-label]').length < 1) fail(`${p.url}: missing nav with aria-label.`);
+
+  // 10. Internal links
+  $('a[href]').each((_, el) => {
+    const href = $(el).attr('href');
+    if (!href || href.startsWith('http') || href.startsWith('mailto:') || href.startsWith('tel:')) return;
+    if (!href.startsWith('/') && !href.startsWith('#')) {
+      fail(`${p.url}: unexpected relative link "${href}".`);
+      return;
+    }
+    if (href.startsWith('/')) {
+      const [pathPart, fragment] = href.split('#');
+      const targetUrl = `${SITE}${pathPart === '' ? '/' : pathPart}`;
+      const target = byUrl.get(targetUrl);
+      if (!target) {
+        fail(`${p.url}: internal link ${href} resolves to no page.`);
+        return;
+      }
+      if (fragment && !target.$(`#${fragment}`).length) {
+        fail(`${p.url}: fragment "#${fragment}" missing in ${targetUrl}.`);
+      }
+    } else if (href.startsWith('#') && href.length > 1) {
+      if (!$(`#${href.slice(1)}`).length) fail(`${p.url}: fragment "${href}" missing on own page.`);
+    }
+  });
+
+  // 11. target=_blank rel noopener
+  $('a[target="_blank"]').each((_, el) => {
+    const rel = $(el).attr('rel') ?? '';
+    if (!rel.includes('noopener')) fail(`${p.url}: target=_blank link missing noopener.`);
+  });
+
+  // 12. No third-party asset hosts
+  for (const sel of ['script[src]', 'link[rel="stylesheet"][href]', 'img[src]', 'source[srcset]']) {
+    $(sel).each((_, el) => {
+      const val = $(el).attr('src') ?? $(el).attr('href') ?? $(el).attr('srcset') ?? '';
+      if (val.startsWith('http') && !val.startsWith(SITE)) fail(`${p.url}: third-party asset "${val}".`);
+    });
+  }
+
+  // 13. Forbidden strings in visible text
+  const text = $('body').text();
+  const lowText = text.toLowerCase();
+  for (const word of FORBIDDEN_CI) {
+    if (lowText.includes(word)) fail(`${p.url}: forbidden string "${word}" in visible text.`);
+  }
+  for (const word of FORBIDDEN_CS) {
+    if (text.includes(word)) fail(`${p.url}: forbidden string "${word}" in visible text.`);
+  }
+
+  // 14. Home content
+  if (isHome) {
+    for (const word of ['Manuel Cobos Solís', 'Cáceres', 'Viewnext', 'Banco Santander', 'Spring Boot', 'Angular']) {
+      if (!$('body').text().includes(word)) fail(`${p.url}: home missing "${word}".`);
+    }
+  }
+
+  // 15. Hidden-section rule (no project entries at launch)
+  if ($('#proyectos').length || $('#projects').length) {
+    fail(`${p.url}: unexpected "proyectos"/"projects" section rendered.`);
+  }
+}
+
+// 2b. Unique titles/descriptions
+if (new Set(titles).size !== titles.length) fail('Duplicate <title> values across site.');
+if (new Set(descriptions).size !== descriptions.length) fail('Duplicate meta description values across site.');
+
+// ---------------------------------------------------------------------------
+// Site-level checks
+// ---------------------------------------------------------------------------
+
+// 17. Sitemap
+const sitemapIndex = join(dist, 'sitemap-index.xml');
+if (!existsSync(sitemapIndex)) {
+  fail('sitemap-index.xml missing.');
+} else {
+  const indexXml = readFileSync(sitemapIndex, 'utf-8');
+  const $s = cheerio.load(indexXml, { xmlMode: true });
+  const sitemapLocs = [];
+  $s('sitemap loc').each((_, el) => sitemapLocs.push($s(el).text()));
+  if (sitemapLocs.length === 0) fail('sitemap-index.xml references no sitemaps.');
+  const urlEntries = [];
+  for (const loc of sitemapLocs) {
+    const file = join(dist, loc.replace(SITE, '').split('/').filter(Boolean).join(sep));
+    if (!existsSync(file)) {
+      fail(`sitemap references missing file ${loc}.`);
+      continue;
+    }
+    const xml = readFileSync(file, 'utf-8');
+    for (const block of xml.split('<url>').slice(1)) {
+      const url = block.match(/<loc>([^<]+)<\/loc>/)?.[1];
+      const alternates = [...block.matchAll(/<xhtml:link[^>]*href="([^"]+)"/g)].map((m) => m[1]);
+      urlEntries.push({ url, alternates });
+    }
+  }
+  const indexable = pages.filter((p) => !p.is404 && !p.url.endsWith('404.html')).map((p) => p.url);
+  const sitemapUrls = urlEntries.map((e) => e.url);
+  const missing = indexable.filter((u) => !sitemapUrls.includes(u));
+  const extra = sitemapUrls.filter((u) => !indexable.includes(u));
+  if (missing.length) fail(`Sitemap missing URLs: ${missing.join(', ')}`);
+  if (extra.length) fail(`Sitemap has extra URLs: ${extra.join(', ')}`);
+  for (const e of urlEntries) {
+    if (!e.alternates.includes(e.url)) fail(`Sitemap entry ${e.url} missing xhtml:link alternates.`);
+  }
+}
+
+// 18. robots.txt
+const robotsFile = join(dist, 'robots.txt');
+if (!existsSync(robotsFile)) fail('robots.txt missing.');
+else {
+  const robots = readFileSync(robotsFile, 'utf-8');
+  if (!robots.includes('User-agent: *')) fail('robots.txt missing User-agent: *.');
+  if (!robots.includes('sitemap-index.xml')) fail('robots.txt missing sitemap reference.');
+}
+
+// 19. llms.txt
+const llmsFile = join(dist, 'llms.txt');
+if (!existsSync(llmsFile)) fail('llms.txt missing.');
+else {
+  const llms = readFileSync(llmsFile, 'utf-8');
+  const urls = llms.match(/https:\/\/manuelcobos\.dev[^\s)]+/g) ?? [];
+  for (const url of urls) {
+    const clean = url.replace(/[).,]$/, '');
+    if (!byUrl.has(clean)) fail(`llms.txt URL ${clean} does not resolve.`);
+  }
+}
+
+// 20. manifest
+const manifestFile = join(dist, 'manifest.webmanifest');
+if (!existsSync(manifestFile)) fail('manifest.webmanifest missing.');
+else {
+  const manifest = JSON.parse(readFileSync(manifestFile, 'utf-8'));
+  for (const icon of manifest.icons ?? []) {
+    if (!existsSync(join(dist, icon.src.replace(/^\//, '')))) fail(`manifest icon ${icon.src} missing.`);
+  }
+}
+
+// 21. Static files
+for (const f of ['favicon.svg', 'favicon.ico', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png', 'images/manuel-cobos-solis.jpg']) {
+  if (!existsSync(join(dist, f))) fail(`missing static file: ${f}.`);
+}
+
+// 22. CNAME
+const cnameFile = join(dist, 'CNAME');
+if (!existsSync(cnameFile)) fail('CNAME missing.');
+else if (readFileSync(cnameFile, 'utf-8').trim() !== 'manuelcobos.dev') fail('CNAME content incorrect.');
+
+// 23. Budgets
+for (const p of pages) {
+  const cssBlocks = p.html.match(/<style[^>]*>[\s\S]*?<\/style>/g) ?? [];
+  let cssRaw = 0;
+  let cssText = '';
+  for (const b of cssBlocks) {
+    cssRaw += b.length;
+    cssText += b.replace(/<\/?style[^>]*>/g, '');
+  }
+  const jsonldBlocks = p.html.match(/<script type="application\/ld\+json"[^>]*>[\s\S]*?<\/script>/g) ?? [];
+  let jsonldRaw = 0;
+  for (const b of jsonldBlocks) jsonldRaw += b.length;
+  // HTML markup size excludes inlined CSS (separate budget) and JSON-LD (structured data).
+  const markupSize = Buffer.byteLength(p.html) - cssRaw - jsonldRaw;
+  if (markupSize > 60 * 1024) fail(`${p.url}: HTML markup ${markupSize} bytes > 60 KB (excluding inlined CSS/JSON-LD).`);
+  if (cssText && gzip(Buffer.from(cssText)) > 30 * 1024) fail(`${p.url}: inlined CSS > 30 KB gzip.`);
+}
+let totalJs = 0;
+for (const f of allFiles) {
+  if (f.endsWith('.js')) totalJs += statSync(f).size;
+  const rel = relative(dist, f);
+  if (rel.startsWith('_astro') && statSync(f).size > 120 * 1024 && !rel.includes('font')) {
+    fail(`${rel}: file in _astro exceeds 120 KB.`);
+  }
+}
+let jsGz = 0;
+for (const f of allFiles) {
+  if (f.endsWith('.js')) jsGz += gzip(readFileSync(f));
+}
+if (jsGz > 10 * 1024) fail(`Total JS ${jsGz} bytes gzip > 10 KB.`);
+
+let fontBytes = 0;
+for (const f of allFiles) {
+  if (/\.woff2?$/.test(f)) fontBytes += statSync(f).size;
+}
+if (fontBytes > 100 * 1024) fail(`Font files total ${fontBytes} bytes > 100 KB.`);
+
+// 24. ES/EN home parity
+const esHome = byUrl.get(`${SITE}/`);
+const enHome = byUrl.get(`${SITE}/en/`);
+if (esHome && enHome) {
+  const count = (p, sel) => p.$(sel).length;
+  const pairs = [
+    ['section[id]', 'section[id]'],
+    ['section[id] article', 'section[id] article'],
+    ['section[id] dl > div', 'section[id] dl > div'],
+  ];
+  for (const [a, b] of pairs) {
+    if (count(esHome, a) !== count(enHome, b)) {
+      fail(`Home parity: ES "${a}" (${count(esHome, a)}) != EN "${b}" (${count(enHome, b)}).`);
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+if (failures.length) {
+  console.error(`QA failed with ${failures.length} issue(s):`);
+  for (const f of failures) console.error('  - ' + f);
+  process.exit(1);
+} else {
+  console.log(`QA passed: ${pages.length} HTML page(s) checked, no failures.`);
+}

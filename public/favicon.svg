@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <style>
+    .bg { fill: #1D4ED8; }
+    .tx { fill: #FFFFFF; font-family: 'IBM Plex Sans', Arial, sans-serif; font-weight: 700; font-size: 15px; }
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #7FB0FF; }
+      .tx { fill: #071226; }
+    }
+  </style>
+  <rect class="bg" width="32" height="32" rx="6" />
+  <text class="tx" x="16" y="21" text-anchor="middle">MC</text>
+</svg>
