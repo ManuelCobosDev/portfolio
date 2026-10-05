@@ -1,0 +1,56 @@
+---
+import type { Lang } from '../i18n/utils';
+import { pick } from '../i18n/utils';
+import { ui } from '../i18n/ui';
+import { profile } from '../data/profile';
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+---
+
+<button
+  type="button"
+  data-copy-email
+  data-email={profile.email}
+  data-label-copied={pick(ui['email.copied'], lang)}
+  aria-label={pick(ui['email.copy'], lang)}
+  class="inline-flex h-11 w-11 items-center justify-center rounded-md border border-accent text-accent transition-colors hover:bg-accent-soft"
+>
+  <Icon name="lucide:copy" class="icon-copy h-5 w-5" aria-hidden="true" />
+  <Icon name="lucide:check" class="icon-check h-5 w-5" aria-hidden="true" />
+</button>
+<span class="sr-only" role="status" aria-live="polite" data-copy-status></span>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-copy-email]');
+  for (const button of buttons) {
+    button.addEventListener('click', async () => {
+      const email = button.dataset.email ?? '';
+      try {
+        await navigator.clipboard.writeText(email);
+      } catch {
+        const textarea = document.createElement('textarea');
+        textarea.value = email;
+        textarea.setAttribute('readonly', '');
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        const legacyExec = Reflect.get(document, 'execCommand') as ((command: string) => boolean) | undefined;
+        legacyExec?.('copy');
+        textarea.remove();
+      }
+      const status = button.parentElement?.querySelector('[data-copy-status]');
+      if (status) status.textContent = button.dataset.labelCopied ?? '';
+      button.classList.add('copied');
+      window.setTimeout(() => {
+        button.classList.remove('copied');
+        if (status) status.textContent = '';
+      }, 2000);
+    });
+  }
+</script>

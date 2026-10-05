@@ -1,0 +1,75 @@
+---
+import type { Lang } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+const labels = {
+  es: {
+    aria: 'Diagrama del microservicio orquestador',
+    client: 'Cliente',
+    orchestrator: 'Orquestador',
+    singlePost: 'Un único POST con JSON',
+    kafka: 'Microservicio Kafka',
+    rabbitmq: 'Microservicio RabbitMQ',
+    webclient: 'Microservicio WebClient (servicios externos)',
+    persistence: 'Microservicio de persistencia · N bases de datos · credenciales en Vault',
+    caption:
+      'El cliente envía un único JSON al orquestador, que reparte cada sección a los microservicios de Kafka, RabbitMQ, WebClient y persistencia.',
+    down: 'y luego',
+  },
+  en: {
+    aria: 'Orchestrator microservice diagram',
+    client: 'Client',
+    orchestrator: 'Orchestrator',
+    singlePost: 'A single POST with JSON',
+    kafka: 'Kafka microservice',
+    rabbitmq: 'RabbitMQ microservice',
+    webclient: 'WebClient microservice (external services)',
+    persistence: 'Persistence microservice · N databases · credentials in Vault',
+    caption:
+      'The client sends a single JSON to the orchestrator, which distributes each section to the Kafka, RabbitMQ, WebClient and persistence microservices.',
+    down: 'then',
+  },
+} as const;
+
+const t = labels[lang];
+const destinations = [t.kafka, t.rabbitmq, t.webclient, t.persistence];
+---
+
+<figure role="group" aria-label={t.aria} class="my-8">
+  <figcaption class="mb-6 max-w-[68ch] text-sm text-muted">{t.caption}</figcaption>
+
+  <!-- Mobile: single column with ↓ connectors -->
+  <div class="flex flex-col items-center gap-1 md:hidden">
+    <div class="diagram-box w-full">{t.client}</div>
+    <div class="diagram-arrow-down" aria-hidden="true">↓</div>
+    <div class="diagram-box diagram-box-accent w-full">{t.orchestrator}</div>
+    <p class="py-1 text-xs text-muted">{t.singlePost}</p>
+    {
+      destinations.map((label) => (
+        <>
+          <div class="diagram-arrow-down" aria-hidden="true">↓</div>
+          <div class="diagram-box w-full">{label}</div>
+        </>
+      ))
+    }
+  </div>
+
+  <!-- Desktop: three columns -->
+  <div class="hidden grid-cols-[1fr_2.5rem_1fr_2.5rem_1fr] items-center gap-1 md:grid">
+    <div class="diagram-box">{t.client}</div>
+    <div class="flow-arrow" aria-hidden="true"></div>
+    <div class="flex flex-col gap-2">
+      <div class="diagram-box diagram-box-accent">{t.orchestrator}</div>
+      <p class="text-center text-xs text-muted">{t.singlePost}</p>
+    </div>
+    <div class="flow-arrow" aria-hidden="true"></div>
+    <div class="flex flex-col gap-2">
+      {destinations.map((label) => <div class="diagram-box">{label}</div>)}
+    </div>
+  </div>
+</figure>

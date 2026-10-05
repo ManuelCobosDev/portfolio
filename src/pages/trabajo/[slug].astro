@@ -1,0 +1,71 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import WorkPage from '../../components/pages/WorkPage.astro';
+import { workGraph } from '../../lib/jsonld';
+import { slugFromId } from '../../lib/site';
+import { pick } from '../../i18n/utils';
+import { ui } from '../../i18n/ui';
+
+const lang = 'es';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('work', (entry) => entry.data.lang === 'es' && !entry.data.draft);
+  const all = await getCollection('work');
+  return entries.map((entry) => {
+    const translation = all.find(
+      (e) => e.data.lang === 'en' && e.data.translationKey === entry.data.translationKey && !e.data.draft,
+    );
+    if (!translation) {
+      throw new Error(`Missing EN translation for work entry "${entry.id}" (translationKey: ${entry.data.translationKey}).`);
+    }
+    return { params: { slug: slugFromId(entry.id) }, props: { entry, translation } };
+  });
+}
+
+const { entry, translation } = Astro.props;
+const slug = slugFromId(entry.id);
+const canonical = `https://manuelcobos.dev/trabajo/${slug}/`;
+const enUrl = `https://manuelcobos.dev/en/work/${slugFromId(translation.id)}/`;
+const ogImageUrl = `https://manuelcobos.dev/og/work-${slug}.png`;
+const sectionHref = '/#casos';
+const sectionLabel = pick(ui['section.cases'], lang);
+const alternateLabel = pick(ui['lang.switchLabel'], lang);
+---
+
+<BaseLayout
+  lang={lang}
+  title={entry.data.seoTitle}
+  description={entry.data.description}
+  canonical={canonical}
+  alternates={{ es: canonical, en: enUrl, xDefault: canonical }}
+  ogType="article"
+  ogTitle={entry.data.seoTitle}
+  ogDescription={entry.data.description}
+  ogImage={ogImageUrl}
+  ogImageAlt={entry.data.title}
+  articlePublishedTime={entry.data.publishedAt.toISOString()}
+  articleModifiedTime={(entry.data.updatedAt ?? entry.data.publishedAt).toISOString()}
+  articleTags={entry.data.stack}
+  jsonLd={workGraph({
+    lang,
+    pageUrl: canonical,
+    title: entry.data.title,
+    description: entry.data.description,
+    stack: entry.data.stack,
+    publishedAt: entry.data.publishedAt.toISOString(),
+    updatedAt: entry.data.updatedAt?.toISOString(),
+    kind: entry.data.kind,
+    ogImageUrl,
+    repo: entry.data.links?.repo,
+  })}
+>
+  <WorkPage
+    lang={lang}
+    entry={entry}
+    sectionHref={sectionHref}
+    sectionLabel={sectionLabel}
+    alternateHref={enUrl}
+    alternateLabel={alternateLabel}
+  />
+</BaseLayout>

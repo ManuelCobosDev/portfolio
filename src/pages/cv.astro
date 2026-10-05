@@ -1,0 +1,27 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CvPage from '../components/pages/CvPage.astro';
+import { cvGraph } from '../lib/jsonld';
+
+const lang = 'es';
+const canonical = 'https://manuelcobos.dev/cv/';
+const title = 'CV de Manuel Cobos Solís | Desarrollador Full Stack';
+const description =
+  'Currículum de Manuel Cobos Solís: experiencia en Viewnext (Banco Santander), stack Java, Spring Boot, Kafka y Angular, formación y certificaciones.';
+---
+
+<BaseLayout
+  lang={lang}
+  title={title}
+  description={description}
+  canonical={canonical}
+  alternates={{ es: canonical, en: 'https://manuelcobos.dev/en/cv/', xDefault: canonical }}
+  ogType="website"
+  ogTitle={title}
+  ogDescription={description}
+  ogImage="https://manuelcobos.dev/og/cv-es.png"
+  ogImageAlt="Currículum de Manuel Cobos Solís"
+  jsonLd={cvGraph(lang, canonical, title)}
+>
+  <CvPage lang={lang} />
+</BaseLayout>

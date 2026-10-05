@@ -1,0 +1,73 @@
+---
+import type { Lang } from '../i18n/utils';
+import { pick } from '../i18n/utils';
+import { ui } from '../i18n/ui';
+import { profile } from '../data/profile';
+import Ficha from './Ficha.astro';
+import ExternalLink from './ExternalLink.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const cvHref = lang === 'es' ? '/cv/' : '/en/cv/';
+
+const lead = {
+  es: 'Java y Spring Boot en el servidor, Angular en el cliente. Desarrollo microservicios y aplicaciones web para el sector bancario, con mensajería sobre Kafka y RabbitMQ. Vivo en Cáceres y trabajo en remoto.',
+  en: 'Java and Spring Boot on the server, Angular on the client. I build microservices and web applications for the banking sector, with messaging on Kafka and RabbitMQ. Based in Cáceres, working remotely.',
+} as const;
+---
+
+<section class="pb-[clamp(3rem,2rem+5vw,6rem)] pt-[clamp(3rem,2rem+5vw,6rem)]">
+  <div class="container grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-8">
+    <div class="lg:col-span-7">
+      <p class="flex items-center gap-2.5 text-[15px] text-muted">
+        <span class="inline-block h-2 w-2 rounded-full bg-accent" aria-hidden="true"></span>
+        {pick(ui.status, lang)}
+      </p>
+
+      <h1 class="mt-6 text-[clamp(2.5rem,1.6rem+4vw,4.5rem)] font-semibold leading-[1.02] tracking-[-0.03em] text-ink">
+        {profile.name}<span class="sr-only">, </span>
+        <span class="mt-3 block text-[clamp(1.25rem,1rem+1vw,1.75rem)] font-normal leading-[1.25] tracking-[-0.01em] text-muted">
+          {pick(profile.role, lang)}
+        </span>
+      </h1>
+
+      <p class="mt-6 max-w-[56ch] text-[clamp(1.125rem,1rem+0.5vw,1.375rem)] leading-[1.55] text-ink">
+        {lead[lang]}
+      </p>
+
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a
+          href={`mailto:${profile.email}`}
+          class="rise-in inline-flex min-h-11 items-center rounded-md bg-accent px-5 py-3 text-[15px] font-medium text-on-accent transition-colors hover:bg-accent-hover"
+          style="--i:0"
+        >
+          {pick(ui['cta.contact'], lang)}
+        </a>
+        <a
+          href={cvHref}
+          class="rise-in inline-flex min-h-11 items-center rounded-md border border-accent px-5 py-3 text-[15px] font-medium text-accent transition-colors hover:bg-accent-soft"
+          style="--i:1"
+        >
+          {pick(ui['cta.cv'], lang)}
+        </a>
+      </div>
+
+      <p class="mt-6 flex items-center gap-2 text-[15px]">
+        <ExternalLink href={profile.linkedin} lang={lang} rel="me noopener noreferrer" class="text-accent underline decoration-1 underline-offset-[0.2em] hover:text-accent-hover hover:decoration-2">
+          LinkedIn
+        </ExternalLink>
+        <span class="text-subtle" aria-hidden="true">·</span>
+        <ExternalLink href={profile.github} lang={lang} rel="me noopener noreferrer" class="text-accent underline decoration-1 underline-offset-[0.2em] hover:text-accent-hover hover:decoration-2">
+          GitHub
+        </ExternalLink>
+      </p>
+    </div>
+
+    <div class="lg:col-span-5">
+      <Ficha lang={lang} />
+    </div>
+  </div>
+</section>

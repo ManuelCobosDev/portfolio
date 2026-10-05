@@ -1,0 +1,41 @@
+---
+import type { Lang } from '../i18n/utils';
+import { pick } from '../i18n/utils';
+import { ui } from '../i18n/ui';
+import { profile } from '../data/profile';
+
+interface Props {
+  lang: Lang;
+  alternateHref: string;
+}
+
+const { lang, alternateHref } = Astro.props;
+const homeHref = lang === 'es' ? '/' : '/en/';
+const cvHref = lang === 'es' ? '/cv/' : '/en/cv/';
+const year = new Date().getFullYear();
+const updated = new Intl.DateTimeFormat(lang === 'es' ? 'es-ES' : 'en', { dateStyle: 'long' }).format(
+  new Date(profile.lastUpdated),
+);
+const otherLangName = lang === 'es' ? 'English' : 'Español';
+const otherLangCode = lang === 'es' ? 'en' : 'es';
+---
+
+<footer class="border-t border-line">
+  <div class="container flex flex-col gap-4 py-8 text-sm text-muted">
+    <p>
+      © {year} Manuel Cobos Solís. {pick(ui['footer.rights'], lang)} {pick(ui['footer.privacy'], lang)}
+    </p>
+    <nav aria-label={lang === 'es' ? 'Enlaces del pie' : 'Footer links'} class="flex flex-wrap items-center gap-x-3 gap-y-2">
+      <a href={homeHref} class="text-muted underline underline-offset-4 hover:text-ink">{pick(ui['breadcrumb.home'], lang)}</a>
+      <a href={cvHref} class="text-muted underline underline-offset-4 hover:text-ink">{pick(ui['nav.cv'], lang)}</a>
+      <a href={profile.linkedin} target="_blank" rel="me noopener noreferrer" class="text-muted underline underline-offset-4 hover:text-ink">LinkedIn</a>
+      <a href={profile.github} target="_blank" rel="me noopener noreferrer" class="text-muted underline underline-offset-4 hover:text-ink">GitHub</a>
+      <a href={alternateHref} hreflang={otherLangCode} lang={otherLangCode} class="text-muted underline underline-offset-4 hover:text-ink">
+        {otherLangName}
+      </a>
+    </nav>
+    <p>
+      {pick(ui['footer.updated'], lang)} {updated} · {pick(ui['footer.built'], lang)}
+    </p>
+  </div>
+</footer>

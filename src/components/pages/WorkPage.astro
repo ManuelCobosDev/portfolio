@@ -1,0 +1,98 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { render } from 'astro:content';
+import type { Lang } from '../../i18n/utils';
+import { pick } from '../../i18n/utils';
+import { ui } from '../../i18n/ui';
+import Breadcrumbs from '../Breadcrumbs.astro';
+import WorkDiagram from '../WorkDiagram.astro';
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+  lang: Lang;
+  entry: CollectionEntry<'work'>;
+  sectionHref: string;
+  sectionLabel: string;
+  alternateHref: string;
+  alternateLabel: string;
+}
+
+const { lang, entry, sectionHref, sectionLabel, alternateHref, alternateLabel } = Astro.props;
+const { Content } = await render(entry);
+const publishedLabel = pick(ui['work.published'], lang);
+const published = new Intl.DateTimeFormat(lang === 'es' ? 'es-ES' : 'en', { dateStyle: 'long' }).format(
+  entry.data.publishedAt,
+);
+---
+
+<div class="section-pad container">
+  <Breadcrumbs lang={lang} title={entry.data.title} />
+
+  <article class="mt-8">
+    <h1 class="mt-6 text-[clamp(2rem,1.4rem+2.5vw,3.25rem)] font-semibold leading-[1.1] tracking-[-0.02em] text-ink">
+      {entry.data.title}
+    </h1>
+
+    <p class="tnum mt-4 font-mono text-[13px] tracking-[0.01em] text-muted">
+      {publishedLabel}: {published} · {entry.data.stack.join(' · ')}
+    </p>
+
+    <p class="mt-6 max-w-[56ch] text-[clamp(1.125rem,1rem+0.5vw,1.375rem)] leading-[1.55] text-ink">
+      {entry.data.summary}
+    </p>
+
+    {entry.data.diagram === 'orchestrator' && <WorkDiagram lang={lang} />}
+
+    <div class="prose-work mt-8 text-ink">
+      <Content />
+    </div>
+
+    {
+      entry.data.kind === 'project' && entry.data.links && (
+        <div class="mt-10 flex flex-wrap gap-3">
+          {entry.data.links.repo && (
+            <a
+              href={entry.data.links.repo}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex min-h-11 items-center gap-2 rounded-md bg-accent px-5 py-3 text-[15px] font-medium text-on-accent transition-colors hover:bg-accent-hover"
+            >
+              {pick(ui['work.repo'], lang)}
+              <Icon name="lucide:arrow-up-right" class="h-4 w-4" aria-hidden="true" />
+            </a>
+          )}
+          {entry.data.links.demo && (
+            <a
+              href={entry.data.links.demo}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex min-h-11 items-center gap-2 rounded-md border border-accent px-5 py-3 text-[15px] font-medium text-accent transition-colors hover:bg-accent-soft"
+            >
+              {pick(ui['work.demo'], lang)}
+              <Icon name="lucide:arrow-up-right" class="h-4 w-4" aria-hidden="true" />
+            </a>
+          )}
+        </div>
+      )
+    }
+
+    <nav class="mt-12 flex flex-col gap-3 border-t border-line pt-6 sm:flex-row sm:items-center sm:justify-between">
+      <a
+        href={sectionHref}
+        class="inline-flex min-h-11 items-center gap-2 text-[15px] text-accent underline decoration-1 underline-offset-[0.2em] hover:text-accent-hover hover:decoration-2"
+      >
+        <Icon name="lucide:arrow-right" class="h-4 w-4 rotate-180" aria-hidden="true" />
+        {sectionLabel}
+      </a>
+      <a
+        href={alternateHref}
+        hreflang={lang === 'es' ? 'en' : 'es'}
+        lang={lang === 'es' ? 'en' : 'es'}
+        class="inline-flex min-h-11 items-center gap-2 text-[15px] text-accent underline decoration-1 underline-offset-[0.2em] hover:text-accent-hover hover:decoration-2"
+      >
+        {alternateLabel}
+        <Icon name="lucide:arrow-right" class="h-4 w-4" aria-hidden="true" />
+      </a>
+    </nav>
+  </article>
+</div>

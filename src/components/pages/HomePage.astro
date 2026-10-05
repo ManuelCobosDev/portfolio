@@ -1,0 +1,98 @@
+---
+import { getCollection } from 'astro:content';
+import type { Lang } from '../../i18n/utils';
+import { pick } from '../../i18n/utils';
+import { ui } from '../../i18n/ui';
+import { slugFromId } from '../../lib/site';
+import Hero from '../Hero.astro';
+import SectionShell from '../SectionShell.astro';
+import About from '../About.astro';
+import Experience from '../Experience.astro';
+import StackCore from '../StackCore.astro';
+import StackGroups from '../StackGroups.astro';
+import WorkList from '../WorkList.astro';
+import Education from '../Education.astro';
+import Contact from '../Contact.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+const works = await getCollection('work', (entry) => entry.data.lang === lang && !entry.data.draft);
+const cases = works
+  .filter((entry) => entry.data.kind === 'case-study')
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((entry) => ({
+    slug: slugFromId(entry.id),
+    title: entry.data.title,
+    summary: entry.data.summary,
+    stack: entry.data.stack,
+    kind: entry.data.kind,
+  }));
+const projects = works
+  .filter((entry) => entry.data.kind === 'project')
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((entry) => ({
+    slug: slugFromId(entry.id),
+    title: entry.data.title,
+    summary: entry.data.summary,
+    stack: entry.data.stack,
+    kind: entry.data.kind,
+  }));
+
+const ids = {
+  about: lang === 'es' ? 'sobre-mi' : 'about',
+  experience: lang === 'es' ? 'experiencia' : 'experience',
+  stack: 'stack',
+  cases: lang === 'es' ? 'casos' : 'case-studies',
+  projects: lang === 'es' ? 'proyectos' : 'projects',
+  education: lang === 'es' ? 'formacion' : 'education',
+  contact: lang === 'es' ? 'contacto' : 'contact',
+};
+
+let counter = 0;
+const num = () => String(++counter).padStart(2, '0');
+---
+
+<Hero lang={lang} />
+
+<SectionShell number={num()} id={ids.about} title={pick(ui['section.about'], lang)}>
+  <About lang={lang} />
+</SectionShell>
+
+<SectionShell number={num()} id={ids.experience} title={pick(ui['section.experience'], lang)}>
+  <Experience lang={lang} />
+</SectionShell>
+
+<SectionShell number={num()} id={ids.stack} title={pick(ui['section.stack'], lang)}>
+  <div class="space-y-10">
+    <StackCore />
+    <StackGroups lang={lang} />
+  </div>
+</SectionShell>
+
+{
+  cases.length > 0 && (
+    <SectionShell number={num()} id={ids.cases} title={pick(ui['section.cases'], lang)}>
+      <WorkList lang={lang} entries={cases} />
+    </SectionShell>
+  )
+}
+
+{
+  projects.length > 0 && (
+    <SectionShell number={num()} id={ids.projects} title={pick(ui['section.projects'], lang)}>
+      <WorkList lang={lang} entries={projects} />
+    </SectionShell>
+  )
+}
+
+<SectionShell number={num()} id={ids.education} title={pick(ui['section.education'], lang)}>
+  <Education lang={lang} />
+</SectionShell>
+
+<SectionShell number={num()} id={ids.contact} title={pick(ui['section.contact'], lang)}>
+  <Contact lang={lang} />
+</SectionShell>

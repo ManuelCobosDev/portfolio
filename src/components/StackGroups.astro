@@ -1,0 +1,26 @@
+---
+import type { Lang } from '../i18n/utils';
+import { pick } from '../i18n/utils';
+import { stackGroups } from '../data/stack';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+---
+
+<dl>
+  {
+    stackGroups.map((group) => (
+      <div class="grid grid-cols-1 gap-1 border-t border-line py-5 sm:grid-cols-[11rem_1fr] sm:gap-6">
+        <dt class="font-mono text-[13px] tracking-[0.01em] text-muted">{pick(group.label, lang)}</dt>
+        <dd>
+          <ul class="middot-list text-base leading-relaxed text-ink">
+            {pick(group.items, lang).map((item) => <li>{item}</li>)}
+          </ul>
+        </dd>
+      </div>
+    ))
+  }
+</dl>

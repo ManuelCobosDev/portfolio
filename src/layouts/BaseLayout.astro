@@ -1,0 +1,46 @@
+---
+import { getCollection } from 'astro:content';
+import type { HeadProps } from '../components/Seo.astro';
+import Seo from '../components/Seo.astro';
+import SkipLink from '../components/SkipLink.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { visibleNav } from '../lib/nav';
+import { SITE } from '../lib/site';
+import '../styles/global.css';
+
+interface Props extends HeadProps {}
+
+const props = Astro.props;
+const { lang, alternates } = props;
+
+const works = await getCollection('work', (entry) => entry.data.lang === lang && !entry.data.draft);
+const hasCases = works.some((w) => w.data.kind === 'case-study');
+const hasProjects = works.some((w) => w.data.kind === 'project');
+const entries = visibleNav(lang, hasCases, hasProjects);
+const alternateHref = (lang === 'es' ? alternates.en : alternates.es).replace(SITE, '');
+const htmlLang = lang === 'es' ? 'es-ES' : 'en';
+---
+
+<!doctype html>
+<html lang={htmlLang}>
+  <head>
+    <Seo {...props} />
+  </head>
+  <body class="bg-bg text-ink">
+    <SkipLink lang={lang} />
+    <Header lang={lang} entries={entries} alternateHref={alternateHref} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer lang={lang} alternateHref={alternateHref} />
+    <script>
+      import { initTheme } from '../scripts/theme';
+      import { initMenu } from '../scripts/menu';
+      import { initActiveSection } from '../scripts/active-section';
+      initTheme();
+      initMenu();
+      initActiveSection();
+    </script>
+  </body>
+</html>

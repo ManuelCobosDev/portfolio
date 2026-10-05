@@ -1,0 +1,28 @@
+---
+import type { Lang } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+const paragraphs = {
+  es: [
+    'Soy desarrollador Full Stack con base en el backend: Java 17 y 21, Spring Boot, microservicios y APIs REST, con mensajería asíncrona sobre Apache Kafka y RabbitMQ. En el frontend trabajo con Angular y TypeScript.',
+    'Trabajo en Viewnext, desarrollando para el Banco Santander en un equipo de unas 5 personas. Mi día a día combina el desarrollo de funcionalidades de extremo a extremo con la calidad del código: pruebas automáticas, análisis con SonarQube y despliegue hasta producción sobre OpenShift.',
+    'He trabajado con Angular desde la versión 15 hasta la 20, incluidas migraciones completas desde versiones antiguas hasta la actual.',
+    'Busco una posición como desarrollador Full Stack o Java Backend en una consultora o empresa con equipos en España, en remoto.',
+  ],
+  en: [
+    'I am a Full Stack developer with a backend foundation: Java 17 and 21, Spring Boot, microservices and REST APIs, with asynchronous messaging on Apache Kafka and RabbitMQ. On the frontend I work with Angular and TypeScript.',
+    'I work at Viewnext, developing for Banco Santander in a team of about five people. My day to day combines end-to-end feature development with code quality: automated tests, SonarQube analysis and deployment to production on OpenShift.',
+    'I have worked with Angular from version 15 to 20, including full migrations from older versions to the current one.',
+    'I am looking for a Full Stack or Java Backend Developer position at a consultancy or company with teams in Spain, working remotely.',
+  ],
+} as const;
+---
+
+<div class="max-w-[68ch] space-y-5">
+  {paragraphs[lang].map((text) => <p class="text-ink">{text}</p>)}
+</div>

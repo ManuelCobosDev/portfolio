@@ -1,0 +1,21 @@
+---
+import type { Lang } from '../i18n/utils';
+import { pick } from '../i18n/utils';
+import { ui } from '../i18n/ui';
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+  href: string;
+  lang: Lang;
+  rel?: string;
+  class?: string;
+}
+
+const { href, lang, rel = 'noopener noreferrer', class: className } = Astro.props;
+---
+
+<a href={href} target="_blank" rel={rel} class={className}>
+  <slot />
+  <Icon name="lucide:arrow-up-right" class="inline h-[0.9em] w-[0.9em]" aria-hidden="true" />
+  <span class="sr-only">{pick(ui.external, lang)}</span>
+</a>

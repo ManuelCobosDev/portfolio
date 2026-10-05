@@ -1,0 +1,140 @@
+---
+import type { Lang } from '../../i18n/utils';
+import { pick } from '../../i18n/utils';
+import { ui } from '../../i18n/ui';
+import { profile } from '../../data/profile';
+import { degrees, certifications } from '../../data/education';
+import { stackGroups } from '../../data/stack';
+import { fullYearsSince } from '../../lib/years';
+import { cvPdfAvailable } from '../../lib/cv';
+import Experience from '../Experience.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const years = fullYearsSince(profile.experienceStart);
+
+const profileText = {
+  es: `Desarrollador Full Stack con enfoque backend y más de ${years} años de experiencia en el sector bancario. Java 17 y 21, Spring Boot, microservicios y mensajería con Kafka y RabbitMQ en el servidor; Angular y TypeScript en el cliente.`,
+  en: `Backend-oriented Full Stack Developer with over ${years} years of experience in the banking sector. Java 17 and 21, Spring Boot, microservices and messaging with Kafka and RabbitMQ on the server; Angular and TypeScript on the client.`,
+} as const;
+
+const workModeLine = lang === 'es' ? '100 % remoto' : 'fully remote';
+const locationLine = lang === 'es' ? 'Cáceres, Extremadura, España' : 'Cáceres, Extremadura, Spain';
+
+const headings = {
+  profile: lang === 'es' ? 'Perfil' : 'Profile',
+  experience: lang === 'es' ? 'Experiencia' : 'Experience',
+  stack: lang === 'es' ? 'Stack técnico' : 'Tech stack',
+  education: lang === 'es' ? 'Formación' : 'Education',
+  certifications: lang === 'es' ? 'Certificaciones e idiomas' : 'Certifications and languages',
+};
+
+const h2Class = 'mt-10 border-t border-line pt-4 text-[1.5rem] font-semibold leading-[1.2] tracking-[-0.02em] text-ink';
+---
+
+<div class="container section-pad">
+  <div class="no-print mb-8 flex flex-wrap gap-3">
+    <button
+      type="button"
+      data-print
+      class="inline-flex min-h-11 items-center rounded-md border border-accent px-5 py-3 text-[15px] font-medium text-accent transition-colors hover:bg-accent-soft"
+    >
+      {pick(ui['cv.print'], lang)}
+    </button>
+    {
+      cvPdfAvailable && (
+        <a
+          href="/cv/Manuel-Cobos-Solis-CV.pdf"
+          download
+          class="inline-flex min-h-11 items-center rounded-md bg-accent px-5 py-3 text-[15px] font-medium text-on-accent transition-colors hover:bg-accent-hover"
+        >
+          {pick(ui['cv.download'], lang)}
+        </a>
+      )
+    }
+  </div>
+
+  <div class="max-w-[72ch]">
+    <h1 class="text-[clamp(2.5rem,1.6rem+4vw,4.5rem)] font-semibold leading-[1.02] tracking-[-0.03em] text-ink">
+      {profile.name}
+    </h1>
+    <p class="mt-3 text-[clamp(1.25rem,1rem+1vw,1.75rem)] leading-[1.25] text-muted">{pick(profile.role, lang)}</p>
+    <p class="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted">
+      <span>{locationLine}</span>
+      <span aria-hidden="true" class="text-subtle">·</span>
+      <span>{workModeLine}</span>
+      <span aria-hidden="true" class="text-subtle">·</span>
+      <a href={`mailto:${profile.email}`} class="text-accent underline decoration-1 underline-offset-[0.2em] hover:text-accent-hover">{profile.email}</a>
+      <span aria-hidden="true" class="text-subtle">·</span>
+      <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" class="text-accent underline decoration-1 underline-offset-[0.2em] hover:text-accent-hover">linkedin.com/in/manuelcobos</a>
+      <span aria-hidden="true" class="text-subtle">·</span>
+      <a href={profile.github} target="_blank" rel="noopener noreferrer" class="text-accent underline decoration-1 underline-offset-[0.2em] hover:text-accent-hover">github.com/ManuelCobosDev</a>
+      <span aria-hidden="true" class="text-subtle">·</span>
+      <a href="https://manuelcobos.dev/" class="text-accent underline decoration-1 underline-offset-[0.2em] hover:text-accent-hover">manuelcobos.dev</a>
+    </p>
+  </div>
+
+  <div class="max-w-[72ch]">
+    <h2 class={h2Class}>{headings.profile}</h2>
+    <p class="mt-4 text-ink">{profileText[lang]}</p>
+
+    <h2 class={h2Class}>{headings.experience}</h2>
+    <div class="mt-2">
+      <Experience lang={lang} showTech={false} />
+    </div>
+
+    <h2 class={h2Class}>{headings.stack}</h2>
+    <div class="mt-2">
+      <dl>
+        {
+          stackGroups.map((group) => (
+            <div class="grid grid-cols-1 gap-1 border-t border-line py-3 sm:grid-cols-[11rem_1fr] sm:gap-6">
+              <dt class="font-mono text-[13px] tracking-[0.01em] text-muted">{pick(group.label, lang)}</dt>
+              <dd>
+                <ul class="middot-list text-[15px] leading-relaxed text-ink">
+                  {pick(group.items, lang).map((item) => <li>{item}</li>)}
+                </ul>
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+
+    <h2 class={h2Class}>{headings.education}</h2>
+    <div class="mt-2">
+      {
+        degrees.map((degree) => (
+          <div class="print-avoid-break grid grid-cols-1 gap-1 border-b border-line py-3 sm:grid-cols-[1fr_auto] sm:gap-6">
+            <div>
+              <p class="text-base font-medium text-ink">{pick(degree.title, lang)}</p>
+              <p class="text-[15px] text-muted">{degree.org}</p>
+            </div>
+            <p class="tnum font-mono text-[13px] tracking-[0.01em] text-muted">{degree.period}</p>
+          </div>
+        ))
+      }
+    </div>
+
+    <h2 class={h2Class}>{headings.certifications}</h2>
+    <div class="mt-2">
+      {
+        certifications.map((cert) => (
+          <div class="print-avoid-break grid grid-cols-1 gap-1 border-b border-line py-3 sm:grid-cols-[1fr_auto] sm:gap-6">
+            <p class="text-base font-medium text-ink">{pick(cert.title, lang)}</p>
+            <p class="font-mono text-[13px] tracking-[0.01em] text-muted">{pick(cert.issuer, lang)}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</div>
+
+<script>
+  for (const button of document.querySelectorAll<HTMLButtonElement>('[data-print]')) {
+    button.addEventListener('click', () => window.print());
+  }
+</script>

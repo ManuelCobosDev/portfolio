@@ -1,0 +1,23 @@
+---
+import type { Lang } from '../i18n/utils';
+import { pick } from '../i18n/utils';
+import { ui } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  href: string;
+}
+
+const { lang, href } = Astro.props;
+const other = lang === 'es' ? 'en' : 'es';
+---
+
+<a
+  href={href}
+  hreflang={other}
+  lang={other}
+  aria-label={pick(ui['lang.switchLabel'], lang)}
+  class="inline-flex h-11 w-11 items-center justify-center rounded-md border border-subtle font-mono text-[13px] text-ink transition-colors hover:bg-surface-2"
+>
+  {pick(ui['lang.switchText'], lang)}
+</a>

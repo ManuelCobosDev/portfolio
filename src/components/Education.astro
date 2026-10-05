@@ -1,0 +1,59 @@
+---
+import type { Lang } from '../i18n/utils';
+import { pick } from '../i18n/utils';
+import { degrees, certifications } from '../data/education';
+import { profile } from '../data/profile';
+import ExternalLink from './ExternalLink.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const educationHeading = lang === 'es' ? 'Formación' : 'Education';
+const certHeading = lang === 'es' ? 'Certificaciones e idiomas' : 'Certifications and languages';
+---
+
+<div class="space-y-12">
+  <div>
+    <h3 class="text-[1.25rem] font-semibold leading-[1.3] tracking-[-0.01em] text-ink">{educationHeading}</h3>
+    <div class="mt-4 border-t border-line">
+      {
+        degrees.map((degree) => (
+          <div class="grid grid-cols-1 gap-1 border-b border-line py-4 sm:grid-cols-[1fr_auto] sm:gap-6">
+            <div>
+              <p class="text-base font-medium text-ink">{pick(degree.title, lang)}</p>
+              <p class="text-[15px] text-muted">{degree.org}</p>
+            </div>
+            <p class="tnum font-mono text-[13px] tracking-[0.01em] text-muted">{degree.period}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+
+  <div>
+    <h3 class="text-[1.25rem] font-semibold leading-[1.3] tracking-[-0.01em] text-ink">{certHeading}</h3>
+    <div class="mt-4 border-t border-line">
+      {
+        certifications.map((cert) => (
+          <div class="grid grid-cols-1 gap-1 border-b border-line py-4 sm:grid-cols-[1fr_auto] sm:gap-6">
+            <p class="text-base font-medium text-ink">{pick(cert.title, lang)}</p>
+            <p class="font-mono text-[13px] tracking-[0.01em] text-muted">{pick(cert.issuer, lang)}</p>
+          </div>
+        ))
+      }
+    </div>
+    <p class="mt-4 text-sm text-muted">
+      {lang === 'es' ? 'Las certificaciones se pueden verificar en ' : 'Certifications can be verified on '}
+      <ExternalLink
+        href={profile.certificationsUrl}
+        lang={lang}
+        class="text-accent underline decoration-1 underline-offset-[0.2em] hover:text-accent-hover hover:decoration-2"
+      >
+        LinkedIn
+      </ExternalLink>
+      .
+    </p>
+  </div>
+</div>

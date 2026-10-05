@@ -1,0 +1,63 @@
+---
+import type { Lang } from '../i18n/utils';
+import type { NavEntry } from '../lib/nav';
+import { pick } from '../i18n/utils';
+import { ui } from '../i18n/ui';
+import { Icon } from 'astro-icon/components';
+import NavMenu from './NavMenu.astro';
+import LangSwitch from './LangSwitch.astro';
+import ThemeToggle from './ThemeToggle.astro';
+
+interface Props {
+  lang: Lang;
+  entries: NavEntry[];
+  alternateHref: string;
+}
+
+const { lang, entries, alternateHref } = Astro.props;
+const homeHref = lang === 'es' ? '/' : '/en/';
+const cvHref = lang === 'es' ? '/cv/' : '/en/cv/';
+---
+
+<header class="sticky top-0 z-40 border-b border-line bg-bg">
+  <div class="container relative flex h-16 items-center justify-between gap-3">
+    <a href={homeHref} class="flex items-center gap-2.5" aria-label="Manuel Cobos Solís">
+      <span class="flex h-7 w-7 items-center justify-center rounded-[6px] bg-accent font-sans text-[13px] font-semibold text-on-accent">
+        MC
+      </span>
+      <span class="brand-name text-[15px] font-semibold text-ink">Manuel Cobos Solís</span>
+    </a>
+
+    <NavMenu lang={lang} entries={entries} homeHref={homeHref} cvHref={cvHref} />
+
+    <div class="flex items-center gap-2">
+      <LangSwitch lang={lang} href={alternateHref} />
+      <ThemeToggle lang={lang} />
+
+      <details data-menu class="relative lg:hidden">
+        <summary class="flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-md border border-subtle text-ink [&::-webkit-details-marker]:hidden">
+          <span class="sr-only">{pick(ui['menu.open'], lang)}</span>
+          <Icon name="lucide:menu" class="menu-icon-burger h-6 w-6" aria-hidden="true" />
+          <Icon name="lucide:x" class="menu-icon-x h-6 w-6" aria-hidden="true" />
+        </summary>
+        <div class="absolute left-1/2 top-full w-screen -translate-x-1/2 border-b border-line bg-surface">
+          <div class="container flex flex-col">
+            {
+              entries.map((entry) => (
+                <a
+                  href={`${homeHref}#${entry.id}`}
+                  class="flex h-14 items-center border-t border-line text-lg text-ink first:border-t-0"
+                >
+                  {entry.label}
+                </a>
+              ))
+            }
+            <a href={cvHref} class="flex h-14 items-center border-t border-line text-lg text-ink">
+              {pick(ui['nav.cv'], lang)}
+            </a>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+</header>

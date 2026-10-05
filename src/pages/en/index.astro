@@ -1,0 +1,27 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import HomePage from '../../components/pages/HomePage.astro';
+import { homeGraph } from '../../lib/jsonld';
+
+const lang = 'en';
+const canonical = 'https://manuelcobos.dev/en/';
+const title = 'Manuel Cobos Solís | Full Stack Developer (Java, Angular)';
+const description =
+  'Manuel Cobos Solís, backend-oriented Full Stack Developer: Java, Spring Boot, Kafka and Angular. Banking sector. Based in Cáceres, Spain. Remote.';
+---
+
+<BaseLayout
+  lang={lang}
+  title={title}
+  description={description}
+  canonical={canonical}
+  alternates={{ es: 'https://manuelcobos.dev/', en: canonical, xDefault: 'https://manuelcobos.dev/' }}
+  ogType="profile"
+  ogTitle={title}
+  ogDescription={description}
+  ogImage="https://manuelcobos.dev/og/home-en.png"
+  ogImageAlt="Manuel Cobos Solís – Full Stack Developer"
+  jsonLd={homeGraph(lang, canonical)}
+>
+  <HomePage lang={lang} />
+</BaseLayout>

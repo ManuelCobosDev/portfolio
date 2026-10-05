@@ -1,0 +1,48 @@
+---
+import type { Lang } from '../i18n/utils';
+import { pick } from '../i18n/utils';
+import { ui } from '../i18n/ui';
+import { Icon } from 'astro-icon/components';
+
+interface WorkRow {
+  slug: string;
+  title: string;
+  summary: string;
+  stack: string[];
+  kind: 'case-study' | 'project';
+}
+
+interface Props {
+  lang: Lang;
+  entries: WorkRow[];
+}
+
+const { lang, entries } = Astro.props;
+const base = lang === 'es' ? '/trabajo' : '/en/work';
+const readLabel = (kind: 'case-study' | 'project') => pick(ui[kind === 'case-study' ? 'work.read' : 'work.readProject'], lang);
+---
+
+<div class="flex flex-col">
+  {
+    entries.map((entry) => (
+      <a
+        href={`${base}/${entry.slug}/`}
+        class="group flex items-center justify-between gap-6 border-t border-line py-6 last:border-b"
+      >
+        <div>
+          <h3 class="text-[22px] font-semibold leading-[1.3] text-ink transition-colors group-hover:text-accent">
+            {entry.title}
+          </h3>
+          <p class="mt-1.5 max-w-[62ch] text-muted">{entry.summary}</p>
+          <p class="mt-2.5 font-mono text-[13px] tracking-[0.01em] text-muted">
+            {entry.stack.join(' · ')}
+            <span class="sr-only"> — {readLabel(entry.kind)}</span>
+          </p>
+        </div>
+        <span class="hidden shrink-0 text-subtle transition-transform duration-150 group-hover:translate-x-0.5 lg:block" aria-hidden="true">
+          <Icon name="lucide:arrow-right" class="h-6 w-6" />
+        </span>
+      </a>
+    ))
+  }
+</div>

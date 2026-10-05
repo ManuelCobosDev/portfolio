@@ -1,0 +1,32 @@
+---
+import type { Lang } from '../i18n/utils';
+import type { NavEntry } from '../lib/nav';
+import { pick } from '../i18n/utils';
+import { ui } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  entries: NavEntry[];
+  homeHref: string;
+  cvHref: string;
+}
+
+const { lang, entries, homeHref, cvHref } = Astro.props;
+---
+
+<nav aria-label={pick(ui['nav.label'], lang)} class="hidden items-center gap-6 lg:flex">
+  {
+    entries.map((entry) => (
+      <a
+        href={`${homeHref}#${entry.id}`}
+        data-nav-link
+        class="nav-link text-[14px] font-medium text-muted transition-colors"
+      >
+        {entry.label}
+      </a>
+    ))
+  }
+  <a href={cvHref} class="nav-link text-[14px] font-medium text-muted transition-colors">
+    {pick(ui['nav.cv'], lang)}
+  </a>
+</nav>

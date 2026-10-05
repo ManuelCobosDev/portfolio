@@ -1,0 +1,24 @@
+---
+import type { Lang } from '../i18n/utils';
+import { pick } from '../i18n/utils';
+import { ui } from '../i18n/ui';
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+---
+
+<button
+  type="button"
+  data-theme-toggle
+  data-label-light={pick(ui['theme.toDark'], lang)}
+  data-label-dark={pick(ui['theme.toLight'], lang)}
+  aria-label={pick(ui['theme.toDark'], lang)}
+  class="inline-flex h-11 w-11 items-center justify-center rounded-md border border-subtle text-ink transition-colors hover:bg-surface-2"
+>
+  <Icon name="lucide:moon" class="h-5 w-5 dark:hidden" aria-hidden="true" />
+  <Icon name="lucide:sun" class="hidden h-5 w-5 dark:block" aria-hidden="true" />
+</button>
