@@ -47,17 +47,19 @@ test.describe('case rows, footer and contact', () => {
     });
   }
 
-  test('footer is two columns from 768px and one below', async ({ page }) => {
+  test('footer links sit on one row and wrap on narrow screens', async ({ page }) => {
+    const nav = page.locator('footer nav[aria-label]');
     await page.setViewportSize({ width: 1024, height: 900 });
     await page.goto('/');
-    const wide = await page
-      .locator('footer nav[aria-label]')
-      .evaluate((el) => getComputedStyle(el).gridTemplateColumns.trim().split(/\s+/).length);
-    await page.setViewportSize({ width: 480, height: 900 });
-    const narrow = await page
-      .locator('footer nav[aria-label]')
-      .evaluate((el) => getComputedStyle(el).gridTemplateColumns.trim().split(/\s+/).length);
-    expect(wide).toBe(2);
-    expect(narrow).toBe(1);
+    expect(await nav.evaluate((el) => getComputedStyle(el).flexWrap)).toBe('wrap');
+    const wideTops = await nav
+      .locator('a')
+      .evaluateAll((els) => els.map((el) => Math.round(el.getBoundingClientRect().top)));
+    expect(new Set(wideTops).size).toBe(1);
+    await page.setViewportSize({ width: 360, height: 900 });
+    const narrowTops = await nav
+      .locator('a')
+      .evaluateAll((els) => els.map((el) => Math.round(el.getBoundingClientRect().top)));
+    expect(new Set(narrowTops).size).toBeGreaterThan(1);
   });
 });
