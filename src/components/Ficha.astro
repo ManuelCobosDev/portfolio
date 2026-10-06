@@ -33,9 +33,9 @@ const portraitAlt = {
 } as const;
 ---
 
-<section aria-labelledby="ficha-title" class="overflow-hidden rounded-md border border-line bg-surface">
+<section aria-labelledby="ficha-title" class="border-line bg-surface overflow-hidden rounded-md border">
   <h2 id="ficha-title" class="sr-only">{pick(ui['ficha.title'], lang)}</h2>
-  <div class="aspect-[4/3] w-full bg-surface-2">
+  <div class="bg-surface-2 aspect-[4/3] w-full">
     <Picture
       src={portrait}
       widths={[320, 480, 640]}
@@ -55,11 +55,11 @@ const portraitAlt = {
     {
       rows.map((row, i) => (
         <div
-          class="rise-in grid grid-cols-1 gap-1 border-t border-line px-5 py-3 first:border-t-0 sm:grid-cols-[7.5rem_1fr] sm:items-baseline sm:gap-4"
+          class="rise-in border-line grid grid-cols-1 gap-1 border-t px-5 py-3 first:border-t-0 sm:grid-cols-[7.5rem_1fr] sm:items-baseline sm:gap-4"
           style={`--i:${i}`}
         >
-          <dt class="font-sans text-[13px] font-medium text-muted">{row.label}</dt>
-          <dd class="tnum text-base text-ink">{row.value}</dd>
+          <dt class="text-muted font-sans text-[13px] font-medium">{row.label}</dt>
+          <dd class="tnum text-ink text-base">{row.value}</dd>
         </div>
       ))
     }

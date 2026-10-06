@@ -2,11 +2,11 @@
 lang: es
 translationKey: orchestrator
 kind: case-study
-title: "Microservicio orquestador: un único POST, varios destinos"
-seoTitle: "Microservicio orquestador: Spring Boot, Kafka, RabbitMQ"
-description: "Caso de estudio: un microservicio orquestador que recibe un JSON y enruta cada sección a Kafka, RabbitMQ, WebClient o bases de datos dinámicas."
-summary: "Un único POST con un JSON que el orquestador reparte entre microservicios de Kafka, RabbitMQ, WebClient y bases de datos con conexión dinámica."
-stack: ["Java", "Spring Boot", "Apache Kafka", "RabbitMQ", "WebClient", "Vault"]
+title: 'Microservicio orquestador: un único POST, varios destinos'
+seoTitle: 'Microservicio orquestador: Spring Boot, Kafka, RabbitMQ'
+description: 'Caso de estudio: un microservicio orquestador que recibe un JSON y enruta cada sección a Kafka, RabbitMQ, WebClient o bases de datos dinámicas.'
+summary: 'Un único POST con un JSON que el orquestador reparte entre microservicios de Kafka, RabbitMQ, WebClient y bases de datos con conexión dinámica.'
+stack: ['Java', 'Spring Boot', 'Apache Kafka', 'RabbitMQ', 'WebClient', 'Vault']
 publishedAt: 2026-10-05
 diagram: orchestrator
 order: 1
@@ -34,4 +34,4 @@ El microservicio de persistencia no trabaja con una base de datos fija, sino con
 - **Un destino por microservicio.** Separa las dependencias de Kafka, RabbitMQ, HTTP y base de datos, y permite evolucionar cada una por separado.
 - **Conexiones persistentes frente a conexión por petición.** Se evita el coste de abrir y cerrar conexiones en cada llamada, a cambio de gestionar el ciclo de vida de los beans y de las conexiones abiertas.
 
-*Describo el diseño en términos generales y omito nombres de sistemas y datos del cliente.*
+_Describo el diseño en términos generales y omito nombres de sistemas y datos del cliente._

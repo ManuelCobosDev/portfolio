@@ -352,7 +352,14 @@ else {
 }
 
 // 21. Static files
-for (const f of ['favicon.svg', 'favicon.ico', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png', 'images/manuel-cobos-solis.jpg']) {
+for (const f of [
+  'favicon.svg',
+  'favicon.ico',
+  'apple-touch-icon.png',
+  'icon-192.png',
+  'icon-512.png',
+  'images/manuel-cobos-solis.jpg',
+]) {
   if (!existsSync(join(dist, f))) fail(`missing static file: ${f}.`);
 }
 
@@ -402,7 +409,8 @@ if (existsSync(join(dist, '_redirects'))) fail('_redirects must not be present.'
 const icoFile = join(dist, 'favicon.ico');
 if (existsSync(icoFile)) {
   const ico = readFileSync(icoFile);
-  const validHeader = ico.length >= 22 && ico.readUInt16LE(0) === 0 && ico.readUInt16LE(2) === 1 && ico.readUInt16LE(4) >= 1;
+  const validHeader =
+    ico.length >= 22 && ico.readUInt16LE(0) === 0 && ico.readUInt16LE(2) === 1 && ico.readUInt16LE(4) >= 1;
   const w = ico.length >= 7 ? ico.readUInt8(6) : 0;
   const h = ico.length >= 8 ? ico.readUInt8(7) : 0;
   if (!validHeader) fail('favicon.ico: invalid ICONDIR header.');
@@ -477,7 +485,12 @@ const FACT_SCOPES = {
 
 const FACTS = [
   { id: 'name', es: 'Manuel Cobos Solís', en: 'Manuel Cobos Solís', scope: 'all', caseSensitive: true },
-  { id: 'role', es: 'Desarrollador Full Stack con enfoque backend', en: 'Backend-oriented Full Stack Developer', scope: 'home' },
+  {
+    id: 'role',
+    es: 'Desarrollador Full Stack con enfoque backend',
+    en: 'Backend-oriented Full Stack Developer',
+    scope: 'home',
+  },
   { id: 'city', es: 'Cáceres, Extremadura, España', en: 'Cáceres, Extremadura, Spain', scope: 'home+cv' },
   { id: 'remote', es: '100 % remoto', en: 'fully remote', scope: 'home+cv' },
   { id: 'employer', es: 'Viewnext', en: 'Viewnext', scope: 'home+cv' },
@@ -494,7 +507,12 @@ const FACTS = [
     en: 'Higher Technical Degree in Web Application Development (DAW)',
     scope: 'home+cv',
   },
-  { id: 'cert1', es: 'MuleSoft Certified Developer – Level 1', en: 'MuleSoft Certified Developer – Level 1', scope: 'home+cv' },
+  {
+    id: 'cert1',
+    es: 'MuleSoft Certified Developer – Level 1',
+    en: 'MuleSoft Certified Developer – Level 1',
+    scope: 'home+cv',
+  },
   { id: 'status', es: 'Abierto a oportunidades', en: 'Open to opportunities', scope: 'home' },
 ];
 
@@ -516,7 +534,11 @@ const NEGATIVE_FACTS = [
   'HandAuth',
 ];
 
-const normalise = (s) => s.replace(/\u00A0/g, ' ').replace(/\s+/g, ' ').trim();
+const normalise = (s) =>
+  s
+    .replace(/\u00A0/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
 
 const textByPath = new Map();
 for (const p of pages) {
@@ -541,7 +563,8 @@ for (const fact of FACTS) {
       }
       const haystack = fact.caseSensitive ? text : text.toLowerCase();
       const target = fact.caseSensitive ? needle : needle.toLowerCase();
-      if (!haystack.includes(target)) fail(`fact ${fact.id}: ${lang.toUpperCase()} "${fact[lang]}" missing on ${path}.`);
+      if (!haystack.includes(target))
+        fail(`fact ${fact.id}: ${lang.toUpperCase()} "${fact[lang]}" missing on ${path}.`);
     }
   }
 }

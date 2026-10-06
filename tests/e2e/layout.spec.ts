@@ -79,9 +79,7 @@ test.describe('hero, ficha and navigation', () => {
 
   test('ficha links are 15px', async ({ page }) => {
     await page.goto('/');
-    const sizes = await page.$$eval(`${ficha} a`, (links) =>
-      links.map((link) => getComputedStyle(link).fontSize),
-    );
+    const sizes = await page.$$eval(`${ficha} a`, (links) => links.map((link) => getComputedStyle(link).fontSize));
     for (const size of sizes) expect(size).toBe('15px');
   });
 });

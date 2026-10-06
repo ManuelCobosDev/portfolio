@@ -18,7 +18,9 @@ test.describe('case rows, footer and contact', () => {
       const footer = page.locator('footer nav[aria-label]');
       const links = await footer
         .locator('a')
-        .evaluateAll((els) => els.map((el) => ({ href: el.getAttribute('href') ?? '', hreflang: el.getAttribute('hreflang') ?? '' })));
+        .evaluateAll((els) =>
+          els.map((el) => ({ href: el.getAttribute('href') ?? '', hreflang: el.getAttribute('hreflang') ?? '' })),
+        );
       const hrefs = links.map((link) => link.href);
       const home = lang === 'es' ? '/' : '/en/';
       const cv = lang === 'es' ? '/cv/' : '/en/cv/';

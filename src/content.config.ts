@@ -14,9 +14,7 @@ const work = defineCollection({
     stack: z.array(z.string()).min(1),
     publishedAt: z.coerce.date(),
     updatedAt: z.coerce.date().optional(),
-    links: z
-      .object({ repo: z.string().url().optional(), demo: z.string().url().optional() })
-      .optional(),
+    links: z.object({ repo: z.string().url().optional(), demo: z.string().url().optional() }).optional(),
     diagram: z.enum(['orchestrator']).optional(),
     draft: z.boolean().default(false),
     order: z.number().default(100),

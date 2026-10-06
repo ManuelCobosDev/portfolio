@@ -40,7 +40,7 @@ const h2Class = 'mt-10 border-t border-line pt-4 text-[1.5rem] font-semibold lea
     <a
       href={pdfHref}
       download
-      class="inline-flex min-h-11 w-full items-center justify-center rounded-md bg-accent px-5 py-3 text-[15px] font-medium text-on-accent transition-colors hover:bg-accent-hover md:w-auto"
+      class="bg-accent text-on-accent hover:bg-accent-hover inline-flex min-h-11 w-full items-center justify-center rounded-md px-5 py-3 text-[15px] font-medium transition-colors md:w-auto"
     >
       {pick(ui['cv.download'], lang)}
     </a>
@@ -48,35 +48,53 @@ const h2Class = 'mt-10 border-t border-line pt-4 text-[1.5rem] font-semibold lea
       type="button"
       data-print-pdf
       data-pdf-href={pdfHref}
-      class="inline-flex min-h-11 w-full items-center justify-center rounded-md border border-accent px-5 py-3 text-[15px] font-medium text-accent transition-colors hover:bg-accent-soft md:w-auto"
+      class="border-accent text-accent hover:bg-accent-soft inline-flex min-h-11 w-full items-center justify-center rounded-md border px-5 py-3 text-[15px] font-medium transition-colors md:w-auto"
     >
       {pick(ui['cv.print'], lang)}
     </button>
   </div>
 
   <div class="max-w-[72ch]">
-    <h1 class="text-[clamp(2.5rem,1.6rem+4vw,4.5rem)] font-semibold leading-[1.02] tracking-[-0.03em] text-ink">
+    <h1 class="text-ink text-[clamp(2.5rem,1.6rem+4vw,4.5rem)] leading-[1.02] font-semibold tracking-[-0.03em]">
       {profile.name}
     </h1>
-    <p class="mt-3 text-[clamp(1.25rem,1rem+1vw,1.75rem)] leading-[1.25] text-muted">{pick(profile.role, lang)}</p>
-    <p class="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted">
+    <p class="text-muted mt-3 text-[clamp(1.25rem,1rem+1vw,1.75rem)] leading-[1.25]">{pick(profile.role, lang)}</p>
+    <p class="text-muted mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
       <span>{locationLine}</span>
       <span aria-hidden="true" class="text-subtle">·</span>
       <span>{workModeLine}</span>
       <span aria-hidden="true" class="text-subtle">·</span>
-      <a href={`mailto:${profile.email}`} class="text-accent underline decoration-1 underline-offset-[0.2em] hover:text-accent-hover">{profile.email}</a>
+      <a
+        href={`mailto:${profile.email}`}
+        class="text-accent hover:text-accent-hover underline decoration-1 underline-offset-[0.2em]">{profile.email}</a
+      >
       <span aria-hidden="true" class="text-subtle">·</span>
-      <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" class="text-accent underline decoration-1 underline-offset-[0.2em] hover:text-accent-hover">linkedin.com/in/manuelcobos</a>
+      <a
+        href={profile.linkedin}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-accent hover:text-accent-hover underline decoration-1 underline-offset-[0.2em]"
+        >linkedin.com/in/manuelcobos</a
+      >
       <span aria-hidden="true" class="text-subtle">·</span>
-      <a href={profile.github} target="_blank" rel="noopener noreferrer" class="text-accent underline decoration-1 underline-offset-[0.2em] hover:text-accent-hover">github.com/ManuelCobosDev</a>
+      <a
+        href={profile.github}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-accent hover:text-accent-hover underline decoration-1 underline-offset-[0.2em]"
+        >github.com/ManuelCobosDev</a
+      >
       <span aria-hidden="true" class="text-subtle">·</span>
-      <a href="https://manuelcobos.dev/" class="text-accent underline decoration-1 underline-offset-[0.2em] hover:text-accent-hover">manuelcobos.dev</a>
+      <a
+        href="https://manuelcobos.dev/"
+        class="text-accent hover:text-accent-hover underline decoration-1 underline-offset-[0.2em]">manuelcobos.dev</a
+      >
     </p>
   </div>
 
   <div class="max-w-[72ch]">
     <h2 class={h2Class}>{headings.profile}</h2>
-    <p class="mt-4 text-ink">{profileText[lang]}</p>
+    <p class="text-ink mt-4">{profileText[lang]}</p>
 
     <h2 class={h2Class}>{headings.experience}</h2>
     <div class="mt-2">
@@ -88,11 +106,13 @@ const h2Class = 'mt-10 border-t border-line pt-4 text-[1.5rem] font-semibold lea
       <dl>
         {
           stackGroups.map((group) => (
-            <div class="grid grid-cols-1 gap-1 border-t border-line py-3 sm:grid-cols-[11rem_1fr] sm:gap-6">
-              <dt class="font-sans text-[13px] font-medium text-muted">{pick(group.label, lang)}</dt>
+            <div class="border-line grid grid-cols-1 gap-1 border-t py-3 sm:grid-cols-[11rem_1fr] sm:gap-6">
+              <dt class="text-muted font-sans text-[13px] font-medium">{pick(group.label, lang)}</dt>
               <dd>
-                <ul class="middot-list text-[15px] leading-relaxed text-ink">
-                  {pick(group.items, lang).map((item) => <li>{item}</li>)}
+                <ul class="middot-list text-ink text-[15px] leading-relaxed">
+                  {pick(group.items, lang).map((item) => (
+                    <li>{item}</li>
+                  ))}
                 </ul>
               </dd>
             </div>
@@ -105,11 +125,11 @@ const h2Class = 'mt-10 border-t border-line pt-4 text-[1.5rem] font-semibold lea
     <div class="mt-2">
       {
         degrees.map((degree) => (
-          <div class="print-avoid-break grid grid-cols-1 gap-1 border-b border-line py-3 sm:grid-cols-[1fr_auto] sm:items-baseline sm:gap-6">
-            <p class="mono-label tnum whitespace-nowrap text-muted sm:order-2">{degree.period}</p>
+          <div class="print-avoid-break border-line grid grid-cols-1 gap-1 border-b py-3 sm:grid-cols-[1fr_auto] sm:items-baseline sm:gap-6">
+            <p class="mono-label tnum text-muted whitespace-nowrap sm:order-2">{degree.period}</p>
             <div class="sm:order-1">
-              <p class="text-base font-medium text-ink">{pick(degree.title, lang)}</p>
-              <p class="text-[15px] text-muted">{degree.org}</p>
+              <p class="text-ink text-base font-medium">{pick(degree.title, lang)}</p>
+              <p class="text-muted text-[15px]">{degree.org}</p>
             </div>
           </div>
         ))
@@ -120,9 +140,9 @@ const h2Class = 'mt-10 border-t border-line pt-4 text-[1.5rem] font-semibold lea
     <div class="mt-2">
       {
         certifications.map((cert) => (
-          <div class="print-avoid-break grid grid-cols-1 gap-1 border-b border-line py-3 sm:grid-cols-[1fr_auto] sm:items-baseline sm:gap-6">
-            <p class="mono-label whitespace-nowrap text-muted sm:order-2">{pick(cert.issuer, lang)}</p>
-            <p class="text-base font-medium text-ink sm:order-1">{pick(cert.title, lang)}</p>
+          <div class="print-avoid-break border-line grid grid-cols-1 gap-1 border-b py-3 sm:grid-cols-[1fr_auto] sm:items-baseline sm:gap-6">
+            <p class="mono-label text-muted whitespace-nowrap sm:order-2">{pick(cert.issuer, lang)}</p>
+            <p class="text-ink text-base font-medium sm:order-1">{pick(cert.title, lang)}</p>
           </div>
         ))
       }

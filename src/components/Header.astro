@@ -19,13 +19,15 @@ const homeHref = lang === 'es' ? '/' : '/en/';
 const cvHref = lang === 'es' ? '/cv/' : '/en/cv/';
 ---
 
-<header class="sticky top-0 z-40 h-16 border-b border-line bg-bg">
+<header class="border-line bg-bg sticky top-0 z-40 h-16 border-b">
   <div class="shell relative flex h-full items-center justify-between gap-3">
     <a href={homeHref} class="flex min-h-11 min-w-11 items-center justify-center gap-2.5">
-      <span class="flex h-7 w-7 items-center justify-center rounded-[6px] bg-accent font-sans text-[13px] font-semibold text-on-accent">
+      <span
+        class="bg-accent text-on-accent flex h-7 w-7 items-center justify-center rounded-[6px] font-sans text-[13px] font-semibold"
+      >
         MC
       </span>
-      <span class="brand-name text-[15px] font-semibold text-ink">Manuel Cobos Solís</span>
+      <span class="brand-name text-ink text-[15px] font-semibold">Manuel Cobos Solís</span>
     </a>
 
     <NavMenu lang={lang} entries={entries} homeHref={homeHref} cvHref={cvHref} />
@@ -35,24 +37,26 @@ const cvHref = lang === 'es' ? '/cv/' : '/en/cv/';
       <ThemeToggle lang={lang} />
 
       <details data-menu class="relative lg:hidden">
-        <summary class="flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-md border border-subtle text-ink [&::-webkit-details-marker]:hidden">
+        <summary
+          class="border-subtle text-ink flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-md border [&::-webkit-details-marker]:hidden"
+        >
           <span class="sr-only">{pick(ui['menu.open'], lang)}</span>
           <Icon name="lucide:menu" class="menu-icon-burger h-6 w-6" aria-hidden="true" />
           <Icon name="lucide:x" class="menu-icon-x h-6 w-6" aria-hidden="true" />
         </summary>
-        <div class="fixed inset-x-0 top-16 z-40 border-b border-line bg-surface">
+        <div class="border-line bg-surface fixed inset-x-0 top-16 z-40 border-b">
           <div class="shell flex flex-col">
             {
               entries.map((entry) => (
                 <a
                   href={`${homeHref}#${entry.id}`}
-                  class="flex h-14 items-center border-t border-line text-lg text-ink first:border-t-0"
+                  class="border-line text-ink flex h-14 items-center border-t text-lg first:border-t-0"
                 >
                   {entry.label}
                 </a>
               ))
             }
-            <a href={cvHref} class="flex h-14 items-center border-t border-line text-lg text-ink">
+            <a href={cvHref} class="border-line text-ink flex h-14 items-center border-t text-lg">
               {pick(ui['nav.cv'], lang)}
             </a>
           </div>

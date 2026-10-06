@@ -23,11 +23,11 @@ const addressLine = {
 ---
 
 <div class="flex flex-col items-start gap-6">
-  <p class="max-w-[56ch] text-ink">{paragraph[lang]}</p>
+  <p class="text-ink max-w-[56ch]">{paragraph[lang]}</p>
 
   <a
     href={`mailto:${profile.email}`}
-    class="text-[clamp(1.5rem,1rem+2.5vw,2.5rem)] font-medium leading-[1.15] tracking-[-0.02em] text-accent underline decoration-1 underline-offset-[0.2em] [overflow-wrap:anywhere] hover:text-accent-hover hover:decoration-2"
+    class="text-accent hover:text-accent-hover text-[clamp(1.5rem,1rem+2.5vw,2.5rem)] leading-[1.15] font-medium tracking-[-0.02em] [overflow-wrap:anywhere] underline decoration-1 underline-offset-[0.2em] hover:decoration-2"
   >
     {profile.email}
   </a>
@@ -35,7 +35,7 @@ const addressLine = {
   <div class="flex flex-wrap items-center gap-3">
     <a
       href={`mailto:${profile.email}`}
-      class="inline-flex min-h-11 items-center rounded-md bg-accent px-5 py-3 text-[15px] font-medium text-on-accent transition-colors hover:bg-accent-hover"
+      class="bg-accent text-on-accent hover:bg-accent-hover inline-flex min-h-11 items-center rounded-md px-5 py-3 text-[15px] font-medium transition-colors"
     >
       {pick(ui['email.write'], lang)}
     </a>
@@ -43,7 +43,7 @@ const addressLine = {
       href={profile.linkedin}
       target="_blank"
       rel="noopener noreferrer"
-      class="inline-flex min-h-11 items-center rounded-md border border-accent px-5 py-3 text-[15px] font-medium text-accent transition-colors hover:bg-accent-soft"
+      class="border-accent text-accent hover:bg-accent-soft inline-flex min-h-11 items-center rounded-md border px-5 py-3 text-[15px] font-medium transition-colors"
     >
       LinkedIn
     </a>
@@ -51,12 +51,12 @@ const addressLine = {
       href={profile.github}
       target="_blank"
       rel="noopener noreferrer"
-      class="inline-flex min-h-11 items-center rounded-md border border-accent px-5 py-3 text-[15px] font-medium text-accent transition-colors hover:bg-accent-soft"
+      class="border-accent text-accent hover:bg-accent-soft inline-flex min-h-11 items-center rounded-md border px-5 py-3 text-[15px] font-medium transition-colors"
     >
       GitHub
     </a>
     <CopyEmail lang={lang} />
   </div>
 
-  <address class="text-[15px] not-italic text-muted">{addressLine[lang]}</address>
+  <address class="text-muted text-[15px] not-italic">{addressLine[lang]}</address>
 </div>

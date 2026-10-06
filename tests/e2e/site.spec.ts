@@ -12,9 +12,7 @@ test.describe('responsive layout', () => {
         await page.emulateMedia({ colorScheme });
         for (const path of pages) {
           await page.goto(path);
-          const overflow = await page.evaluate(
-            () => document.documentElement.scrollWidth > window.innerWidth,
-          );
+          const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
           expect(overflow, `${path} overflows at ${width}px`).toBe(false);
         }
       });
@@ -48,7 +46,14 @@ test.describe('responsive layout', () => {
 });
 
 test.describe('accessibility', () => {
-  const scanPages = ['/', '/en/', '/cv/', '/en/cv/', '/trabajo/microservicio-orquestador/', '/en/work/orchestrator-microservice/'];
+  const scanPages = [
+    '/',
+    '/en/',
+    '/cv/',
+    '/en/cv/',
+    '/trabajo/microservicio-orquestador/',
+    '/en/work/orchestrator-microservice/',
+  ];
   for (const path of scanPages) {
     for (const width of [360, 768, 1440]) {
       for (const colorScheme of ['light', 'dark'] as const) {
@@ -62,9 +67,7 @@ test.describe('accessibility', () => {
             .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'])
             .analyze();
           const violations = results.violations.filter((v) => v.impact !== null);
-          const summary = violations.map(
-            (v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(' | ')}`,
-          );
+          const summary = violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(' | ')}`);
           expect(summary).toEqual([]);
         });
       }

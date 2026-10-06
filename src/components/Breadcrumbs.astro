@@ -13,11 +13,11 @@ const homeHref = lang === 'es' ? '/' : '/en/';
 ---
 
 <nav aria-label={pick(ui['breadcrumb.label'], lang)}>
-  <ol class="mono-label flex flex-wrap items-center gap-2 text-muted">
+  <ol class="mono-label text-muted flex flex-wrap items-center gap-2">
     <li>
       <a
         href={homeHref}
-        class="inline-flex min-h-11 min-w-11 items-center text-accent underline decoration-1 underline-offset-[0.2em] hover:text-accent-hover"
+        class="text-accent hover:text-accent-hover inline-flex min-h-11 min-w-11 items-center underline decoration-1 underline-offset-[0.2em]"
       >
         {pick(ui['breadcrumb.home'], lang)}
       </a>

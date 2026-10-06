@@ -1,5 +1,4 @@
-const currentTheme = (): 'light' | 'dark' =>
-  document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+const currentTheme = (): 'light' | 'dark' => (document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
 
 const syncLabel = (btn: HTMLButtonElement) => {
   btn.setAttribute(

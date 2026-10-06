@@ -63,9 +63,7 @@ async function main() {
       await page.goto(origin + target.route, { waitUntil: 'networkidle' });
       await page.emulateMedia({ media: 'print' });
       await page.evaluate(() => document.fonts.ready);
-      const buffer = Buffer.from(
-        await page.pdf({ format: 'A4', printBackground: true, preferCSSPageSize: true }),
-      );
+      const buffer = Buffer.from(await page.pdf({ format: 'A4', printBackground: true, preferCSSPageSize: true }));
       if (buffer.subarray(0, 4).toString('latin1') !== '%PDF') {
         throw new Error(`${target.file}: output does not start with %PDF`);
       }

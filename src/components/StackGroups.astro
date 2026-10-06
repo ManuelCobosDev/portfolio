@@ -24,10 +24,10 @@ const groups = stackGroups.map((group) => ({
 <dl>
   {
     groups.map((group) => (
-      <div class="grid grid-cols-1 gap-1 border-t border-line py-5 sm:grid-cols-[11rem_1fr] sm:gap-6">
-        <dt class="font-sans text-[13px] font-medium text-muted">{group.label}</dt>
+      <div class="border-line grid grid-cols-1 gap-1 border-t py-5 sm:grid-cols-[11rem_1fr] sm:gap-6">
+        <dt class="text-muted font-sans text-[13px] font-medium">{group.label}</dt>
         <dd>
-          <ul class="middot-list text-base leading-relaxed text-ink">
+          <ul class="middot-list text-ink text-base leading-relaxed">
             {group.items.map(({ name, note, long }) => (
               <li>
                 <span class={long ? 'stack-name stack-name--long' : 'stack-name'}>{name}</span>

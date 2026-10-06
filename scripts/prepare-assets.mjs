@@ -22,7 +22,13 @@ const FAVICON_SVG = path.join(publicDir, 'favicon.svg');
 
 const FONTS = [
   {
-    src: path.join(nodeModules, '@fontsource-variable', 'ibm-plex-sans', 'files', 'ibm-plex-sans-latin-wght-normal.woff2'),
+    src: path.join(
+      nodeModules,
+      '@fontsource-variable',
+      'ibm-plex-sans',
+      'files',
+      'ibm-plex-sans-latin-wght-normal.woff2',
+    ),
     dest: path.join(publicDir, 'fonts', 'ibm-plex-sans-latin-wght-normal.woff2'),
   },
   {

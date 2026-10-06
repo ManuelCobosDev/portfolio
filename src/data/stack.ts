@@ -66,46 +66,21 @@ export const stackGroups: StackGroup[] = [
         'Vitest',
         'Karma',
       ],
-      en: [
-        'Angular 15–20 (full migrations up to 20)',
-        'TypeScript',
-        'RxJS',
-        'Angular Material',
-        'Vitest',
-        'Karma',
-      ],
+      en: ['Angular 15–20 (full migrations up to 20)', 'TypeScript', 'RxJS', 'Angular Material', 'Vitest', 'Karma'],
     },
   },
   {
     label: { es: 'Mensajería y tiempo real', en: 'Messaging and real time' },
     items: {
-      es: [
-        'Apache Kafka',
-        'RabbitMQ',
-        'WebSockets',
-        'Arquitectura orientada a eventos',
-      ],
-      en: [
-        'Apache Kafka',
-        'RabbitMQ',
-        'WebSockets',
-        'Event-driven architecture',
-      ],
+      es: ['Apache Kafka', 'RabbitMQ', 'WebSockets', 'Arquitectura orientada a eventos'],
+      en: ['Apache Kafka', 'RabbitMQ', 'WebSockets', 'Event-driven architecture'],
     },
   },
   {
     label: { es: 'Bases de datos', en: 'Databases' },
     items: {
-      es: [
-        'PostgreSQL',
-        'Oracle (consultas y creación de tablas)',
-        'SQL Server (consultas y creación de tablas)',
-      ],
-      en: [
-        'PostgreSQL',
-        'Oracle (queries and table creation)',
-        'SQL Server (queries and table creation)',
-      ],
+      es: ['PostgreSQL', 'Oracle (consultas y creación de tablas)', 'SQL Server (consultas y creación de tablas)'],
+      en: ['PostgreSQL', 'Oracle (queries and table creation)', 'SQL Server (queries and table creation)'],
     },
   },
   {

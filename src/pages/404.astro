@@ -19,25 +19,28 @@ const canonical = 'https://manuelcobos.dev/404.html';
   ogImageAlt="Manuel Cobos Solís"
 >
   <div class="shell section-pad">
-    <h1 class="text-[clamp(2.5rem,1.6rem+4vw,4.5rem)] font-semibold leading-[1.02] tracking-[-0.03em] text-ink">
+    <h1 class="text-ink text-[clamp(2.5rem,1.6rem+4vw,4.5rem)] leading-[1.02] font-semibold tracking-[-0.03em]">
       {pick(ui['notfound.title'], 'es')}
     </h1>
-    <p class="mt-5 max-w-[56ch] text-lg text-muted">{pick(ui['notfound.text'], 'es')}</p>
+    <p class="text-muted mt-5 max-w-[56ch] text-lg">{pick(ui['notfound.text'], 'es')}</p>
     <a
       href="/"
-      class="mt-8 inline-flex min-h-11 items-center rounded-md bg-accent px-5 py-3 text-[15px] font-medium text-on-accent transition-colors hover:bg-accent-hover"
+      class="bg-accent text-on-accent hover:bg-accent-hover mt-8 inline-flex min-h-11 items-center rounded-md px-5 py-3 text-[15px] font-medium transition-colors"
     >
       {pick(ui['notfound.back'], 'es')}
     </a>
 
-    <h2 lang="en" class="mt-20 text-[clamp(1.75rem,1.4rem+1.4vw,2.5rem)] font-semibold leading-[1.1] tracking-[-0.02em] text-ink">
+    <h2
+      lang="en"
+      class="text-ink mt-20 text-[clamp(1.75rem,1.4rem+1.4vw,2.5rem)] leading-[1.1] font-semibold tracking-[-0.02em]"
+    >
       {pick(ui['notfound.title'], 'en')}
     </h2>
-    <p lang="en" class="mt-5 max-w-[56ch] text-lg text-muted">{pick(ui['notfound.text'], 'en')}</p>
+    <p lang="en" class="text-muted mt-5 max-w-[56ch] text-lg">{pick(ui['notfound.text'], 'en')}</p>
     <a
       href="/en/"
       lang="en"
-      class="mt-8 inline-flex min-h-11 items-center rounded-md border border-accent px-5 py-3 text-[15px] font-medium text-accent transition-colors hover:bg-accent-soft"
+      class="border-accent text-accent hover:bg-accent-soft mt-8 inline-flex min-h-11 items-center rounded-md border px-5 py-3 text-[15px] font-medium transition-colors"
     >
       {pick(ui['notfound.back'], 'en')}
     </a>

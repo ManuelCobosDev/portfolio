@@ -17,7 +17,9 @@ export async function getStaticPaths() {
       (e) => e.data.lang === 'en' && e.data.translationKey === entry.data.translationKey && !e.data.draft,
     );
     if (!translation) {
-      throw new Error(`Missing EN translation for work entry "${entry.id}" (translationKey: ${entry.data.translationKey}).`);
+      throw new Error(
+        `Missing EN translation for work entry "${entry.id}" (translationKey: ${entry.data.translationKey}).`,
+      );
     }
     return { params: { slug: slugFromId(entry.id) }, props: { entry, translation } };
   });

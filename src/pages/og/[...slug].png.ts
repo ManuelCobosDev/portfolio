@@ -57,13 +57,27 @@ export const GET: APIRoute = async ({ params }) => {
         {
           type: 'div',
           props: {
-            style: { position: 'absolute', left: 0, top: 0, bottom: 0, width: 6, background: '#7FB0FF', display: 'flex' },
+            style: {
+              position: 'absolute',
+              left: 0,
+              top: 0,
+              bottom: 0,
+              width: 6,
+              background: '#7FB0FF',
+              display: 'flex',
+            },
           },
         },
         {
           type: 'div',
           props: {
-            style: { display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%', width: '100%' },
+            style: {
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              height: '100%',
+              width: '100%',
+            },
             children: [
               { type: 'div', props: { children: 'manuelcobos.dev', style: { fontSize: 28, color: '#A9B8D0' } } },
               {
@@ -88,7 +102,10 @@ export const GET: APIRoute = async ({ params }) => {
                   ],
                 },
               },
-              { type: 'div', props: { children: 'Java · Spring Boot · Kafka · Angular', style: { fontSize: 32, color: '#7FB0FF' } } },
+              {
+                type: 'div',
+                props: { children: 'Java · Spring Boot · Kafka · Angular', style: { fontSize: 32, color: '#7FB0FF' } },
+              },
             ],
           },
         },

@@ -23,32 +23,42 @@ function fmtMonth(date: string, lang: Lang): string {
 <div class="space-y-0">
   {
     experience.map((entry) => (
-      <article class="grid grid-cols-1 gap-2 border-b border-line py-8 first:pt-0 last:border-b-0 last:pb-0 sm:grid-cols-[10.5rem_1fr] sm:items-baseline sm:gap-6">
+      <article class="border-line grid grid-cols-1 gap-2 border-b py-8 first:pt-0 last:border-b-0 last:pb-0 sm:grid-cols-[10.5rem_1fr] sm:items-baseline sm:gap-6">
         <div class="mono-label text-muted">
-          <time datetime={entry.start} class="whitespace-nowrap">{fmtMonth(entry.start, lang)}</time>
+          <time datetime={entry.start} class="whitespace-nowrap">
+            {fmtMonth(entry.start, lang)}
+          </time>
           {'\u00A0– '}
-          {entry.end ? <time datetime={entry.end} class="whitespace-nowrap">{fmtMonth(entry.end, lang)}</time> : <span class="whitespace-nowrap">{lang === 'es' ? 'actualidad' : 'present'}</span>}
+          {entry.end ? (
+            <time datetime={entry.end} class="whitespace-nowrap">
+              {fmtMonth(entry.end, lang)}
+            </time>
+          ) : (
+            <span class="whitespace-nowrap">{lang === 'es' ? 'actualidad' : 'present'}</span>
+          )}
         </div>
         <div>
-          <h3 class="text-[1.25rem] font-semibold leading-[1.3] tracking-[-0.01em] text-ink">{entry.title}</h3>
-          <p class="mt-1 text-[15px] text-muted">{pick(entry.orgLine, lang)}</p>
+          <h3 class="text-ink text-[1.25rem] leading-[1.3] font-semibold tracking-[-0.01em]">{entry.title}</h3>
+          <p class="text-muted mt-1 text-[15px]">{pick(entry.orgLine, lang)}</p>
           <ul class="accent-list mt-4 space-y-2">
-            {pick(entry.bullets, lang).map((bullet) => <li class="text-ink">{bullet}</li>)}
+            {pick(entry.bullets, lang).map((bullet) => (
+              <li class="text-ink">{bullet}</li>
+            ))}
           </ul>
-          {
-            showTech && (
-              <p class="mono-label mt-4 flex flex-wrap items-center text-muted">
-                {
-                  entry.tech.map((tech, i) => (
-                    <>
-                      {i > 0 && <span class="text-subtle" aria-hidden="true">&nbsp;·&nbsp;</span>}
-                      {tech}
-                    </>
-                  ))
-                }
-              </p>
-            )
-          }
+          {showTech && (
+            <p class="mono-label text-muted mt-4 flex flex-wrap items-center">
+              {entry.tech.map((tech, i) => (
+                <>
+                  {i > 0 && (
+                    <span class="text-subtle" aria-hidden="true">
+                      &nbsp;·&nbsp;
+                    </span>
+                  )}
+                  {tech}
+                </>
+              ))}
+            </p>
+          )}
         </div>
       </article>
     ))

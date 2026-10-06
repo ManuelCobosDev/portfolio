@@ -41,13 +41,20 @@ test.describe('mobile pass', () => {
               const rect = el.getBoundingClientRect();
               return rect.width > 0 && rect.height > 0 && el.offsetParent !== null;
             })
-            .map((el) => ({ el, size: parseFloat(getComputedStyle(el).fontSize), family: getComputedStyle(el).fontFamily }))
+            .map((el) => ({
+              el,
+              size: parseFloat(getComputedStyle(el).fontSize),
+              family: getComputedStyle(el).fontFamily,
+            }))
             .filter(({ el, size, family }) => {
               const classes = el.getAttribute('class') ?? '';
               const isLabel = el.tagName === 'DT' || family.includes('Mono') || classes.includes('text-[13px]');
               return size < (isLabel ? 12.5 : 13.5);
             })
-            .map(({ el, size }) => `${el.tagName}.${(el.getAttribute('class') ?? '').split(' ').slice(0, 2).join('.')} ${size}px`);
+            .map(
+              ({ el, size }) =>
+                `${el.tagName}.${(el.getAttribute('class') ?? '').split(' ').slice(0, 2).join('.')} ${size}px`,
+            );
           return { overflow: doc.scrollWidth > doc.clientWidth, small, tiny };
         });
         expect(result.overflow, `${path} overflows at ${width}px`).toBe(false);
@@ -102,7 +109,8 @@ test.describe('mobile pass', () => {
       const educationRow = document.querySelector('#formacion .grid') as HTMLElement;
       return {
         columns: getComputedStyle(strip).gridTemplateColumns.trim().split(/\s+/).length,
-        experience: experience.children[0].getBoundingClientRect().top <= experience.children[1].getBoundingClientRect().top,
+        experience:
+          experience.children[0].getBoundingClientRect().top <= experience.children[1].getBoundingClientRect().top,
         education:
           educationRow.children[0].getBoundingClientRect().top <= educationRow.children[1].getBoundingClientRect().top,
       };

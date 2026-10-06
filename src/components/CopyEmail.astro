@@ -20,12 +20,12 @@ const { lang } = Astro.props;
   data-label-failed={pick(ui['email.copyFailed'], lang)}
   title={pick(ui['email.copy'], lang)}
   aria-label={pick(ui['email.copy'], lang)}
-  class="inline-flex h-11 w-11 items-center justify-center rounded-md border border-accent text-accent transition-colors hover:bg-accent-soft"
+  class="border-accent text-accent hover:bg-accent-soft inline-flex h-11 w-11 items-center justify-center rounded-md border transition-colors"
 >
   <Icon name="lucide:copy" class="icon-copy h-5 w-5" aria-hidden="true" />
   <Icon name="lucide:check" class="icon-check h-5 w-5" aria-hidden="true" />
 </button>
-<span role="status" aria-live="polite" data-copy-status class="text-[15px] text-muted"></span>
+<span role="status" aria-live="polite" data-copy-status class="text-muted text-[15px]"></span>
 
 <script>
   const buttons = document.querySelectorAll<HTMLButtonElement>('[data-copy-email]');

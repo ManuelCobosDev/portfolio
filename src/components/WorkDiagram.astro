@@ -41,17 +41,19 @@ const destinations = [t.kafka, t.rabbitmq, t.webclient, t.persistence];
 ---
 
 <figure aria-label={t.aria} class="my-8">
-  <figcaption class="mb-6 max-w-[68ch] text-sm text-muted">{t.caption}</figcaption>
+  <figcaption class="text-muted mb-6 max-w-[68ch] text-sm">{t.caption}</figcaption>
 
   <div class="flex flex-col items-center gap-1 md:hidden">
     <div class="diagram-box w-full">{t.client}</div>
     <div class="diagram-arrow-down" aria-hidden="true">↓</div>
     <div class="diagram-box diagram-box-accent w-full">{t.orchestrator}</div>
-    <p class="mono-label py-1 text-muted">{t.singlePost}</p>
+    <p class="mono-label text-muted py-1">{t.singlePost}</p>
     {
       destinations.map((label) => (
         <>
-          <div class="diagram-arrow-down" aria-hidden="true">↓</div>
+          <div class="diagram-arrow-down" aria-hidden="true">
+            ↓
+          </div>
           <div class="diagram-box w-full">{label}</div>
         </>
       ))
@@ -63,7 +65,7 @@ const destinations = [t.kafka, t.rabbitmq, t.webclient, t.persistence];
     <div class="flow-arrow" aria-hidden="true"></div>
     <div class="flex flex-col gap-2">
       <div class="diagram-box diagram-box-accent">{t.orchestrator}</div>
-      <p class="mono-label text-center text-muted">{t.singlePost}</p>
+      <p class="mono-label text-muted text-center">{t.singlePost}</p>
     </div>
     <div class="flow-arrow" aria-hidden="true"></div>
     <div class="flex flex-col gap-2">

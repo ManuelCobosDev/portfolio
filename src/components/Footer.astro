@@ -21,23 +21,58 @@ const otherLangName = lang === 'es' ? 'English' : 'Español';
 const otherLangCode = lang === 'es' ? 'en' : 'es';
 ---
 
-<footer class="border-t border-line">
-  <div class="shell flex flex-col gap-4 py-8 text-sm text-muted">
+<footer class="border-line border-t">
+  <div class="shell text-muted flex flex-col gap-4 py-8 text-sm">
     <p>
-      © {year} Manuel Cobos Solís. {pick(ui['footer.rights'], lang)} {pick(ui['footer.privacy'], lang)}
+      © {year} Manuel Cobos Solís. {pick(ui['footer.rights'], lang)}
+      {pick(ui['footer.privacy'], lang)}
     </p>
-    <nav aria-label={lang === 'es' ? 'Enlaces del pie' : 'Footer links'} class="grid grid-cols-1 gap-x-8 gap-y-1 md:grid-cols-2">
-      <a href={homeHref} class="inline-flex min-h-11 min-w-11 items-center text-muted underline underline-offset-4 hover:text-ink">{pick(ui['breadcrumb.home'], lang)}</a>
-      <a href={cvHref} class="inline-flex min-h-11 min-w-11 items-center text-muted underline underline-offset-4 hover:text-ink">{pick(ui['nav.cv'], lang)}</a>
-      <a href={pdfHref} download class="inline-flex min-h-11 min-w-11 items-center text-muted underline underline-offset-4 hover:text-ink">{pick(ui['nav.cvPdf'], lang)}</a>
-      <a href={profile.github} target="_blank" rel="me noopener noreferrer" class="inline-flex min-h-11 min-w-11 items-center text-muted underline underline-offset-4 hover:text-ink">GitHub</a>
-      <a href={profile.linkedin} target="_blank" rel="me noopener noreferrer" class="inline-flex min-h-11 min-w-11 items-center text-muted underline underline-offset-4 hover:text-ink">LinkedIn</a>
-      <a href={alternateHref} hreflang={otherLangCode} lang={otherLangCode} class="inline-flex min-h-11 min-w-11 items-center text-muted underline underline-offset-4 hover:text-ink">
+    <nav
+      aria-label={lang === 'es' ? 'Enlaces del pie' : 'Footer links'}
+      class="grid grid-cols-1 gap-x-8 gap-y-1 md:grid-cols-2"
+    >
+      <a
+        href={homeHref}
+        class="text-muted hover:text-ink inline-flex min-h-11 min-w-11 items-center underline underline-offset-4"
+        >{pick(ui['breadcrumb.home'], lang)}</a
+      >
+      <a
+        href={cvHref}
+        class="text-muted hover:text-ink inline-flex min-h-11 min-w-11 items-center underline underline-offset-4"
+        >{pick(ui['nav.cv'], lang)}</a
+      >
+      <a
+        href={pdfHref}
+        download
+        class="text-muted hover:text-ink inline-flex min-h-11 min-w-11 items-center underline underline-offset-4"
+        >{pick(ui['nav.cvPdf'], lang)}</a
+      >
+      <a
+        href={profile.github}
+        target="_blank"
+        rel="me noopener noreferrer"
+        class="text-muted hover:text-ink inline-flex min-h-11 min-w-11 items-center underline underline-offset-4"
+        >GitHub</a
+      >
+      <a
+        href={profile.linkedin}
+        target="_blank"
+        rel="me noopener noreferrer"
+        class="text-muted hover:text-ink inline-flex min-h-11 min-w-11 items-center underline underline-offset-4"
+        >LinkedIn</a
+      >
+      <a
+        href={alternateHref}
+        hreflang={otherLangCode}
+        lang={otherLangCode}
+        class="text-muted hover:text-ink inline-flex min-h-11 min-w-11 items-center underline underline-offset-4"
+      >
         {otherLangName}
       </a>
     </nav>
     <p>
-      {pick(ui['footer.updated'], lang)} {updated} · {pick(ui['footer.built'], lang)}
+      {pick(ui['footer.updated'], lang)}
+      {updated} · {pick(ui['footer.built'], lang)}
     </p>
   </div>
 </footer>

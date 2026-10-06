@@ -4,7 +4,14 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 const root = fileURLToPath(new URL('../..', import.meta.url));
-const pages = ['/', '/en/', '/cv/', '/en/cv/', '/trabajo/microservicio-orquestador/', '/en/work/orchestrator-microservice/'];
+const pages = [
+  '/',
+  '/en/',
+  '/cv/',
+  '/en/cv/',
+  '/trabajo/microservicio-orquestador/',
+  '/en/work/orchestrator-microservice/',
+];
 
 async function settle(page: Page) {
   await page.evaluate(() => document.fonts.ready);
@@ -30,13 +37,19 @@ test.describe('design tokens and structure', () => {
     await page.goto('/');
     await settle(page);
     const sizeOf = (sel: string) =>
-      page.locator(sel).first().evaluate((el) => getComputedStyle(el).fontSize);
+      page
+        .locator(sel)
+        .first()
+        .evaluate((el) => getComputedStyle(el).fontSize);
     expect(await sizeOf('nav[aria-label] a')).toBe('14px');
     expect(await sizeOf('.mono-label')).toBe('13px');
     expect(await sizeOf('#sobre-mi .reveal p')).toBe('17px');
     expect(await sizeOf('main h1')).toBe('72px');
     expect(await sizeOf('section#sobre-mi h2')).toBe('40px');
-    const fam = await page.locator('.mono-label').first().evaluate((el) => getComputedStyle(el).fontFamily);
+    const fam = await page
+      .locator('.mono-label')
+      .first()
+      .evaluate((el) => getComputedStyle(el).fontFamily);
     expect(fam).toContain('IBM Plex Mono');
   });
 
@@ -45,7 +58,9 @@ test.describe('design tokens and structure', () => {
     await settle(page);
     const ok = await page.evaluate(async () => {
       await document.fonts.ready;
-      return document.fonts.check('600 16px "IBM Plex Sans Variable"') && document.fonts.check('400 16px "IBM Plex Mono"');
+      return (
+        document.fonts.check('600 16px "IBM Plex Sans Variable"') && document.fonts.check('400 16px "IBM Plex Mono"')
+      );
     });
     expect(ok).toBe(true);
   });
@@ -70,15 +85,7 @@ test.describe('design tokens and structure', () => {
   test('ficha has the seven rows in order', async ({ page }) => {
     await page.goto('/');
     const labels = await page.locator('section[aria-labelledby="ficha-title"] dt').allInnerTexts();
-    expect(labels).toEqual([
-      'Rol',
-      'Empresa',
-      'Ubicación',
-      'Modalidad',
-      'Experiencia',
-      'Stack principal',
-      'Idiomas',
-    ]);
+    expect(labels).toEqual(['Rol', 'Empresa', 'Ubicación', 'Modalidad', 'Experiencia', 'Stack principal', 'Idiomas']);
   });
 
   test('hero order on mobile is status, h1, lead, buttons, links, ficha', async ({ page }) => {
@@ -107,14 +114,16 @@ test.describe('design tokens and structure', () => {
       const issues: string[] = [];
       for (const el of Array.from(document.querySelectorAll<HTMLElement>('*'))) {
         const s = getComputedStyle(el);
-        if (s.backgroundImage !== 'none' && s.backgroundImage.includes('gradient')) issues.push(`gradient: ${el.className}`);
+        if (s.backgroundImage !== 'none' && s.backgroundImage.includes('gradient'))
+          issues.push(`gradient: ${el.className}`);
         if (s.backdropFilter && s.backdropFilter !== 'none') issues.push(`backdrop-filter: ${el.className}`);
         if (s.filter && s.filter.includes('blur')) issues.push(`blur: ${el.className}`);
         if (s.textTransform === 'uppercase') issues.push(`uppercase: ${el.className}`);
         if (s.boxShadow && s.boxShadow !== 'none') issues.push(`box-shadow: ${el.className}`);
         const ls = parseFloat(s.letterSpacing);
         const fs = parseFloat(s.fontSize);
-        if (!Number.isNaN(ls) && !Number.isNaN(fs) && fs > 0 && ls / fs > 0.02) issues.push(`letter-spacing: ${el.className}`);
+        if (!Number.isNaN(ls) && !Number.isNaN(fs) && fs > 0 && ls / fs > 0.02)
+          issues.push(`letter-spacing: ${el.className}`);
       }
       return [...new Set(issues)];
     });
@@ -159,9 +168,12 @@ test.describe('interactions', () => {
     await page.goto('/');
     const first = await page.evaluate(() => {
       const a = [...document.querySelectorAll('a')].find(
-        (el) => el.querySelector('svg') && el.textContent?.includes('LinkedIn') && el.closest('p')?.textContent?.includes('verificar'),
+        (el) =>
+          el.querySelector('svg') &&
+          el.textContent?.includes('LinkedIn') &&
+          el.closest('p')?.textContent?.includes('verificar'),
       );
-      return a?.nextSibling?.nodeType === 3 ? a.nextSibling.textContent?.charAt(0) ?? '' : 'not-text';
+      return a?.nextSibling?.nodeType === 3 ? (a.nextSibling.textContent?.charAt(0) ?? '') : 'not-text';
     });
     expect(first).toBe('.');
     const underline = await page.evaluate(() => {
@@ -250,7 +262,11 @@ test.describe('motion', () => {
         const el = document.querySelector(sel);
         return el ? getComputedStyle(el).animationName : 'missing';
       };
-      return { h1: grab('main h1'), lead: grab('main h1 + p'), img: grab('section[aria-labelledby="ficha-title"] img') };
+      return {
+        h1: grab('main h1'),
+        lead: grab('main h1 + p'),
+        img: grab('section[aria-labelledby="ficha-title"] img'),
+      };
     });
     expect(names.h1).toBe('none');
     expect(names.lead).toBe('none');
@@ -259,10 +275,13 @@ test.describe('motion', () => {
 
   test('ficha rows use the rise animation', async ({ page }) => {
     await page.goto('/');
-    const name = await page.locator('section[aria-labelledby="ficha-title"] dd').first().evaluate((el) => {
-      const row = el.closest('div')!;
-      return getComputedStyle(row).animationName;
-    });
+    const name = await page
+      .locator('section[aria-labelledby="ficha-title"] dd')
+      .first()
+      .evaluate((el) => {
+        const row = el.closest('div')!;
+        return getComputedStyle(row).animationName;
+      });
     expect(name).toBe('rise');
   });
 
