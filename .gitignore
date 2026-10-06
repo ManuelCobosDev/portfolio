@@ -38,6 +38,10 @@ test-results/
 playwright-report/
 .playwright/
 
+# Cloudflare / Wrangler
+.wrangler/
+.dev.vars
+
 # Local build and test artefacts
 .lighthouseci/
 lh-*.out

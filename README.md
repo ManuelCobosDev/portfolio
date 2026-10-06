@@ -169,15 +169,31 @@ El flujo de trabajo `.github/workflows/ci.yml` ejecuta en cada push a `main` y
 dependencias, comprueba tipos, construye el sitio, ejecuta `qa` y lanza las
 pruebas end-to-end sobre Chromium.
 
-## Despliegue en Cloudflare Pages
+## Despliegue en Cloudflare Workers
 
-El sitio se publica con la integración de Git de Cloudflare Pages. En el panel:
+El sitio se publica con la integración de Git de **Cloudflare Workers Builds**,
+que ejecuta el build y sube `dist/` como assets estáticos. La configuración del
+Worker vive en `wrangler.jsonc`:
+
+- `assets.directory`: `./dist`.
+- `assets.not_found_handling`: `404-page`, para servir el `404.html` del build.
+- Sin `main`: es un Worker solo de assets, no ejecuta código propio.
+
+En el panel de Cloudflare:
 
 - Rama de producción: `main`.
 - Comando de build: `npm run build`.
-- Directorio de salida: `dist`.
+- Comando de deploy: `npx wrangler deploy`.
 - Variable de entorno `NODE_VERSION` con el valor de `.nvmrc`.
 - Dominio personalizado `manuelcobos.dev`, con `www` redirigido al dominio raíz.
+
+No añadas el adaptador `@astrojs/cloudflare`. El sitio es totalmente estático y
+la ruta `/og/*.png` genera las imágenes Open Graph con `satori` y
+`@resvg/resvg-js`, un addon nativo que Astro prerenderiza en Node durante el
+build. Con el adaptador, esa ruta se empaqueta en el bundle del Worker y Vite
+falla con `UNLOADABLE_DEPENDENCY ... resvgjs.linux-x64-musl.node`. Tener
+`wrangler.jsonc` en el repositorio evita además que `wrangler deploy` lance su
+autoconfiguración y añada ese adaptador por su cuenta.
 
 Ajustes recomendados en el panel: Early Hints activado, Crawler Hints activado,
 Rocket Loader desactivado, Email Address Obfuscation desactivado, Web Analytics
@@ -190,10 +206,15 @@ Tras cada despliegue conviene comprobar las cabeceras:
 curl -I https://manuelcobos.dev/
 curl -I https://manuelcobos.dev/_astro/<archivo-hash>.css
 curl -I https://manuelcobos.dev/cv/Manuel-Cobos-Solis-CV-ES.pdf
-curl -I https://<proyecto>.pages.dev/
 curl -I https://manuelcobos.dev/una-url-inexistente
 ```
 
 Se espera: cabeceras de seguridad en `/`, `Cache-Control: public, max-age=31536000,
-immutable` en un archivo de `/_astro/`, `Content-Type: application/pdf` en el PDF,
-`X-Robots-Tag: noindex` en la dirección `pages.dev` y un 404 en la URL inexistente.
+immutable` en un archivo de `/_astro/`, `Content-Type: application/pdf` en el PDF
+y un 404 con el `404.html` del sitio en la URL inexistente. La regla
+`https://:worker.:subdomain.workers.dev/*` de `public/_headers` marca como
+`noindex` las URL propias de Cloudflare.
+
+> Si prefieres Cloudflare Pages en lugar de Workers, cambia el tipo de proyecto en
+> el panel (comando de build `npm run build`, directorio de salida `dist`, sin
+> comando de deploy) y elimina `wrangler.jsonc`.
