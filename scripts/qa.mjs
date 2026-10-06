@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 import { gzipSync } from 'node:zlib';
 import * as cheerio from 'cheerio';
 import sharp from 'sharp';
+import { checkFacts } from './facts.mjs';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const dist = join(root, 'dist');
@@ -359,39 +360,50 @@ for (const f of ['favicon.svg', 'favicon.ico', 'apple-touch-icon.png', 'icon-192
   if (!existsSync(join(dist, f))) fail(`missing static file: ${f}.`);
 }
 
+// 21b. favicon.ico is a valid ICO (ICONDIR header, one 32x32 image).
+const icoFile = join(dist, 'favicon.ico');
+if (existsSync(icoFile)) {
+  const ico = readFileSync(icoFile);
+  const validHeader = ico.length >= 22 && ico.readUInt16LE(0) === 0 && ico.readUInt16LE(2) === 1 && ico.readUInt16LE(4) >= 1;
+  const w = ico.length >= 7 ? ico.readUInt8(6) : 0;
+  const h = ico.length >= 8 ? ico.readUInt8(7) : 0;
+  if (!validHeader) fail('favicon.ico: invalid ICONDIR header.');
+  else if (w !== 32 || h !== 32) fail(`favicon.ico: first image is ${w}x${h}, expected 32x32.`);
+}
+
+// 21c. In CI the real portrait is mandatory (F-01).
+if (process.env.CI === 'true') {
+  const portraitSrc = join(root, 'src', 'assets', 'manuel-cobos-solis.png');
+  if (!existsSync(portraitSrc)) fail('src/assets/manuel-cobos-solis.png missing (required in CI).');
+}
+
 // 22. CNAME
 const cnameFile = join(dist, 'CNAME');
 if (!existsSync(cnameFile)) fail('CNAME missing.');
 else if (readFileSync(cnameFile, 'utf-8').trim() !== 'manuelcobos.dev') fail('CNAME content incorrect.');
 
-// 23. Budgets
+// 23. Budgets — document (HTML incl. inlined CSS and JSON-LD) per F-05 decision.
+let jsGz = 0;
+const jsSeen = new Set();
 for (const p of pages) {
-  const cssBlocks = p.html.match(/<style[^>]*>[\s\S]*?<\/style>/g) ?? [];
-  let cssRaw = 0;
-  let cssText = '';
-  for (const b of cssBlocks) {
-    cssRaw += b.length;
-    cssText += b.replace(/<\/?style[^>]*>/g, '');
+  const raw = Buffer.byteLength(p.html);
+  const gz = gzip(Buffer.from(p.html));
+  if (gz > 35 * 1024) fail(`${p.url}: document ${gz} bytes gzip > 35 KB.`);
+  if (raw > 110 * 1024) fail(`${p.url}: document ${raw} bytes raw > 110 KB.`);
+  const blocks = p.html.matchAll(/<script(?![^>]*application\/ld\+json)[^>]*>([\s\S]*?)<\/script>/g);
+  for (const m of blocks) {
+    const body = m[1];
+    if (!body.trim() || jsSeen.has(body)) continue;
+    jsSeen.add(body);
+    jsGz += gzip(Buffer.from(body));
   }
-  const jsonldBlocks = p.html.match(/<script type="application\/ld\+json"[^>]*>[\s\S]*?<\/script>/g) ?? [];
-  let jsonldRaw = 0;
-  for (const b of jsonldBlocks) jsonldRaw += b.length;
-  // HTML markup size excludes inlined CSS (separate budget) and JSON-LD (structured data).
-  const markupSize = Buffer.byteLength(p.html) - cssRaw - jsonldRaw;
-  if (markupSize > 60 * 1024) fail(`${p.url}: HTML markup ${markupSize} bytes > 60 KB (excluding inlined CSS/JSON-LD).`);
-  if (cssText && gzip(Buffer.from(cssText)) > 30 * 1024) fail(`${p.url}: inlined CSS > 30 KB gzip.`);
 }
-let totalJs = 0;
 for (const f of allFiles) {
-  if (f.endsWith('.js')) totalJs += statSync(f).size;
+  if (f.endsWith('.js')) jsGz += gzip(readFileSync(f));
   const rel = relative(dist, f);
   if (rel.startsWith('_astro') && statSync(f).size > 120 * 1024 && !rel.includes('font')) {
     fail(`${rel}: file in _astro exceeds 120 KB.`);
   }
-}
-let jsGz = 0;
-for (const f of allFiles) {
-  if (f.endsWith('.js')) jsGz += gzip(readFileSync(f));
 }
 if (jsGz > 10 * 1024) fail(`Total JS ${jsGz} bytes gzip > 10 KB.`);
 
@@ -419,6 +431,9 @@ if (esHome && enHome) {
 }
 
 // ---------------------------------------------------------------------------
+// 25. Personal facts (M2)
+for (const f of checkFacts()) failures.push(f);
+
 if (failures.length) {
   console.error(`QA failed with ${failures.length} issue(s):`);
   for (const f of failures) console.error('  - ' + f);

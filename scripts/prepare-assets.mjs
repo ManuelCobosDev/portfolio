@@ -18,6 +18,10 @@ const nodeModules = path.join(root, 'node_modules');
 const srcAssets = path.join(root, 'src', 'assets');
 const publicDir = path.join(root, 'public');
 
+// In CI / production the real portrait is mandatory. It is only optional for
+// local development, where a neutral placeholder is generated so the build runs.
+const isProduction = process.env.CI === 'true' || process.env.NODE_ENV === 'production';
+
 const PORTRAIT_SOURCE = path.join(srcAssets, 'manuel-cobos-solis.png');
 const PORTRAIT_OUT = path.join(publicDir, 'images', 'manuel-cobos-solis.jpg');
 const FAVICON_SVG = path.join(publicDir, 'favicon.svg');
@@ -64,22 +68,34 @@ const PLACEHOLDER_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="800" hei
 
 async function preparePortrait() {
   await mkdir(path.join(publicDir, 'images'), { recursive: true });
-  if (await fileExists(PORTRAIT_SOURCE)) {
-    await sharp(PORTRAIT_SOURCE)
-      .resize(800, 800, { fit: 'cover', position: 'attention' })
-      .jpeg({ quality: 82, mozjpeg: true })
-      .toFile(PORTRAIT_OUT);
-    console.log('[prepare-assets] portrait JPG generated from source PNG.');
-  } else {
+
+  if (!(await fileExists(PORTRAIT_SOURCE))) {
+    if (isProduction) {
+      throw new Error(
+        [
+          '',
+          'MISSING PORTRAIT: src/assets/manuel-cobos-solis.png',
+          'The production build requires the real portrait (938x936 PNG).',
+          'Copy it from the old site:',
+          '  old/manuelcobos24.github.io-master/public/profile-image.png',
+          '  ->  src/assets/manuel-cobos-solis.png',
+          'then rebuild.',
+          '',
+        ].join('\n'),
+      );
+    }
     await mkdir(srcAssets, { recursive: true });
     await sharp(Buffer.from(PLACEHOLDER_SVG)).png().toFile(PORTRAIT_SOURCE);
-    await sharp(PORTRAIT_SOURCE)
-      .resize(800, 800, { fit: 'cover' })
-      .jpeg({ quality: 82, mozjpeg: true })
-      .toFile(PORTRAIT_OUT);
     console.warn('[prepare-assets] WARNING: src/assets/manuel-cobos-solis.png is missing.');
-    console.warn('[prepare-assets] A neutral placeholder with the initials "MC" was generated. Replace it with the real portrait.');
+    console.warn('[prepare-assets] Generated a neutral "MC" placeholder for LOCAL development only.');
+    console.warn('[prepare-assets] The production build (CI=true) fails until the real portrait is added.');
   }
+
+  await sharp(PORTRAIT_SOURCE)
+    .resize(800, 800, { fit: 'cover', position: 'attention' })
+    .jpeg({ quality: 82, mozjpeg: true })
+    .toFile(PORTRAIT_OUT);
+  console.log('[prepare-assets] portrait JPG generated.');
 }
 
 /** Builds a PNG-compressed ICO file (Vista+ format) from an array of PNG buffers. */
