@@ -20,12 +20,12 @@ const certHeading = lang === 'es' ? 'Certificaciones e idiomas' : 'Certification
     <div class="mt-4 border-t border-line">
       {
         degrees.map((degree) => (
-          <div class="grid grid-cols-1 gap-1 border-b border-line py-4 sm:grid-cols-[1fr_auto] sm:gap-6">
+          <div class="grid grid-cols-1 gap-1 border-b border-line py-4 sm:grid-cols-[1fr_auto] sm:items-baseline sm:gap-6">
             <div>
               <p class="text-base font-medium text-ink">{pick(degree.title, lang)}</p>
               <p class="text-[15px] text-muted">{degree.org}</p>
             </div>
-            <p class="mono-label tnum text-muted">{degree.period}</p>
+            <p class="mono-label tnum whitespace-nowrap text-muted">{degree.period}</p>
           </div>
         ))
       }
@@ -37,9 +37,9 @@ const certHeading = lang === 'es' ? 'Certificaciones e idiomas' : 'Certification
     <div class="mt-4 border-t border-line">
       {
         certifications.map((cert) => (
-          <div class="grid grid-cols-1 gap-1 border-b border-line py-4 sm:grid-cols-[1fr_auto] sm:gap-6">
+          <div class="grid grid-cols-1 gap-1 border-b border-line py-4 sm:grid-cols-[1fr_auto] sm:items-baseline sm:gap-6">
             <p class="text-base font-medium text-ink">{pick(cert.title, lang)}</p>
-            <p class="mono-label text-muted">{pick(cert.issuer, lang)}</p>
+            <p class="mono-label whitespace-nowrap text-muted">{pick(cert.issuer, lang)}</p>
           </div>
         ))
       }

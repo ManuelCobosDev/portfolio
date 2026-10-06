@@ -85,3 +85,64 @@ test.describe('hero, ficha and navigation', () => {
     for (const size of sizes) expect(size).toBe('15px');
   });
 });
+
+test.describe('vertical rhythm and typography', () => {
+  test('sections share one padding rhythm at 1440px', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/');
+    const result = await page.evaluate(() => {
+      const probe = document.createElement('div');
+      probe.style.paddingTop = 'clamp(3.5rem, 2.5rem + 4vw, 6.5rem)';
+      document.body.appendChild(probe);
+      const expected = getComputedStyle(probe).paddingTop;
+      probe.remove();
+      const elements = Array.from(document.querySelectorAll<HTMLElement>('main .section-pad'));
+      const bad = elements
+        .map((el) => {
+          const style = getComputedStyle(el);
+          return `${el.tagName} ${el.className}: ${style.paddingTop}/${style.paddingBottom}`;
+        })
+        .filter((entry) => !entry.endsWith(`${expected}/${expected}`));
+      return { expected, count: elements.length, bad };
+    });
+    expect(result.count).toBeGreaterThan(0);
+    expect(result.bad).toEqual([]);
+  });
+
+  test('every dt label uses the sans family', async ({ page }) => {
+    for (const route of ['/', '/cv/']) {
+      await page.goto(route);
+      const families = await page.$$eval('dt', (labels) => labels.map((label) => getComputedStyle(label).fontFamily));
+      expect(families.length).toBeGreaterThan(0);
+      for (const family of families) expect(family).toContain('IBM Plex Sans');
+    }
+  });
+
+  test('experience dates align to the first baseline in muted text', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/');
+    const result = await page.evaluate(() => {
+      const article = document.querySelector('#experiencia article') as HTMLElement;
+      const date = article.children[0] as HTMLElement;
+      const content = article.children[1] as HTMLElement;
+      const probe = document.createElement('span');
+      probe.style.color = getComputedStyle(document.documentElement).getPropertyValue('--muted');
+      document.body.appendChild(probe);
+      const muted = getComputedStyle(probe).color;
+      probe.remove();
+      const parts = Array.from(date.querySelectorAll('time, span'));
+      return {
+        color: getComputedStyle(date).color,
+        muted,
+        align: getComputedStyle(article).alignItems,
+        whiteSpace: parts.map((el) => getComputedStyle(el).whiteSpace),
+        dateTop: parts[0]?.getBoundingClientRect().top ?? -1,
+        contentTop: content.getBoundingClientRect().top,
+      };
+    });
+    expect(result.color).toBe(result.muted);
+    expect(result.align).toBe('baseline');
+    expect(result.whiteSpace.every((value) => value === 'nowrap')).toBe(true);
+    expect(Math.abs(result.dateTop - result.contentTop)).toBeLessThanOrEqual(8);
+  });
+});

@@ -25,7 +25,7 @@ const groups = stackGroups.map((group) => ({
   {
     groups.map((group) => (
       <div class="grid grid-cols-1 gap-1 border-t border-line py-5 sm:grid-cols-[11rem_1fr] sm:gap-6">
-        <dt class="mono-label text-muted">{group.label}</dt>
+        <dt class="font-sans text-[13px] font-medium text-muted">{group.label}</dt>
         <dd>
           <ul class="middot-list text-base leading-relaxed text-ink">
             {group.items.map(({ name, note, long }) => (

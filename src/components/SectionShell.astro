@@ -9,8 +9,8 @@ interface Props {
 const { number, id, title, description } = Astro.props;
 ---
 
-<section id={id} aria-labelledby={`${id}-title`} class="pb-[clamp(4rem,3rem+5vw,8rem)]">
-  <div class="shell border-t border-line pt-[clamp(4rem,3rem+5vw,8rem)]">
+<section id={id} aria-labelledby={`${id}-title`}>
+  <div class="shell section-pad border-t border-line">
     <div class="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-x-8">
       <div class="lg:col-span-4">
         <div class="lg:sticky lg:top-24">

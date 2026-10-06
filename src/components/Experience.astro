@@ -23,7 +23,7 @@ function fmtMonth(date: string, lang: Lang): string {
 <div class="space-y-0">
   {
     experience.map((entry) => (
-      <article class="grid grid-cols-1 gap-2 border-b border-line py-8 first:pt-0 last:border-b-0 last:pb-0 sm:grid-cols-[10.5rem_1fr] sm:gap-6">
+      <article class="grid grid-cols-1 gap-2 border-b border-line py-8 first:pt-0 last:border-b-0 last:pb-0 sm:grid-cols-[10.5rem_1fr] sm:items-baseline sm:gap-6">
         <div class="mono-label text-muted">
           <time datetime={entry.start} class="whitespace-nowrap">{fmtMonth(entry.start, lang)}</time>
           {'\u00A0– '}

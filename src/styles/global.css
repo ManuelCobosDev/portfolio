@@ -230,7 +230,7 @@
   }
 
   .section-pad {
-    padding-block: clamp(4rem, 3rem + 5vw, 8rem);
+    padding-block: clamp(3.5rem, 2.5rem + 4vw, 6.5rem);
   }
 
   .prose-work {
