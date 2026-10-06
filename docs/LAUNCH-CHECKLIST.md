@@ -3,12 +3,32 @@
 Pasos manuales a realizar después del desarrollo. Hazlos en orden y marca cada
 casilla.
 
+## 0. Sacar el proyecto de OneDrive (hazlo primero)
+
+Un repositorio git (y `node_modules`) dentro de una carpeta sincronizada por
+OneDrive provoca bloqueos y builds lentos.
+
+- [ ] Clona el proyecto a una ruta **no sincronizada**, por ejemplo:
+
+  ```powershell
+  git clone --no-hardlinks "c:\Users\0021830\OneDrive - ViewNext\Escritorio\ManuelCobosDev\portfolio" C:\dev\manuelcobos.dev
+  cd C:\dev\manuelcobos.dev
+  npm ci
+  npm run build
+  npm run qa
+  ```
+
+- [ ] Trabaja **solo** en la carpeta nueva a partir de ahora.
+- [ ] **No borres** la carpeta antigua todavía: archívala o bórrala tú mismo
+      cuando compruebes que el clon nuevo está completo.
+
 ## 1. Repositorio y Pages
 
-- [ ] Crea el repositorio `ManuelCobosDev/manuelcobos.dev` y sube este proyecto
-      (`git push`), rama `main`.
+- [ ] Crea el repositorio `ManuelCobosDev/manuelcobos.dev` y sube el proyecto
+      (`git push origin development` y `git push origin main`).
 - [ ] En **Settings → Pages**, elige la fuente **GitHub Actions**.
 - [ ] Comprueba que el primer `Deploy to GitHub Pages` termina en verde.
+- [ ] Establece `main` como rama por defecto.
 
 ## 2. Dominio personalizado
 
@@ -74,3 +94,31 @@ casilla.
 - [ ] Artículos técnicos.
 - [ ] Repositorio público con una demo.
 - [ ] Charlas o perfiles de comunidad.
+
+## 11. Modelo de ramas y ramas protegidas
+
+- [ ] Ramas: `main` (producción, protegida) y `development` (integración). El
+      trabajo llega a `development` por ramas cortas `feat/*`, `fix/*`, `chore/*`.
+- [ ] Release: PR `development` → `main` cuando la CI está en verde; primer tag
+      `v1.0.0`.
+- [ ] **Settings → Branches → Add branch protection rule** para `main`:
+  - [ ] Require a pull request before merging.
+  - [ ] Require status checks to pass: `build-and-qa`, `e2e`, `lighthouse`, `audit`.
+  - [ ] Require branches to be up to date before merging.
+  - [ ] Do not allow force pushes; do not allow deletions.
+
+## 12. Ajustes de GitHub (seguridad y entornos)
+
+- [ ] **Settings → Environments → `github-pages`** → Deployment branches:
+      restringir a `main`.
+- [ ] **Settings → Code security and analysis**: activar **Dependabot alerts**,
+      **Dependabot security updates**, **Secret scanning** y **Push protection**.
+- [ ] **Cuenta → Settings → Pages** → verifica el dominio `manuelcobos.dev`
+      (evita la toma de control del dominio).
+
+## 13. Dependencias que dependen de acciones del usuario
+
+- [ ] **Retrato real**: `src/assets/manuel-cobos-solis.png` (938×936). Ya está
+      colocado; si se sustituye, vuelve a construir. En CI el build **falla** sin él.
+- [ ] **CV en PDF**: coloca `public/cv/Manuel-Cobos-Solis-CV.pdf`; el botón de
+      descarga aparecerá automáticamente.

@@ -1172,7 +1172,7 @@ It must exit with a non-zero code and print a readable list of failures if any o
 20. `manifest.webmanifest` parses and its icons exist.
 21. `favicon.svg`, `favicon.ico`, `apple-touch-icon.png`, `icon-192.png`, `icon-512.png`, `images/manuel-cobos-solis.jpg` exist.
 22. `CNAME` exists in `dist` and contains `manuelcobos.dev`.
-23. Budgets: HTML per page ≤ 60 KB raw; inlined CSS per page ≤ 30 KB gzip; total JavaScript in `dist` ≤ 10 KB gzip; total font files ≤ 100 KB; no file in `dist/_astro` larger than 120 KB except fonts.
+23. Budgets (settled by the audit decision F-05): the transferred size is what matters, so the per-page document (HTML **including** inlined CSS and JSON-LD) must be ≤ 35 KB gzip and ≤ 110 KB raw as a sanity cap; total JavaScript in `dist` ≤ 10 KB gzip; total font files ≤ 100 KB; no file in `dist/_astro` larger than 120 KB except fonts.
 24. Spanish and English home pages have the same set of section ids (translated) and the same number of experience entries, stack groups and education rows.
 
 ### 12.2 Playwright end-to-end tests (`tests/e2e`)

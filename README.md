@@ -25,17 +25,27 @@ y métricas Lighthouse objetivo de 10/10.
 ## Estructura
 
 ```
-├─ .github/workflows/deploy.yml   # despliegue a GitHub Pages
+├─ .github/
+│  ├─ workflows/
+│  │  ├─ ci.yml                   # build, QA, e2e, Lighthouse y audit
+│  │  ├─ codeql.yml               # análisis de seguridad
+│  │  └─ deploy.yml               # despliegue a GitHub Pages + smoke test
+│  └─ dependabot.yml
 ├─ docs/
 │  ├─ BRIEF.md                    # especificación completa (fuente de verdad)
+│  ├─ AUDIT-REPORT.md             # informe de la auditoría post-build
+│  ├─ SEO-PLAN.md                 # plan 30/60/90 días
+│  ├─ SERP-BENCHMARK.md           # plantilla de benchmark de búsquedas
 │  ├─ LAUNCH-CHECKLIST.md         # pasos posteriores al despliegue
 │  └─ templates/work-entry.md     # plantilla para añadir proyectos
 ├─ public/                        # CNAME, robots, llms, _headers, iconos, fonts
 ├─ scripts/
-│  ├─ prepare-assets.mjs          # fonts + retrato + iconos PNG
-│  └─ qa.mjs                      # verificaciones de la sección 12.1
+│  ├─ prepare-assets.mjs          # fonts + retrato + iconos (falla en CI sin retrato)
+│  ├─ facts.mjs + ../docs/facts.json  # verificación de datos personales (M2)
+│  ├─ qa.mjs                      # puertas de calidad sobre dist/
+│  └─ smoke.mjs                   # smoke test post-despliegue
 ├─ src/
-│  ├─ assets/manuel-cobos-solis.png   # retrato (el usuario lo coloca aquí)
+│  ├─ assets/manuel-cobos-solis.png   # retrato real (938×936)
 │  ├─ components/                 # componentes de UI
 │  ├─ content/work/{es,en}/       # casos de estudio y proyectos (Markdown)
 │  ├─ data/                       # hechos y copy tipado (ES/EN)
@@ -44,7 +54,7 @@ y métricas Lighthouse objetivo de 10/10.
 │  ├─ lib/                        # site, jsonld, years, cv
 │  ├─ pages/                      # rutas ES, EN, 404, OG, llms.txt
 │  └─ styles/global.css           # tokens, tipografía, motion, print
-└─ tests/e2e/site.spec.ts         # tests Playwright
+└─ tests/e2e/{site,audit}.spec.ts # Playwright + axe
 ```
 
 ## Dónde se edita cada cosa
@@ -105,6 +115,32 @@ reconstruye y redespliega el sitio para mantener frescos los valores calculados
 
 ## Retrato
 
-Coloca la foto en `src/assets/manuel-cobos-solis.png` (938×936 recomendado). Si
-falta, el build genera un cuadrado neutro con las iniciales "MC" y emite un
-aviso; sustitúyelo por la foto real.
+La foto real vive en `src/assets/manuel-cobos-solis.png` (938×936). **En
+producción (`CI=true`, que es lo que usa el workflow) el build falla si el
+retrato no está**, para no publicar nunca el placeholder. Solo en local, si
+falta, se genera un cuadrado neutro con "MC" y se emite un aviso.
+
+## Flujo de trabajo (ramas y CI)
+
+- `main`: producción. Protegida; despliega a GitHub Pages.
+- `development`: integración. El trabajo llega por ramas cortas
+  `feat/*`, `fix/*`, `chore/*` y se fusiona aquí.
+- Release: pull request `development` → `main` cuando la CI está en verde; tag
+  `vX.Y.Z`.
+
+Workflows: `ci.yml` (build + QA + e2e + Lighthouse + audit) se ejecuta en PRs y
+en `push` a `development`; `deploy.yml` despliega desde `main` (con smoke test
+posterior); `codeql.yml` analiza seguridad; `dependabot.yml` agrupa
+actualizaciones semanales.
+
+## Cómo ejecutar la auditoría
+
+```powershell
+npm run build                 # genera dist/ (usa el retrato real)
+npm run qa                    # QA: SEO, JSON-LD, hechos, presupuestos, favicon…
+npm run preview               # sirve dist/ en http://localhost:4321
+# en otra consola, con Edge disponible:
+$env:PW_CHANNEL = 'msedge'; npm run test:e2e
+$env:CHROME_PATH = 'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe'; npm run lighthouse
+node scripts/smoke.mjs https://manuelcobos.dev   # tras desplegar
+```
