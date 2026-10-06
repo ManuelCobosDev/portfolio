@@ -485,6 +485,15 @@
     break-inside: avoid;
   }
 
+  /* Scroll-driven reveals must never hide content on paper. */
+  .cv-doc *,
+  .cv-doc *::before,
+  .cv-doc *::after {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+  }
+
   /* Compact the CV so it fits on two A4 pages. */
   .cv-doc {
     max-width: none !important;
