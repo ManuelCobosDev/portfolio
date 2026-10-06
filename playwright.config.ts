@@ -7,13 +7,12 @@ const channel = process.env.PW_CHANNEL || undefined;
 export default defineConfig({
   testDir: './tests/e2e',
   fullyParallel: true,
-  timeout: 30_000,
   // One retry absorbs rare `net::ERR_ABORTED` navigation flakes when several
   // workers hit a single preview server at once; it never masks a real failure.
   retries: 1,
   reporter: 'list',
   use: {
-    baseURL: 'http://localhost:4321',
+    baseURL: 'http://127.0.0.1:4321',
     ...(channel ? { channel } : {}),
   },
   projects: [
@@ -23,8 +22,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npm run preview -- --port 4321',
+    command: 'npm run preview -- --host 127.0.0.1 --port 4321',
     port: 4321,
-    reuseExistingServer: true,
+    reuseExistingServer: !process.env.CI,
   },
 });

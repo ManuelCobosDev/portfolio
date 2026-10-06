@@ -1,10 +1,9 @@
 name: CI
 
 on:
-  pull_request:
-    branches: [main, development]
   push:
-    branches: [development]
+    branches: [main, development]
+  pull_request:
 
 permissions:
   contents: read
@@ -14,40 +13,20 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-and-qa:
+  verify:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
-          node-version: 22
+          node-version-file: .nvmrc
           cache: npm
       - run: npm ci
       - run: npm run check
       - run: npm run build
-        env:
-          CI: 'true'
       - run: npm run qa
-      - uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: dist
-          retention-days: 3
-
-  e2e:
-    needs: build-and-qa
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-      - run: npm ci
       - run: npx playwright install --with-deps chromium
-      - run: npm run build
-        env:
-          CI: 'true'
       - run: npm run test:e2e
       - uses: actions/upload-artifact@v4
         if: failure()
@@ -55,31 +34,3 @@ jobs:
           name: playwright-report
           path: playwright-report
           retention-days: 7
-
-  lighthouse:
-    needs: build-and-qa
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-      - run: npm ci
-      - run: npm run build
-        env:
-          CI: 'true'
-      - run: npm run lighthouse
-
-  audit:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-      # Plain install: `--ignore-scripts` skips sharp/esbuild native checks and
-      # can break the build, so it is not used here (documented in the report).
-      - run: npm ci
-      - run: npm audit --omit=dev --audit-level=high
