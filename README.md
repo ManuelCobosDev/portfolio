@@ -177,12 +177,16 @@ Worker vive en `wrangler.jsonc`:
 
 - `assets.directory`: `./dist`.
 - `assets.not_found_handling`: `404-page`, para servir el `404.html` del build.
+- `build.command`: `npm run build`, para que `wrangler deploy` construya el
+  sitio antes de subir los assets.
 - Sin `main`: es un Worker solo de assets, no ejecuta código propio.
 
 En el panel de Cloudflare:
 
 - Rama de producción: `main`.
-- Comando de build: `npm run build`.
+- Comando de build: **dejarlo vacío** (el build ya lo ejecuta
+  `build.command` de `wrangler.jsonc`; si se rellena también aquí, el sitio se
+  construiría dos veces).
 - Comando de deploy: `npx wrangler deploy`.
 - Variable de entorno `NODE_VERSION` con el valor de `.nvmrc`.
 - Dominio personalizado `manuelcobos.dev`, con `www` redirigido al dominio raíz.
