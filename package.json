@@ -8,14 +8,13 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "prepare:assets": "node scripts/prepare-assets.mjs",
-    "check": "astro check",
-    "build": "npm run prepare:assets && astro check && astro build",
+    "build": "node scripts/prepare-assets.mjs && astro build",
     "preview": "astro preview",
+    "check": "astro check",
     "qa": "node scripts/qa.mjs",
     "test:e2e": "playwright test",
-    "verify": "npm run build && npm run qa && npm run test:e2e",
-    "format": "prettier --write ."
+    "cv:pdf": "npm run build && node scripts/build-cv-pdf.mjs",
+    "format": "prettier --write . --ignore-path .gitignore"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.2.1",
@@ -41,5 +40,14 @@
     "prettier-plugin-tailwindcss": "^0.6.9",
     "satori": "^0.12.1",
     "typescript": "^5.7.2"
+  },
+  "knip": {
+    "ignoreDependencies": [
+      "@fontsource-variable/ibm-plex-sans",
+      "@fontsource/ibm-plex-mono",
+      "@fontsource/ibm-plex-sans",
+      "@iconify-json/lucide",
+      "@iconify-json/simple-icons"
+    ]
   }
 }

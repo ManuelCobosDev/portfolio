@@ -9,7 +9,6 @@ export interface NavEntry {
   label: string;
 }
 
-/** Returns the visible navigation sections for a language. */
 export function visibleNav(lang: Lang, hasCases: boolean, hasProjects: boolean): NavEntry[] {
   return navSections
     .filter((section) => {

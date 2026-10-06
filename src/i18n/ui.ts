@@ -31,7 +31,6 @@ export const ui = {
   'work.readProject': { es: 'Ver el proyecto', en: 'View the project' },
   'work.repo': { es: 'Código', en: 'Source code' },
   'work.demo': { es: 'Demo', en: 'Live demo' },
-  'work.stack': { es: 'Tecnologías', en: 'Technologies' },
   'work.published': { es: 'Publicado', en: 'Published' },
   'breadcrumb.label': { es: 'Migas de pan', en: 'Breadcrumb' },
   'breadcrumb.home': { es: 'Inicio', en: 'Home' },

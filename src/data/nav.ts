@@ -1,6 +1,6 @@
 import type { L } from '../i18n/utils';
 
-export type NavCondition = 'cases' | 'projects';
+type NavCondition = 'cases' | 'projects';
 
 export interface NavSection {
   /** Key of the section: matches ui keys `nav.<key>` and `section.<key>`. */

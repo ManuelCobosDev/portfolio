@@ -53,7 +53,7 @@ const profilePageName: Record<Lang, string> = {
   en: 'Manuel Cobos Solís | Full Stack Developer (Java, Angular)',
 };
 
-export function personNode(lang: Lang) {
+function personNode(lang: Lang) {
   return {
     '@type': 'Person',
     '@id': PERSON_ID,
@@ -177,35 +177,30 @@ export interface WorkJsonLdInput {
 export function workGraph(input: WorkJsonLdInput) {
   const homeUrl = input.lang === 'es' ? `${SITE}/` : `${SITE}/en/`;
   const inLanguage = input.lang === 'es' ? 'es-ES' : 'en';
+  const common = {
+    description: input.description,
+    inLanguage,
+    datePublished: input.publishedAt,
+    dateModified: input.updatedAt ?? input.publishedAt,
+    keywords: input.stack.join(', '),
+    author: { '@id': PERSON_ID },
+    publisher: { '@id': PERSON_ID },
+    mainEntityOfPage: input.pageUrl,
+    image: input.ogImageUrl,
+  };
   const article =
     input.kind === 'project'
       ? {
           '@type': 'SoftwareSourceCode',
           name: input.title,
-          description: input.description,
-          inLanguage,
-          datePublished: input.publishedAt,
-          dateModified: input.updatedAt ?? input.publishedAt,
-          keywords: input.stack.join(', '),
-          author: { '@id': PERSON_ID },
-          publisher: { '@id': PERSON_ID },
-          mainEntityOfPage: input.pageUrl,
-          image: input.ogImageUrl,
+          ...common,
           ...(input.repo ? { codeRepository: input.repo } : {}),
           programmingLanguage: input.stack,
         }
       : {
           '@type': 'TechArticle',
           headline: input.title,
-          description: input.description,
-          inLanguage,
-          datePublished: input.publishedAt,
-          dateModified: input.updatedAt ?? input.publishedAt,
-          keywords: input.stack.join(', '),
-          author: { '@id': PERSON_ID },
-          publisher: { '@id': PERSON_ID },
-          mainEntityOfPage: input.pageUrl,
-          image: input.ogImageUrl,
+          ...common,
         };
 
   return {
