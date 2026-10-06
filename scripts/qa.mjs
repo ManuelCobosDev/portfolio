@@ -356,6 +356,17 @@ for (const p of pages) {
   if (p.html.includes('<!--')) fail(`${p.url}: built HTML contains an HTML comment.`);
 }
 
+// 22. Cloudflare _headers
+const headersFile = join(dist, '_headers');
+if (!existsSync(headersFile)) {
+  fail('_headers missing.');
+} else {
+  const lines = readFileSync(headersFile, 'utf-8').split(/\r?\n/);
+  const rules = lines.filter((line) => line.trim() && !/^\s/.test(line));
+  if (rules.length >= 100) fail(`_headers declares ${rules.length} rules (limit 100).`);
+  if (lines.some((line) => line.length > 2000)) fail('_headers contains a line over 2000 characters.');
+}
+
 // 21b. favicon.ico is a valid ICO (ICONDIR header, one 32x32 image).
 const icoFile = join(dist, 'favicon.ico');
 if (existsSync(icoFile)) {
