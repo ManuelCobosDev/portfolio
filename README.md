@@ -38,7 +38,7 @@ y métricas Lighthouse objetivo de 10/10.
 │  ├─ SERP-BENCHMARK.md           # plantilla de benchmark de búsquedas
 │  ├─ LAUNCH-CHECKLIST.md         # pasos posteriores al despliegue
 │  └─ templates/work-entry.md     # plantilla para añadir proyectos
-├─ public/                        # CNAME, robots, llms, _headers, iconos, fonts
+├─ public/                        # robots, llms, _headers, iconos, fuentes
 ├─ scripts/
 │  ├─ prepare-assets.mjs          # fonts + retrato + iconos (falla en CI sin retrato)
 │  ├─ facts.mjs + ../docs/facts.json  # verificación de datos personales (M2)

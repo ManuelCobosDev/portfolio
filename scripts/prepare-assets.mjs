@@ -70,10 +70,7 @@ async function preparePortrait() {
           '',
           'MISSING PORTRAIT: src/assets/manuel-cobos-solis.png',
           'The production build requires the real portrait (938x936 PNG).',
-          'Copy it from the old site:',
-          '  old/manuelcobos24.github.io-master/public/profile-image.png',
-          '  ->  src/assets/manuel-cobos-solis.png',
-          'then rebuild.',
+          'Add the square PNG at that path and rebuild.',
           '',
         ].join('\n'),
       );

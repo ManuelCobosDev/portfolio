@@ -322,6 +322,7 @@ else {
   const robots = readFileSync(robotsFile, 'utf-8');
   if (!robots.includes('User-agent: *')) fail('robots.txt missing User-agent: *.');
   if (!robots.includes('sitemap-index.xml')) fail('robots.txt missing sitemap reference.');
+  if (/^\s*Disallow\s*:/im.test(robots)) fail('robots.txt must not contain a Disallow rule.');
 }
 
 // 19. llms.txt
@@ -365,7 +366,33 @@ if (!existsSync(headersFile)) {
   const rules = lines.filter((line) => line.trim() && !/^\s/.test(line));
   if (rules.length >= 100) fail(`_headers declares ${rules.length} rules (limit 100).`);
   if (lines.some((line) => line.length > 2000)) fail('_headers contains a line over 2000 characters.');
+
+  const raw = lines.join('\n');
+  for (const rule of [
+    'X-Content-Type-Options: nosniff',
+    "Content-Security-Policy: default-src 'self'",
+    'X-Robots-Tag: noindex',
+    '/_astro/*',
+    '/fonts/*',
+    '/cv/Manuel-Cobos-Solis-CV-ES.pdf',
+    '/cv/Manuel-Cobos-Solis-CV-EN.pdf',
+  ]) {
+    if (!raw.includes(rule)) fail(`_headers is missing "${rule}".`);
+  }
 }
+
+// 22b. Cloudflare serves 404.html for unknown URLs; it must stay out of the index.
+const notFoundFile = join(dist, '404.html');
+if (!existsSync(notFoundFile)) {
+  fail('404.html missing.');
+} else {
+  const $404 = cheerio.load(readFileSync(notFoundFile, 'utf-8'));
+  const robots = $404('meta[name="robots"]').attr('content') ?? '';
+  if (!robots.includes('noindex')) fail('404.html must be noindex.');
+}
+
+// 22c. No redirects file is needed with the Cloudflare Git integration.
+if (existsSync(join(dist, '_redirects'))) fail('_redirects must not be present.');
 
 // 21b. favicon.ico is a valid ICO (ICONDIR header, one 32x32 image).
 const icoFile = join(dist, 'favicon.ico');
