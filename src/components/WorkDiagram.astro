@@ -47,7 +47,7 @@ const destinations = [t.kafka, t.rabbitmq, t.webclient, t.persistence];
     <div class="diagram-box w-full">{t.client}</div>
     <div class="diagram-arrow-down" aria-hidden="true">↓</div>
     <div class="diagram-box diagram-box-accent w-full">{t.orchestrator}</div>
-    <p class="py-1 text-xs text-muted">{t.singlePost}</p>
+    <p class="mono-label py-1 text-muted">{t.singlePost}</p>
     {
       destinations.map((label) => (
         <>
@@ -63,7 +63,7 @@ const destinations = [t.kafka, t.rabbitmq, t.webclient, t.persistence];
     <div class="flow-arrow" aria-hidden="true"></div>
     <div class="flex flex-col gap-2">
       <div class="diagram-box diagram-box-accent">{t.orchestrator}</div>
-      <p class="text-center text-xs text-muted">{t.singlePost}</p>
+      <p class="mono-label text-center text-muted">{t.singlePost}</p>
     </div>
     <div class="flow-arrow" aria-hidden="true"></div>
     <div class="flex flex-col gap-2">
