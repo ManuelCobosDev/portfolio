@@ -67,7 +67,7 @@ test.describe('design tokens and structure', () => {
     expect(Math.round(box!.x)).toBe(Math.round((1920 - 1152) / 2));
   });
 
-  test('ficha has the eight rows in order', async ({ page }) => {
+  test('ficha has the seven rows in order', async ({ page }) => {
     await page.goto('/');
     const labels = await page.locator('section[aria-labelledby="ficha-title"] dt').allInnerTexts();
     expect(labels).toEqual([
@@ -78,7 +78,6 @@ test.describe('design tokens and structure', () => {
       'Experiencia',
       'Stack principal',
       'Idiomas',
-      'Estado',
     ]);
   });
 

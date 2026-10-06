@@ -49,10 +49,6 @@ export const profile = {
     es: 'Java 21 · Spring Boot · Kafka · RabbitMQ · Angular 20 · PostgreSQL',
     en: 'Java 21 · Spring Boot · Kafka · RabbitMQ · Angular 20 · PostgreSQL',
   } as L<string>,
-  statusOpen: {
-    es: 'Abierto a oportunidades',
-    en: 'Open to opportunities',
-  } as L<string>,
   ogTagline: {
     es: 'Java · Spring Boot · Kafka · Angular',
     en: 'Java · Spring Boot · Kafka · Angular',

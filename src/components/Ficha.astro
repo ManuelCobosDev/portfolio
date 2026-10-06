@@ -25,7 +25,6 @@ const rows = [
   },
   { label: lang === 'es' ? 'Stack principal' : 'Main stack', value: pick(profile.mainStack, lang) },
   { label: lang === 'es' ? 'Idiomas' : 'Languages', value: pick(profile.languages, lang) },
-  { label: lang === 'es' ? 'Estado' : 'Status', value: pick(profile.statusOpen, lang), status: true },
 ];
 
 const portraitAlt = {
@@ -36,7 +35,7 @@ const portraitAlt = {
 
 <section aria-labelledby="ficha-title" class="overflow-hidden rounded-md border border-line bg-surface">
   <h2 id="ficha-title" class="sr-only">{pick(ui['ficha.title'], lang)}</h2>
-  <div class="aspect-[5/4] w-full bg-surface-2">
+  <div class="aspect-[4/3] w-full bg-surface-2">
     <Picture
       src={portrait}
       widths={[320, 480, 640]}
@@ -44,26 +43,23 @@ const portraitAlt = {
       formats={['avif', 'webp']}
       fallbackFormat="jpg"
       width={640}
-      height={512}
+      height={480}
       alt={portraitAlt[lang]}
       loading="eager"
       fetchpriority="high"
       decoding="async"
-      class="h-full w-full object-cover object-[50%_18%]"
+      class="h-full w-full object-cover object-[50%_15%]"
     />
   </div>
   <dl>
     {
       rows.map((row, i) => (
         <div
-          class="rise-in grid grid-cols-1 gap-1 border-t border-line px-5 py-3.5 first:border-t-0 sm:grid-cols-[10rem_1fr] sm:gap-4"
+          class="rise-in grid grid-cols-1 gap-1 border-t border-line px-5 py-3 first:border-t-0 sm:grid-cols-[7.5rem_1fr] sm:items-baseline sm:gap-4"
           style={`--i:${i}`}
         >
-          <dt class="mono-label text-muted">{row.label}</dt>
-          <dd class="tnum flex items-center text-base text-ink">
-            {row.status && <span class="mr-2 inline-block h-2 w-2 shrink-0 rounded-full bg-accent" aria-hidden="true"></span>}
-            {row.value}
-          </dd>
+          <dt class="font-sans text-[13px] font-medium text-muted">{row.label}</dt>
+          <dd class="tnum text-base text-ink">{row.value}</dd>
         </div>
       ))
     }
