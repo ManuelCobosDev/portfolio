@@ -1,9 +1,10 @@
 ---
 import type { Lang } from '../i18n/utils';
 import { pick } from '../i18n/utils';
+import { ui } from '../i18n/ui';
 import { degrees, certifications } from '../data/education';
 import { profile } from '../data/profile';
-import ExternalLink from './ExternalLink.astro';
+import { Icon } from 'astro-icon/components';
 
 interface Props {
   lang: Lang;
@@ -45,13 +46,16 @@ const certHeading = lang === 'es' ? 'Certificaciones e idiomas' : 'Certification
       }
     </div>
     <p class="text-muted mt-4 text-sm">
-      {
-        lang === 'es' ? 'Las certificaciones se pueden verificar en ' : 'Certifications can be verified on '
-      }<ExternalLink
+      {lang === 'es' ? 'Las certificaciones se pueden verificar en ' : 'Certifications can be verified on '}
+      <a
         href={profile.certificationsUrl}
-        lang={lang}
-        class="text-accent hover:text-accent-hover underline decoration-1 underline-offset-[0.2em] hover:decoration-2"
-        >LinkedIn</ExternalLink
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-accent hover:text-accent-hover"
+        ><span class="underline decoration-1 underline-offset-[0.2em] hover:decoration-2">LinkedIn</span><span
+          class="external-icon -mr-[0.2em]"
+          aria-hidden="true"><Icon name="lucide:arrow-up-right" class="h-[0.9em] w-[0.9em]" /></span
+        ><span class="sr-only">{pick(ui.external, lang)}</span></a
       >.
     </p>
   </div>

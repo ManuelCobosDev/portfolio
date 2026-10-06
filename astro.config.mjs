@@ -6,7 +6,6 @@ import icon from 'astro-icon';
 import tailwindcss from '@tailwindcss/vite';
 
 const SITE = 'https://manuelcobos.dev';
-const PROFILE_LAST_UPDATED = '2026-10-05';
 
 function parseFrontmatter(raw) {
   const m = raw.match(/^---\r?\n([\s\S]*?)\r?\n---/);
@@ -25,6 +24,9 @@ function parseFrontmatter(raw) {
   return fm;
 }
 
+// astro:content no se puede importar desde la config raíz, así que el frontmatter
+// de los casos de trabajo (slug, idioma, fechas y translationKey) se lee aquí
+// para el sitemap.
 function workEntries() {
   const base = path.resolve('src/content/work');
   const entries = [];
@@ -39,6 +41,19 @@ function workEntries() {
     }
   }
   return entries;
+}
+
+// Fecha por defecto del sitemap: la más reciente entre todos los casos de trabajo,
+// para que no haga falta mantener una constante a mano.
+let cachedSiteLastUpdated = null;
+function siteLastUpdated() {
+  if (cachedSiteLastUpdated !== null) return cachedSiteLastUpdated;
+  const dates = workEntries()
+    .map((w) => w.updatedAt || w.publishedAt)
+    .filter((d) => d && !Number.isNaN(new Date(d).getTime()))
+    .sort();
+  cachedSiteLastUpdated = dates.length ? dates[dates.length - 1] : new Date().toISOString();
+  return cachedSiteLastUpdated;
 }
 
 export default defineConfig({
@@ -87,7 +102,7 @@ export default defineConfig({
       i18n: { defaultLocale: 'es', locales: { es: 'es-ES', en: 'en' } },
       filter: (page) => !page.includes('/404'),
       serialize(item) {
-        item.lastmod = new Date(PROFILE_LAST_UPDATED);
+        item.lastmod = new Date(siteLastUpdated());
         const workMatch = item.url.match(/https:\/\/manuelcobos\.dev\/(trabajo|en\/work)\/([^/]+)\/$/);
         if (workMatch) {
           const lang = workMatch[1] === 'trabajo' ? 'es' : 'en';
