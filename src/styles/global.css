@@ -438,7 +438,7 @@
 }
 
 @supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
+  @media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
     .reveal {
       animation: rise linear both;
       animation-timeline: view();

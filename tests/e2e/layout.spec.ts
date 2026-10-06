@@ -216,3 +216,66 @@ test.describe('stack strip', () => {
     }
   });
 });
+
+test.describe('stray strips and reveal robustness', () => {
+  for (const scheme of ['light', 'dark'] as const) {
+    test(`the footer ends flush with the document (${scheme})`, async ({ page }, testInfo) => {
+      await page.setViewportSize({ width: 1440, height: 900 });
+      await page.emulateMedia({ colorScheme: scheme });
+      await page.goto('/');
+      await page.screenshot({ path: testInfo.outputPath(`home-${scheme}.png`), fullPage: true });
+      const result = await page.evaluate(() => {
+        const footer = document.querySelector('footer') as HTMLElement;
+        const html = getComputedStyle(document.documentElement);
+        const body = getComputedStyle(document.body);
+        return {
+          scrollHeight: document.documentElement.scrollHeight,
+          footerBottom: Math.round(footer.getBoundingClientRect().bottom + window.scrollY),
+          htmlMargin: html.margin,
+          bodyMargin: body.margin,
+          bodyBackground: body.backgroundColor,
+          widths: {
+            scroll: document.documentElement.scrollWidth,
+            client: document.documentElement.clientWidth,
+          },
+        };
+      });
+      expect(result.htmlMargin).toBe('0px');
+      expect(result.bodyMargin).toBe('0px');
+      expect(result.bodyBackground).not.toBe('rgba(0, 0, 0, 0)');
+      expect(result.widths.scroll).toBeLessThanOrEqual(result.widths.client);
+      expect(result.footerBottom).toBe(result.scrollHeight);
+    });
+  }
+
+  test('every reveal is fully visible in a tall viewport', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 6000 });
+    await page.goto('/');
+    const hidden = await page.$$eval('.reveal', (elements) =>
+      elements.map((element) => Number(getComputedStyle(element).opacity)).filter((opacity) => opacity < 1),
+    );
+    expect(hidden).toEqual([]);
+  });
+
+  test('content stays visible without JavaScript', async ({ browser }) => {
+    const context = await browser.newContext({ javaScriptEnabled: false });
+    const page = await context.newPage();
+    await page.goto('/');
+    const hidden = await page.$$eval('.reveal', (elements) =>
+      elements.map((element) => Number(getComputedStyle(element).opacity)).filter((opacity) => opacity < 1),
+    );
+    expect(hidden).toEqual([]);
+    await context.close();
+  });
+
+  test('no reveal animation on the CV or in print', async ({ page }) => {
+    await page.goto('/cv/');
+    expect(await page.locator('.reveal').count()).toBe(0);
+    await page.emulateMedia({ media: 'print' });
+    await page.goto('/cv/');
+    const animated = await page.$$eval('.cv-doc *', (elements) =>
+      elements.map((element) => getComputedStyle(element).animationName).filter((name) => name !== 'none'),
+    );
+    expect(animated).toEqual([]);
+  });
+});
