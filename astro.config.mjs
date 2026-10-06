@@ -57,7 +57,8 @@ export default defineConfig({
     icon({
       include: {
         lucide: ['sun', 'moon', 'menu', 'x', 'arrow-up-right', 'arrow-right', 'mail', 'copy', 'check', 'download', 'printer'],
-        'simple-icons': ['openjdk', 'springboot', 'apachekafka', 'rabbitmq', 'angular', 'typescript', 'postgresql', 'docker', 'kubernetes', 'githubactions'],
+        'simple-icons': ['springboot', 'apachekafka', 'rabbitmq', 'angular', 'typescript', 'postgresql', 'docker', 'kubernetes', 'githubactions'],
+        'devicon-plain': ['java'],
       },
     }),
     sitemap({

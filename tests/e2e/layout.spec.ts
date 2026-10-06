@@ -146,3 +146,73 @@ test.describe('vertical rhythm and typography', () => {
     expect(Math.abs(result.dateTop - result.contentTop)).toBeLessThanOrEqual(8);
   });
 });
+
+test.describe('stack strip', () => {
+  test('icons render and cells tile with single-line borders', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/');
+    const result = await page.evaluate(() => {
+      const strip = document.querySelector('[data-stack-strip]') as HTMLElement;
+      const cells = Array.from(strip.children) as HTMLElement[];
+      const container = getComputedStyle(strip);
+      const issues: string[] = [];
+      for (const cell of cells) {
+        const style = getComputedStyle(cell);
+        if (parseFloat(style.borderRightWidth) < 1) issues.push('cell without right border');
+        if (parseFloat(style.borderBottomWidth) < 1) issues.push('cell without bottom border');
+        if (parseFloat(style.borderTopWidth) > 0) issues.push('cell with doubled top border');
+        if (parseFloat(style.borderLeftWidth) > 0) issues.push('cell with doubled left border');
+      }
+      const icons = Array.from(strip.querySelectorAll('svg')).map((svg) => svg.getBoundingClientRect());
+      return {
+        cells: cells.length,
+        icons: icons.length,
+        empty: icons.filter((rect) => rect.width < 1 || rect.height < 1).length,
+        issues: [...new Set(issues)],
+        containerTop: container.borderTopWidth,
+        containerLeft: container.borderLeftWidth,
+      };
+    });
+    expect(result.cells).toBe(10);
+    expect(result.icons).toBe(10);
+    expect(result.empty).toBe(0);
+    expect(result.issues).toEqual([]);
+    expect(result.containerTop).toBe('1px');
+    expect(result.containerLeft).toBe('1px');
+  });
+
+  for (const columns of [2, 3, 4]) {
+    test(`cells stay adjacent with ${columns} columns`, async ({ page }) => {
+      await page.setViewportSize({ width: 1440, height: 900 });
+      await page.goto('/');
+      const issues = await page.evaluate((cols) => {
+        const strip = document.querySelector('[data-stack-strip]') as HTMLElement;
+        strip.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
+        const cells = Array.from(strip.children) as HTMLElement[];
+        const rects = cells.map((cell) => cell.getBoundingClientRect());
+        const found: string[] = [];
+        for (let i = 0; i < rects.length; i += 1) {
+          const row = Math.floor(i / cols);
+          const column = i % cols;
+          if (column > 0 && Math.abs(rects[i].left - rects[i - 1].right) > 1) found.push('horizontal gap');
+          if (row > 0 && Math.abs(rects[i].top - rects[i - cols].bottom) > 1) found.push('vertical gap');
+          if (rects[i].width < 1 || rects[i].height < 1) found.push('empty cell');
+        }
+        strip.style.gridTemplateColumns = '';
+        return [...new Set(found)];
+      }, columns);
+      expect(issues).toEqual([]);
+    });
+  }
+
+  test('strip borders stay visible in both themes', async ({ page }) => {
+    for (const scheme of ['light', 'dark'] as const) {
+      await page.emulateMedia({ colorScheme: scheme });
+      await page.goto('/');
+      const colors = await page.$$eval('[data-stack-strip] > *', (cells) =>
+        cells.map((cell) => getComputedStyle(cell).borderRightColor),
+      );
+      for (const color of colors) expect(color).not.toBe('rgba(0, 0, 0, 0)');
+    }
+  });
+});

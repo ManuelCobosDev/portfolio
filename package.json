@@ -20,6 +20,7 @@
     "@astrojs/sitemap": "^3.2.1",
     "@fontsource-variable/ibm-plex-sans": "^5.1.1",
     "@fontsource/ibm-plex-mono": "^5.1.1",
+    "@iconify-json/devicon-plain": "^1.2.61",
     "@iconify-json/lucide": "^1.2.16",
     "@iconify-json/simple-icons": "^1.2.16",
     "@tailwindcss/vite": "^4.0.0",
@@ -46,6 +47,7 @@
       "@fontsource-variable/ibm-plex-sans",
       "@fontsource/ibm-plex-mono",
       "@fontsource/ibm-plex-sans",
+      "@iconify-json/devicon-plain",
       "@iconify-json/lucide",
       "@iconify-json/simple-icons"
     ]

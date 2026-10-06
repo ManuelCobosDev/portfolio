@@ -6,7 +6,7 @@ export interface CoreTech {
 }
 
 export const coreTech: CoreTech[] = [
-  { icon: 'simple-icons:openjdk', label: 'Java' },
+  { icon: 'devicon-plain:java', label: 'Java' },
   { icon: 'simple-icons:springboot', label: 'Spring Boot' },
   { icon: 'simple-icons:apachekafka', label: 'Kafka' },
   { icon: 'simple-icons:rabbitmq', label: 'RabbitMQ' },
