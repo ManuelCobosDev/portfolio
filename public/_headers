@@ -32,8 +32,6 @@
   Cache-Control: public, max-age=3600, must-revalidate
   Link: <https://manuelcobos.dev/en/cv/>; rel="canonical"
 
-https://:project.pages.dev/*
-  X-Robots-Tag: noindex
-
-https://:version.:project.pages.dev/*
+# Never index the Worker's own *.workers.dev URLs (production, version and preview).
+https://:worker.:subdomain.workers.dev/*
   X-Robots-Tag: noindex
