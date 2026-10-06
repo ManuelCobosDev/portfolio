@@ -41,10 +41,3 @@ playwright-report/
 # Cloudflare / Wrangler
 .wrangler/
 .dev.vars
-
-# Local build and test artefacts
-.lighthouseci/
-lh-*.out
-lh-*-summary.txt
-pw-run.txt
-pw-focus.txt

@@ -270,7 +270,7 @@ for (const p of pages) {
     }
   }
 
-  // 15. Hidden-section rule (no project entries at launch)
+  // 15. No proyectos/projects section.
   if ($('#proyectos').length || $('#projects').length) {
     fail(`${p.url}: unexpected "proyectos"/"projects" section rendered.`);
   }
@@ -363,7 +363,7 @@ for (const f of [
   if (!existsSync(join(dist, f))) fail(`missing static file: ${f}.`);
 }
 
-// 21d. No HTML comments in the built output.
+// 21d. No HTML comments in the output.
 for (const p of pages) {
   if (p.html.includes('<!--')) fail(`${p.url}: built HTML contains an HTML comment.`);
 }
@@ -392,7 +392,7 @@ if (!existsSync(headersFile)) {
   }
 }
 
-// 22b. Cloudflare serves 404.html for unknown URLs; it must stay out of the index.
+// 22b. 404.html must stay out of the index.
 const notFoundFile = join(dist, '404.html');
 if (!existsSync(notFoundFile)) {
   fail('404.html missing.');
@@ -402,10 +402,10 @@ if (!existsSync(notFoundFile)) {
   if (!robots.includes('noindex')) fail('404.html must be noindex.');
 }
 
-// 22c. No redirects file is needed with the Cloudflare Git integration.
+// 22c. No _redirects file.
 if (existsSync(join(dist, '_redirects'))) fail('_redirects must not be present.');
 
-// 21b. favicon.ico is a valid ICO (ICONDIR header, one 32x32 image).
+// 21b. favicon.ico is a valid 32x32 ICO.
 const icoFile = join(dist, 'favicon.ico');
 if (existsSync(icoFile)) {
   const ico = readFileSync(icoFile);
@@ -417,13 +417,13 @@ if (existsSync(icoFile)) {
   else if (w !== 32 || h !== 32) fail(`favicon.ico: first image is ${w}x${h}, expected 32x32.`);
 }
 
-// 21c. In CI the real portrait is mandatory.
+// 21c. The portrait source is required in CI.
 if (process.env.CI === 'true') {
   const portraitSrc = join(root, 'src', 'assets', 'manuel-cobos-solis.png');
   if (!existsSync(portraitSrc)) fail('src/assets/manuel-cobos-solis.png missing (required in CI).');
 }
 
-// 23. Budgets — document (HTML incl. inlined CSS and JSON-LD).
+// 23. Budgets: document HTML (incl. inlined CSS and JSON-LD).
 let jsGz = 0;
 const jsSeen = new Set();
 for (const p of pages) {

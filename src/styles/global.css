@@ -1,11 +1,11 @@
 @import 'tailwindcss' source(none);
 
-/* Restrict Tailwind's content scan to the site source; automatic scanning also
-   picks up Markdown and emits utilities the site never uses. */
+/* Limit the content scan to site source; the default scan also picks up
+   Markdown and emits unused utilities. */
 @source '../**/*.{astro,ts}';
 
-/* Self-hosted Latin-only font faces (files copied to public/fonts by
-   scripts/prepare-assets.mjs from the Fontsource packages). */
+/* Self-hosted, Latin-only faces; public/fonts is filled by
+   scripts/prepare-assets.mjs. */
 @font-face {
   font-family: 'IBM Plex Sans Variable';
   font-style: normal;
@@ -160,7 +160,7 @@
     border-radius: inherit;
   }
 
-  /* Only animate theme colours after first paint to avoid a flash. */
+  /* Transition theme colours only after first paint to avoid a flash. */
   body.theme-ready,
   body.theme-ready * {
     transition:
@@ -171,8 +171,8 @@
 }
 
 @layer components {
-  /* Layout wrapper. Named "shell" so it does not collide with Tailwind's
-     built-in `container` utility, whose breakpoint max-widths would win. */
+  /* Layout wrapper. Named "shell" to avoid Tailwind's built-in `container`,
+     whose breakpoint max-widths would take precedence. */
   .shell {
     width: 100%;
     max-width: 72rem;
@@ -196,7 +196,7 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* Mono metadata label: dates, key–value labels, technology lines. */
+  /* Mono label for dates and other metadata. */
   .mono-label {
     font-family: var(--font-mono);
     font-size: 0.8125rem;
@@ -204,7 +204,7 @@
     letter-spacing: 0.01em;
   }
 
-  /* Stack items: keep a technology name on one line, let notes wrap. */
+  /* Stack pair: name stays on one line, note wraps. */
   .stack-name {
     white-space: nowrap;
   }
@@ -214,7 +214,7 @@
     overflow-wrap: anywhere;
   }
 
-  /* External-link arrow: never underlined, tight against the label. */
+  /* External-link arrow: no underline, tight against the label. */
   .external-icon {
     display: inline-block;
     margin-left: 0.2em;
@@ -279,7 +279,7 @@
     padding: 0.15em 0.4em;
   }
 
-  /* Header brand name is visually hidden on very narrow screens. */
+  /* Visually hide the brand name on very narrow screens. */
   @media (max-width: 399.98px) {
     .brand-name {
       position: absolute;
@@ -322,7 +322,7 @@
     display: none;
   }
 
-  /* Accent dash bullet used by experience entries and the work prose. */
+  /* Accent dash bullet for experience entries and work prose. */
   .accent-list {
     list-style: none;
     padding: 0;
@@ -344,7 +344,6 @@
     background: var(--accent);
   }
 
-  /* Inline list separated by middots (stack groups). */
   .middot-list {
     list-style: none;
     padding: 0;
@@ -361,7 +360,6 @@
     color: var(--subtle);
   }
 
-  /* Copy-email button icon swap. */
   [data-copy-email] .icon-check {
     display: none;
   }
@@ -472,8 +470,7 @@
     font-size: 9.5pt;
   }
 
-  /* Hide the site chrome (header, footer, toolbar, theme and language
-     controls) so the CV prints as a clean document. */
+  /* Hide site chrome (header, footer, toolbar, controls) so the CV prints clean. */
   header,
   footer,
   .no-print {
@@ -484,7 +481,7 @@
     break-inside: avoid;
   }
 
-  /* Scroll-driven reveals must never hide content on paper. */
+  /* Reveals must never hide content on paper. */
   .cv-doc *,
   .cv-doc *::before,
   .cv-doc *::after {
@@ -493,7 +490,7 @@
     opacity: 1 !important;
   }
 
-  /* Compact the CV so it fits on two A4 pages. */
+  /* Compact the CV to fit two A4 pages. */
   .cv-doc {
     max-width: none !important;
     padding: 0 !important;
