@@ -40,7 +40,6 @@ playwright-report/
 
 # Lighthouse / audit artefacts
 .lighthouseci/
-docs/audit-screenshots/
 lh-*.out
 lh-*-summary.txt
 pw-run.txt

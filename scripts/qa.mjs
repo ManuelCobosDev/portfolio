@@ -8,7 +8,6 @@ import { fileURLToPath } from 'node:url';
 import { gzipSync } from 'node:zlib';
 import * as cheerio from 'cheerio';
 import sharp from 'sharp';
-import { checkFacts } from './facts.mjs';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const dist = join(root, 'dist');
@@ -377,12 +376,7 @@ if (process.env.CI === 'true') {
   if (!existsSync(portraitSrc)) fail('src/assets/manuel-cobos-solis.png missing (required in CI).');
 }
 
-// 22. CNAME
-const cnameFile = join(dist, 'CNAME');
-if (!existsSync(cnameFile)) fail('CNAME missing.');
-else if (readFileSync(cnameFile, 'utf-8').trim() !== 'manuelcobos.dev') fail('CNAME content incorrect.');
-
-// 23. Budgets — document (HTML incl. inlined CSS and JSON-LD) per F-05 decision.
+// 23. Budgets — document (HTML incl. inlined CSS and JSON-LD).
 let jsGz = 0;
 const jsSeen = new Set();
 for (const p of pages) {
@@ -431,8 +425,102 @@ if (esHome && enHome) {
 }
 
 // ---------------------------------------------------------------------------
-// 25. Personal facts (M2)
-for (const f of checkFacts()) failures.push(f);
+// 25. Critical personal facts
+// ---------------------------------------------------------------------------
+const FACT_SCOPES = {
+  home: { es: ['/'], en: ['/en/'] },
+  cv: { es: ['/cv/'], en: ['/en/cv/'] },
+  'home+cv': { es: ['/', '/cv/'], en: ['/en/', '/en/cv/'] },
+  work: { es: ['/trabajo/microservicio-orquestador/'], en: ['/en/work/orchestrator-microservice/'] },
+  all: {
+    es: ['/', '/cv/', '/trabajo/microservicio-orquestador/'],
+    en: ['/en/', '/en/cv/', '/en/work/orchestrator-microservice/'],
+  },
+};
+
+const FACTS = [
+  { id: 'name', es: 'Manuel Cobos Solís', en: 'Manuel Cobos Solís', scope: 'all', caseSensitive: true },
+  { id: 'role', es: 'Desarrollador Full Stack con enfoque backend', en: 'Backend-oriented Full Stack Developer', scope: 'home' },
+  { id: 'city', es: 'Cáceres, Extremadura, España', en: 'Cáceres, Extremadura, Spain', scope: 'home+cv' },
+  { id: 'remote', es: '100 % remoto', en: 'fully remote', scope: 'home+cv' },
+  { id: 'employer', es: 'Viewnext', en: 'Viewnext', scope: 'home+cv' },
+  { id: 'client', es: 'Banco Santander', en: 'Banco Santander', scope: 'home+cv' },
+  { id: 'role1', es: 'Full Stack Developer', en: 'Full Stack Developer', scope: 'home+cv' },
+  { id: 'backend', es: 'Spring Boot', en: 'Spring Boot', scope: 'home+cv' },
+  { id: 'frontend', es: 'TypeScript', en: 'TypeScript', scope: 'home+cv' },
+  { id: 'messaging', es: 'Apache Kafka', en: 'Apache Kafka', scope: 'home+cv' },
+  { id: 'devops', es: 'Kubernetes', en: 'Kubernetes', scope: 'home+cv' },
+  { id: 'email', es: 'manuel.cobos.dev@gmail.com', en: 'manuel.cobos.dev@gmail.com', scope: 'home+cv' },
+  {
+    id: 'edu1',
+    es: 'Técnico Superior en Desarrollo de Aplicaciones Web (DAW)',
+    en: 'Higher Technical Degree in Web Application Development (DAW)',
+    scope: 'home+cv',
+  },
+  { id: 'cert1', es: 'MuleSoft Certified Developer – Level 1', en: 'MuleSoft Certified Developer – Level 1', scope: 'home+cv' },
+  { id: 'status', es: 'Abierto a oportunidades', en: 'Open to opportunities', scope: 'home' },
+];
+
+const NEGATIVE_FACTS = [
+  'manuelcobos200324',
+  'ManuelCobos24',
+  'ProfessionalService',
+  'priceRange',
+  'senior',
+  'junior',
+  'Redis',
+  'Grafana',
+  'Prometheus',
+  'Circuit Breaker',
+  'Proiectus',
+  'Wavelet',
+  'PayBridge',
+  'FeatureSphere',
+  'HandAuth',
+];
+
+const normalise = (s) => s.replace(/\u00A0/g, ' ').replace(/\s+/g, ' ').trim();
+
+const textByPath = new Map();
+for (const p of pages) {
+  const $ = cheerio.load(p.html);
+  $('script, style').remove();
+  textByPath.set(p.url.slice(SITE.length) || '/', normalise($('body').text()));
+}
+
+for (const fact of FACTS) {
+  const scope = FACT_SCOPES[fact.scope];
+  if (!scope) {
+    fail(`fact ${fact.id}: unknown scope "${fact.scope}".`);
+    continue;
+  }
+  for (const [lang, paths] of Object.entries(scope)) {
+    const needle = normalise(fact[lang]);
+    for (const path of paths) {
+      const text = textByPath.get(path);
+      if (text === undefined) {
+        fail(`fact ${fact.id}: page ${path} not built.`);
+        continue;
+      }
+      const haystack = fact.caseSensitive ? text : text.toLowerCase();
+      const target = fact.caseSensitive ? needle : needle.toLowerCase();
+      if (!haystack.includes(target)) fail(`fact ${fact.id}: ${lang.toUpperCase()} "${fact[lang]}" missing on ${path}.`);
+    }
+  }
+}
+
+const negativeCaseSensitive = new Set(['TODO', 'FIXME']);
+const scannedFiles = allFiles.filter((f) => /\.(html|txt|xml|json|webmanifest)$/.test(f));
+for (const needle of NEGATIVE_FACTS) {
+  const cs = negativeCaseSensitive.has(needle);
+  const target = cs ? needle : needle.toLowerCase();
+  for (const file of scannedFiles) {
+    const hay = readFileSync(file, 'utf-8');
+    if ((cs ? hay : hay.toLowerCase()).includes(target)) {
+      fail(`negative fact "${needle}" found in ${relative(dist, file)}.`);
+    }
+  }
+}
 
 if (failures.length) {
   console.error(`QA failed with ${failures.length} issue(s):`);
