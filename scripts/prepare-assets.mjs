@@ -1,12 +1,6 @@
 /**
- * prepare-assets.mjs
- *
- * Runs before the Astro build (see `npm run build`). It:
- *   1. Copies the Latin-only woff2 fonts from Fontsource into public/fonts.
- *   2. Produces public/images/manuel-cobos-solis.jpg from the source portrait
- *      (or a neutral placeholder if the user has not placed the photo yet).
- *   3. Renders PNG icons (favicon.ico, apple-touch-icon, icon-192, icon-512)
- *      from public/favicon.svg.
+ * Copies the Latin-only woff2 fonts, the portrait JPG and the PNG icons into
+ * public/ before the build.
  */
 import { fileURLToPath } from 'node:url';
 import { mkdir, copyFile, access, readFile, writeFile } from 'node:fs/promises';
@@ -18,8 +12,8 @@ const nodeModules = path.join(root, 'node_modules');
 const srcAssets = path.join(root, 'src', 'assets');
 const publicDir = path.join(root, 'public');
 
-// In CI / production the real portrait is mandatory. It is only optional for
-// local development, where a neutral placeholder is generated so the build runs.
+// In CI / production the real portrait is mandatory; local development falls
+// back to a neutral placeholder so the build runs.
 const isProduction = process.env.CI === 'true' || process.env.NODE_ENV === 'production';
 
 const PORTRAIT_SOURCE = path.join(srcAssets, 'manuel-cobos-solis.png');
@@ -87,7 +81,7 @@ async function preparePortrait() {
     await mkdir(srcAssets, { recursive: true });
     await sharp(Buffer.from(PLACEHOLDER_SVG)).png().toFile(PORTRAIT_SOURCE);
     console.warn('[prepare-assets] WARNING: src/assets/manuel-cobos-solis.png is missing.');
-    console.warn('[prepare-assets] Generated a neutral "MC" placeholder for LOCAL development only.');
+    console.warn('[prepare-assets] neutral "MC" placeholder written for local development only.');
     console.warn('[prepare-assets] The production build (CI=true) fails until the real portrait is added.');
   }
 
@@ -95,7 +89,7 @@ async function preparePortrait() {
     .resize(800, 800, { fit: 'cover', position: 'attention' })
     .jpeg({ quality: 82, mozjpeg: true })
     .toFile(PORTRAIT_OUT);
-  console.log('[prepare-assets] portrait JPG generated.');
+  console.log('[prepare-assets] portrait JPG written.');
 }
 
 /** Builds a PNG-compressed ICO file (Vista+ format) from an array of PNG buffers. */
@@ -137,7 +131,7 @@ async function prepareIcons() {
 
   await sharp(svg).resize(192, 192).png().toFile(path.join(publicDir, 'icon-192.png'));
   await sharp(svg).resize(512, 512).png().toFile(path.join(publicDir, 'icon-512.png'));
-  console.log('[prepare-assets] icons generated.');
+  console.log('[prepare-assets] icons written.');
 }
 
 await copyFonts();

@@ -1,6 +1,6 @@
 /**
- * qa.mjs — Quality gates for the built site (section 12.1 of the brief).
- * Runs against dist/ and exits non-zero on any failure.
+ * Quality gates for the built site. Runs against dist/ and exits non-zero on
+ * any failure.
  */
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
@@ -18,7 +18,6 @@ const fail = (msg) => failures.push(msg);
 
 const gzip = (buf) => gzipSync(buf).length;
 
-/** Recursively list files under dist. */
 function walk(dir) {
   const out = [];
   for (const name of readdirSync(dir)) {
@@ -32,7 +31,6 @@ function walk(dir) {
 const allFiles = walk(dist);
 const htmlFiles = allFiles.filter((f) => f.endsWith('.html'));
 
-/** Derive the public URL of a dist file. */
 function urlOfFile(file) {
   let rel = relative(dist, file).split(sep).join('/');
   if (rel === '404.html') return `${SITE}/404.html`;
@@ -60,9 +58,7 @@ const FORBIDDEN_CI = [
 
 const FORBIDDEN_CS = ['TODO', 'FIXME', 'NaN', 'undefined'];
 
-// ---------------------------------------------------------------------------
 // Load all pages
-// ---------------------------------------------------------------------------
 const pages = [];
 for (const file of htmlFiles) {
   const html = readFileSync(file, 'utf-8');
@@ -84,9 +80,7 @@ const jsonLdFromPage = (p) => {
   return nodes;
 };
 
-// ---------------------------------------------------------------------------
 // Per-page checks
-// ---------------------------------------------------------------------------
 const titles = [];
 const descriptions = [];
 for (const p of pages) {
@@ -284,9 +278,7 @@ for (const p of pages) {
 if (new Set(titles).size !== titles.length) fail('Duplicate <title> values across site.');
 if (new Set(descriptions).size !== descriptions.length) fail('Duplicate meta description values across site.');
 
-// ---------------------------------------------------------------------------
 // Site-level checks
-// ---------------------------------------------------------------------------
 
 // 17. Sitemap
 const sitemapIndex = join(dist, 'sitemap-index.xml');
@@ -359,6 +351,11 @@ for (const f of ['favicon.svg', 'favicon.ico', 'apple-touch-icon.png', 'icon-192
   if (!existsSync(join(dist, f))) fail(`missing static file: ${f}.`);
 }
 
+// 21d. No HTML comments in the built output.
+for (const p of pages) {
+  if (p.html.includes('<!--')) fail(`${p.url}: built HTML contains an HTML comment.`);
+}
+
 // 21b. favicon.ico is a valid ICO (ICONDIR header, one 32x32 image).
 const icoFile = join(dist, 'favicon.ico');
 if (existsSync(icoFile)) {
@@ -370,7 +367,7 @@ if (existsSync(icoFile)) {
   else if (w !== 32 || h !== 32) fail(`favicon.ico: first image is ${w}x${h}, expected 32x32.`);
 }
 
-// 21c. In CI the real portrait is mandatory (F-01).
+// 21c. In CI the real portrait is mandatory.
 if (process.env.CI === 'true') {
   const portraitSrc = join(root, 'src', 'assets', 'manuel-cobos-solis.png');
   if (!existsSync(portraitSrc)) fail('src/assets/manuel-cobos-solis.png missing (required in CI).');
@@ -424,9 +421,7 @@ if (esHome && enHome) {
   }
 }
 
-// ---------------------------------------------------------------------------
 // 25. Critical personal facts
-// ---------------------------------------------------------------------------
 const FACT_SCOPES = {
   home: { es: ['/'], en: ['/en/'] },
   cv: { es: ['/cv/'], en: ['/en/cv/'] },

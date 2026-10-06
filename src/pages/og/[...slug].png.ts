@@ -7,12 +7,12 @@ import path from 'node:path';
 import { profile } from '../../data/profile';
 import { slugFromId } from '../../lib/site';
 
-interface OgSpec {
+interface OgCard {
   title: string;
   subtitle: string;
 }
 
-async function getSpec(name: string): Promise<OgSpec> {
+async function getCard(name: string): Promise<OgCard> {
   if (name === 'home-es') return { title: profile.name, subtitle: profile.role.es };
   if (name === 'home-en') return { title: profile.name, subtitle: profile.role.en };
   if (name === 'cv-es') return { title: 'Currículum', subtitle: profile.name };
@@ -34,7 +34,7 @@ export async function getStaticPaths() {
 
 export const GET: APIRoute = async ({ params }) => {
   const name = Array.isArray(params.slug) ? params.slug[0] : params.slug;
-  const spec = await getSpec(name ?? 'home-es');
+  const card = await getCard(name ?? 'home-es');
 
   const fontDir = path.resolve('node_modules/@fontsource/ibm-plex-sans/files');
   const [font400, font600] = await Promise.all([
@@ -74,14 +74,14 @@ export const GET: APIRoute = async ({ params }) => {
                     {
                       type: 'div',
                       props: {
-                        children: spec.title,
+                        children: card.title,
                         style: { fontSize: 84, fontWeight: 600, color: '#E8EEF8', lineHeight: 1.1 },
                       },
                     },
                     {
                       type: 'div',
                       props: {
-                        children: spec.subtitle,
+                        children: card.subtitle,
                         style: { fontSize: 40, color: '#A9B8D0', marginTop: 20 },
                       },
                     },

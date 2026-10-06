@@ -89,12 +89,6 @@ export function personNode(lang: Lang) {
         credentialCategory: 'certification',
         recognizedBy: { '@type': 'Organization', name: 'Linux Professional Institute' },
       },
-      {
-        '@type': 'EducationalOccupationalCredential',
-        name: 'Claude Code in Action',
-        credentialCategory: 'certificate',
-        recognizedBy: { '@type': 'Organization', name: 'Anthropic' },
-      },
     ],
     sameAs: [profile.github, profile.linkedin],
   };

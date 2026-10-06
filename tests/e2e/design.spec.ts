@@ -10,8 +10,8 @@ async function settle(page: Page) {
   await page.evaluate(() => document.fonts.ready);
 }
 
-test.describe('M4 design tokens and structure', () => {
-  test('colour tokens match the brief in both themes', async ({ page }) => {
+test.describe('design tokens and structure', () => {
+  test('colour tokens match the design tokens in both themes', async ({ page }) => {
     const read = (name: string) =>
       page.evaluate((n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim(), name);
     await page.emulateMedia({ colorScheme: 'light' });
@@ -123,26 +123,24 @@ test.describe('M4 design tokens and structure', () => {
   });
 
   test('built CSS has no gradients, blur or backdrop-filter', async () => {
-    const page = pages[0];
     const html = readFileSync(path.join(root, 'dist', 'index.html'), 'utf-8');
     const css = (html.match(/<style[^>]*>([\s\S]*?)<\/style>/g) ?? []).join('');
     expect(css).not.toContain('gradient(');
     expect(css).not.toContain('backdrop-filter');
     expect(css).not.toContain('filter: blur');
     expect(css).not.toContain('text-transform: uppercase');
-    void page;
   });
 });
 
-test.describe('M5 interactions', () => {
-  test('F-04 no nav link is current at the top of the page', async ({ page }) => {
+test.describe('interactions', () => {
+  test('no nav link is current at the top of the page', async ({ page }) => {
     await page.goto('/');
     await page.evaluate(() => window.scrollTo(0, 0));
     await page.waitForTimeout(300);
     expect(await page.locator('nav[aria-label] a[aria-current]').count()).toBe(0);
   });
 
-  test('F-04 aria-current follows scrolling', async ({ page }) => {
+  test('aria-current follows scrolling', async ({ page }) => {
     await page.goto('/');
     await page.locator('#contacto').scrollIntoViewIfNeeded();
     await page.waitForTimeout(400);
@@ -150,7 +148,7 @@ test.describe('M5 interactions', () => {
     expect(current).toContain('#contacto');
   });
 
-  test('F-04 deep link /#contacto marks the section', async ({ page }) => {
+  test('deep link /#contacto marks the section', async ({ page }) => {
     await page.goto('/#contacto');
     await expect(page.locator('#contacto')).toBeInViewport({ ratio: 0.2 });
     await page.waitForTimeout(300);
@@ -158,7 +156,7 @@ test.describe('M5 interactions', () => {
     expect(current).toContain('#contacto');
   });
 
-  test('F-09 period follows the external link with no gap', async ({ page }) => {
+  test('period follows the external link with no gap', async ({ page }) => {
     await page.goto('/');
     const first = await page.evaluate(() => {
       const a = [...document.querySelectorAll('a')].find(
@@ -174,7 +172,7 @@ test.describe('M5 interactions', () => {
     expect(underline).toBe('none');
   });
 
-  test('F-10 footer language link has lang, hreflang and its own language', async ({ page }) => {
+  test('footer language link has lang, hreflang and its own language', async ({ page }) => {
     for (const [url, name, code] of [
       ['/', 'English', 'en'],
       ['/en/', 'Español', 'es'],
@@ -251,7 +249,7 @@ test.describe('M5 interactions', () => {
   });
 });
 
-test.describe('M6 motion', () => {
+test.describe('motion', () => {
   test('reduced motion stops all animation', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/');

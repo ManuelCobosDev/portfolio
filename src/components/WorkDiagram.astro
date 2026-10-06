@@ -43,7 +43,6 @@ const destinations = [t.kafka, t.rabbitmq, t.webclient, t.persistence];
 <figure aria-label={t.aria} class="my-8">
   <figcaption class="mb-6 max-w-[68ch] text-sm text-muted">{t.caption}</figcaption>
 
-  <!-- Mobile: single column with ↓ connectors -->
   <div class="flex flex-col items-center gap-1 md:hidden">
     <div class="diagram-box w-full">{t.client}</div>
     <div class="diagram-arrow-down" aria-hidden="true">↓</div>
@@ -59,7 +58,6 @@ const destinations = [t.kafka, t.rabbitmq, t.webclient, t.persistence];
     }
   </div>
 
-  <!-- Desktop: three columns -->
   <div class="hidden grid-cols-[1fr_2.5rem_1fr_2.5rem_1fr] items-center gap-1 md:grid">
     <div class="diagram-box">{t.client}</div>
     <div class="flow-arrow" aria-hidden="true"></div>

@@ -1,7 +1,7 @@
 @import 'tailwindcss' source(none);
 
-/* Only scan site source. Without this, Tailwind also scans docs/*.md (the brief
-   lists forbidden classes as examples) and emits unused/forbidden utilities. */
+/* Restrict Tailwind's content scan to the site source; automatic scanning also
+   picks up Markdown and emits utilities the site never uses. */
 @source '../**/*.{astro,ts}';
 
 /* Self-hosted Latin-only font faces (files copied to public/fonts by
@@ -197,7 +197,7 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* Mono metadata label: dates, spec-sheet labels, technology lines. */
+  /* Mono metadata label: dates, key–value labels, technology lines. */
   .mono-label {
     font-family: var(--font-mono);
     font-size: 0.8125rem;
@@ -417,7 +417,7 @@
   }
 }
 
-/* ---- Motion ------------------------------------------------------------ */
+/* Motion */
 
 @keyframes rise {
   from {
@@ -458,7 +458,7 @@
   animation-timing-function: ease;
 }
 
-/* ---- Print ------------------------------------------------------------- */
+/* Print */
 
 @media print {
   @page {

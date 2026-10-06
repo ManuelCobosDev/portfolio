@@ -47,13 +47,6 @@ export const certifications: CertificationItem[] = [
   },
   {
     title: {
-      es: 'Claude Code in Action',
-      en: 'Claude Code in Action',
-    },
-    issuer: { es: 'Anthropic', en: 'Anthropic' },
-  },
-  {
-    title: {
       es: 'Inglés B2',
       en: 'English B2',
     },
