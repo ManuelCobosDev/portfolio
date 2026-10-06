@@ -24,29 +24,51 @@ test.describe('responsive layout', () => {
   test('interactive targets are at least 44x44 px at 390px', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 900 });
     await page.goto('/');
+    await page.locator('details[data-menu] summary').click();
     const tooSmall = await page.evaluate(() => {
-      const targets = Array.from(
-        document.querySelectorAll<HTMLElement>('a, button, summary'),
-      ).filter((el) => {
-        const r = el.getBoundingClientRect();
-        return r.width > 0 && r.height > 0;
-      });
-      return targets
-        .filter((el) => el.getBoundingClientRect().width < 44 || el.getBoundingClientRect().height < 44)
-        .map((el) => el.textContent?.trim() || el.tagName);
+      const selector = 'button, summary, nav a, header a[aria-label]';
+      return Array.from(document.querySelectorAll<HTMLElement>(selector))
+        .filter((el) => {
+          const r = el.getBoundingClientRect();
+          return r.width > 0 && r.height > 0;
+        })
+        .filter((el) => {
+          const r = el.getBoundingClientRect();
+          return r.height < 43.5 || r.width < 43.5;
+        })
+        .map(
+          (el) =>
+            `${el.tagName} ${JSON.stringify(el.textContent?.trim().slice(0, 24))} ${Math.round(
+              el.getBoundingClientRect().width,
+            )}x${Math.round(el.getBoundingClientRect().height)}`,
+        );
     });
     expect(tooSmall).toEqual([]);
   });
 });
 
 test.describe('accessibility', () => {
-  for (const path of ['/', '/en/', '/cv/', '/trabajo/microservicio-orquestador/']) {
-    test(`axe scan has no WCAG violations on ${path}`, async ({ page }) => {
-      await page.goto(path);
-      const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze();
-      const violations = results.violations.filter((v) => v.impact !== null);
-      expect(violations).toEqual([]);
-    });
+  const scanPages = ['/', '/en/', '/cv/', '/en/cv/', '/trabajo/microservicio-orquestador/', '/en/work/orchestrator-microservice/'];
+  for (const path of scanPages) {
+    for (const width of [360, 768, 1440]) {
+      for (const colorScheme of ['light', 'dark'] as const) {
+        test(`axe clean on ${path} @${width} ${colorScheme}`, async ({ page }) => {
+          test.setTimeout(90_000);
+          await page.setViewportSize({ width, height: 900 });
+          await page.emulateMedia({ colorScheme, reducedMotion: 'reduce' });
+          await page.goto(path);
+          await page.evaluate(() => document.fonts.ready);
+          const results = await new AxeBuilder({ page })
+            .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'])
+            .analyze();
+          const violations = results.violations.filter((v) => v.impact !== null);
+          const summary = violations.map(
+            (v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(' | ')}`,
+          );
+          expect(summary).toEqual([]);
+        });
+      }
+    }
   }
 });
 
