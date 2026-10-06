@@ -2,7 +2,6 @@
 import type { Lang } from '../i18n/utils';
 import { pick } from '../i18n/utils';
 import { ui } from '../i18n/ui';
-import { Icon } from 'astro-icon/components';
 
 interface WorkRow {
   slug: string;
@@ -34,13 +33,10 @@ const readLabel = (kind: 'case-study' | 'project') => pick(ui[kind === 'case-stu
             {entry.title}
           </h3>
           <p class="mt-1.5 max-w-[62ch] text-muted">{entry.summary}</p>
-          <p class="mono-label mt-2.5 text-muted">
-            {entry.stack.join(' · ')}
-            <span class="sr-only"> — {readLabel(entry.kind)}</span>
-          </p>
+          <p class="mono-label mt-2.5 text-muted">{entry.stack.join(' · ')}</p>
         </div>
-        <span class="hidden shrink-0 text-subtle transition-transform duration-150 group-hover:translate-x-0.5 lg:block" aria-hidden="true">
-          <Icon name="lucide:arrow-right" class="h-6 w-6" />
+        <span class="shrink-0 whitespace-nowrap text-[15px] font-medium text-accent transition-transform duration-150 group-hover:translate-x-0.5">
+          {readLabel(entry.kind)} <span aria-hidden="true">→</span>
         </span>
       </a>
     ))

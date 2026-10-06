@@ -17,36 +17,40 @@ const { lang } = Astro.props;
   data-copy-email
   data-email={profile.email}
   data-label-copied={pick(ui['email.copied'], lang)}
+  data-label-failed={pick(ui['email.copyFailed'], lang)}
+  title={pick(ui['email.copy'], lang)}
   aria-label={pick(ui['email.copy'], lang)}
   class="inline-flex h-11 w-11 items-center justify-center rounded-md border border-accent text-accent transition-colors hover:bg-accent-soft"
 >
   <Icon name="lucide:copy" class="icon-copy h-5 w-5" aria-hidden="true" />
   <Icon name="lucide:check" class="icon-check h-5 w-5" aria-hidden="true" />
 </button>
-<span class="sr-only" role="status" aria-live="polite" data-copy-status></span>
+<span role="status" aria-live="polite" data-copy-status class="text-[15px] text-muted"></span>
 
 <script>
   const buttons = document.querySelectorAll<HTMLButtonElement>('[data-copy-email]');
   for (const button of buttons) {
     button.addEventListener('click', async () => {
       const email = button.dataset.email ?? '';
+      let copied = true;
       try {
         await navigator.clipboard.writeText(email);
       } catch {
-        const textarea = document.createElement('textarea');
-        textarea.value = email;
-        textarea.setAttribute('readonly', '');
-        textarea.style.position = 'fixed';
-        textarea.style.opacity = '0';
-        document.body.appendChild(textarea);
-        textarea.select();
-        const legacyExec = Reflect.get(document, 'execCommand') as ((command: string) => boolean) | undefined;
-        legacyExec?.('copy');
-        textarea.remove();
+        copied = false;
+        const mailLink = document.querySelector<HTMLAnchorElement>(`a[href="mailto:${email}"]`);
+        if (mailLink) {
+          const range = document.createRange();
+          range.selectNodeContents(mailLink);
+          const selection = window.getSelection();
+          selection?.removeAllRanges();
+          selection?.addRange(range);
+        }
       }
-      const status = button.parentElement?.querySelector('[data-copy-status]');
-      if (status) status.textContent = button.dataset.labelCopied ?? '';
-      button.classList.add('copied');
+      const status = button.parentElement?.querySelector<HTMLElement>('[data-copy-status]');
+      if (status) {
+        status.textContent = (copied ? button.dataset.labelCopied : button.dataset.labelFailed) ?? '';
+      }
+      button.classList.toggle('copied', copied);
       window.setTimeout(() => {
         button.classList.remove('copied');
         if (status) status.textContent = '';
