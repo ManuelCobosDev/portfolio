@@ -71,17 +71,12 @@ test.describe('content security policy', () => {
     expect(violations).toEqual([]);
   });
 
-  test('CV print control still works', async ({ page }) => {
+  test('CV download still works', async ({ page }) => {
     const violations = await applyCsp(page);
-    await page.addInitScript(() => {
-      (window as unknown as { __printed: number }).__printed = 0;
-      window.print = () => {
-        (window as unknown as { __printed: number }).__printed += 1;
-      };
-    });
     await page.goto('/cv/');
-    await page.locator('[data-print]').click();
-    expect(await page.evaluate(() => (window as unknown as { __printed: number }).__printed)).toBe(1);
+    const link = page.locator('a[download]').first();
+    const [download] = await Promise.all([page.waitForEvent('download'), link.click()]);
+    expect(download.suggestedFilename()).toBe('Manuel-Cobos-Solis-CV-ES.pdf');
     expect(violations).toEqual([]);
   });
 });

@@ -10,6 +10,7 @@ export const ui = {
   'nav.education': { es: 'Formación', en: 'Education' },
   'nav.contact': { es: 'Contacto', en: 'Contact' },
   'nav.cv': { es: 'CV', en: 'Résumé' },
+  'nav.cvPdf': { es: 'CV (PDF)', en: 'Résumé (PDF)' },
   'nav.label': { es: 'Navegación principal', en: 'Main navigation' },
   'menu.open': { es: 'Menú', en: 'Menu' },
   'theme.toDark': { es: 'Cambiar a tema oscuro', en: 'Switch to dark theme' },

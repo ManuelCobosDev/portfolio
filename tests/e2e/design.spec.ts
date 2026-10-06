@@ -208,19 +208,6 @@ test.describe('interactions', () => {
     await expect(page.locator('h1')).toContainText('Microservicio orquestador');
   });
 
-  test('CV print button calls window.print', async ({ page }) => {
-    await page.goto('/cv/');
-    await page.addInitScript(() => {
-      (window as unknown as { __printed: boolean }).__printed = false;
-      window.print = () => {
-        (window as unknown as { __printed: boolean }).__printed = true;
-      };
-    });
-    await page.goto('/cv/');
-    await page.locator('[data-print]').click();
-    expect(await page.evaluate(() => (window as unknown as { __printed: boolean }).__printed)).toBe(true);
-  });
-
   test('mobile menu opens, closes with Escape and returns focus', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 900 });
     await page.goto('/');

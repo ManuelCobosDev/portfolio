@@ -226,7 +226,9 @@ for (const p of pages) {
       const targetUrl = `${SITE}${pathPart === '' ? '/' : pathPart}`;
       const target = byUrl.get(targetUrl);
       if (!target) {
-        fail(`${p.url}: internal link ${href} resolves to no page.`);
+        const rel = pathPart.replace(/^\//, '');
+        const file = rel === '' || rel.endsWith('/') ? join(dist, rel, 'index.html') : join(dist, rel);
+        if (!existsSync(file)) fail(`${p.url}: internal link ${href} resolves to nothing.`);
         return;
       }
       if (fragment && !target.$(`#${fragment}`).length) {
@@ -333,7 +335,9 @@ else {
   const urls = llms.match(/https:\/\/manuelcobos\.dev[^\s)]+/g) ?? [];
   for (const url of urls) {
     const clean = url.replace(/[).,]$/, '');
-    if (!byUrl.has(clean)) fail(`llms.txt URL ${clean} does not resolve.`);
+    const rel = clean.slice(SITE.length).replace(/^\//, '');
+    const target = rel === '' || rel.endsWith('/') ? join(dist, rel, 'index.html') : join(dist, rel);
+    if (!byUrl.has(clean) && !existsSync(target)) fail(`llms.txt URL ${clean} does not resolve.`);
   }
 }
 

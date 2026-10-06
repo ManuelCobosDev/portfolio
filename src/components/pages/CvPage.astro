@@ -6,7 +6,6 @@ import { profile } from '../../data/profile';
 import { degrees, certifications } from '../../data/education';
 import { stackGroups } from '../../data/stack';
 import { fullYearsSince } from '../../lib/years';
-import { cvPdfAvailable } from '../../lib/cv';
 import Experience from '../Experience.astro';
 
 interface Props {
@@ -15,6 +14,7 @@ interface Props {
 
 const { lang } = Astro.props;
 const years = fullYearsSince(profile.experienceStart);
+const pdfHref = lang === 'es' ? '/cv/Manuel-Cobos-Solis-CV-ES.pdf' : '/cv/Manuel-Cobos-Solis-CV-EN.pdf';
 
 const profileText = {
   es: `Desarrollador Full Stack con enfoque backend y más de ${years} años de experiencia en el sector bancario. Java 17 y 21, Spring Boot, microservicios y mensajería con Kafka y RabbitMQ en el servidor; Angular y TypeScript en el cliente.`,
@@ -36,25 +36,22 @@ const h2Class = 'mt-10 border-t border-line pt-4 text-[1.5rem] font-semibold lea
 ---
 
 <div class="shell section-pad cv-doc">
-  <div class="no-print mb-8 flex flex-wrap gap-3">
+  <div class="no-print mb-8 flex flex-col gap-3 md:flex-row md:items-center md:justify-end">
+    <a
+      href={pdfHref}
+      download
+      class="inline-flex min-h-11 w-full items-center justify-center rounded-md bg-accent px-5 py-3 text-[15px] font-medium text-on-accent transition-colors hover:bg-accent-hover md:w-auto"
+    >
+      {pick(ui['cv.download'], lang)}
+    </a>
     <button
       type="button"
-      data-print
-      class="inline-flex min-h-11 items-center rounded-md border border-accent px-5 py-3 text-[15px] font-medium text-accent transition-colors hover:bg-accent-soft"
+      data-print-pdf
+      data-pdf-href={pdfHref}
+      class="inline-flex min-h-11 w-full items-center justify-center rounded-md border border-accent px-5 py-3 text-[15px] font-medium text-accent transition-colors hover:bg-accent-soft md:w-auto"
     >
       {pick(ui['cv.print'], lang)}
     </button>
-    {
-      cvPdfAvailable && (
-        <a
-          href="/cv/Manuel-Cobos-Solis-CV.pdf"
-          download
-          class="inline-flex min-h-11 items-center rounded-md bg-accent px-5 py-3 text-[15px] font-medium text-on-accent transition-colors hover:bg-accent-hover"
-        >
-          {pick(ui['cv.download'], lang)}
-        </a>
-      )
-    }
   </div>
 
   <div class="max-w-[72ch]">
@@ -134,7 +131,45 @@ const h2Class = 'mt-10 border-t border-line pt-4 text-[1.5rem] font-semibold lea
 </div>
 
 <script>
-  for (const button of document.querySelectorAll<HTMLButtonElement>('[data-print]')) {
-    button.addEventListener('click', () => window.print());
+  for (const button of document.querySelectorAll<HTMLButtonElement>('[data-print-pdf]')) {
+    button.addEventListener('click', () => {
+      const href = button.dataset.pdfHref ?? '';
+      const iframe = document.createElement('iframe');
+      iframe.setAttribute('aria-hidden', 'true');
+      iframe.style.position = 'fixed';
+      iframe.style.right = '0';
+      iframe.style.bottom = '0';
+      iframe.style.width = '0';
+      iframe.style.height = '0';
+      iframe.style.border = '0';
+      iframe.src = href;
+
+      let settled = false;
+      const remove = () => {
+        if (settled) return;
+        settled = true;
+        window.clearTimeout(timer);
+        iframe.remove();
+      };
+      const openInTab = () => {
+        if (settled) return;
+        remove();
+        window.open(href, '_blank', 'noopener');
+      };
+      const timer = window.setTimeout(openInTab, 3000);
+
+      iframe.addEventListener('load', () => {
+        if (settled) return;
+        try {
+          iframe.contentWindow?.focus();
+          iframe.contentWindow?.print();
+          window.setTimeout(remove, 1000);
+        } catch {
+          openInTab();
+        }
+      });
+
+      document.body.appendChild(iframe);
+    });
   }
 </script>

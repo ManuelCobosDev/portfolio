@@ -10,10 +10,12 @@ export const GET: APIRoute = async () => {
   const pages = [
     '- [Inicio](https://manuelcobos.dev/): presentación, experiencia, stack, formación y contacto',
     '- [CV](https://manuelcobos.dev/cv/): currículum imprimible',
+    '- [CV (PDF)](https://manuelcobos.dev/cv/Manuel-Cobos-Solis-CV-ES.pdf)',
   ];
   if (esWork) pages.push(`- [Caso de estudio: ${esWork.data.title}](https://manuelcobos.dev/trabajo/${slugFromId(esWork.id)}/)`);
   pages.push('- [English home](https://manuelcobos.dev/en/)');
   pages.push('- [English résumé](https://manuelcobos.dev/en/cv/)');
+  pages.push('- [Résumé (PDF)](https://manuelcobos.dev/cv/Manuel-Cobos-Solis-CV-EN.pdf)');
   if (enWork) pages.push(`- [Case study: ${enWork.data.title}](https://manuelcobos.dev/en/work/${slugFromId(enWork.id)}/)`);
 
   const text = `# Manuel Cobos Solís
