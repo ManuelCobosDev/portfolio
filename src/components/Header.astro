@@ -19,9 +19,9 @@ const homeHref = lang === 'es' ? '/' : '/en/';
 const cvHref = lang === 'es' ? '/cv/' : '/en/cv/';
 ---
 
-<header class="sticky top-0 z-40 border-b border-line bg-bg">
-  <div class="container relative flex h-16 items-center justify-between gap-3">
-    <a href={homeHref} class="flex items-center gap-2.5" aria-label="Manuel Cobos Solís">
+<header class="sticky top-0 z-40 h-16 border-b border-line bg-bg">
+  <div class="shell relative flex h-full items-center justify-between gap-3">
+    <a href={homeHref} class="flex min-h-11 min-w-11 items-center justify-center gap-2.5">
       <span class="flex h-7 w-7 items-center justify-center rounded-[6px] bg-accent font-sans text-[13px] font-semibold text-on-accent">
         MC
       </span>
@@ -40,8 +40,8 @@ const cvHref = lang === 'es' ? '/cv/' : '/en/cv/';
           <Icon name="lucide:menu" class="menu-icon-burger h-6 w-6" aria-hidden="true" />
           <Icon name="lucide:x" class="menu-icon-x h-6 w-6" aria-hidden="true" />
         </summary>
-        <div class="absolute left-1/2 top-full w-screen -translate-x-1/2 border-b border-line bg-surface">
-          <div class="container flex flex-col">
+        <div class="fixed inset-x-0 top-16 z-40 border-b border-line bg-surface">
+          <div class="shell flex flex-col">
             {
               entries.map((entry) => (
                 <a

@@ -8,16 +8,32 @@ interface Props {
 }
 
 const { lang } = Astro.props;
+
+// Split "Name (note)" into a name that never breaks and a note that may wrap.
+const groups = stackGroups.map((group) => ({
+  label: pick(group.label, lang),
+  items: pick(group.items, lang).map((item) => {
+    const match = item.match(/^(.*?)\s*\((.*)\)$/);
+    const name = match ? match[1] : item;
+    const note = match ? match[2] : undefined;
+    return { name, note, long: name.length > 24 };
+  }),
+}));
 ---
 
 <dl>
   {
-    stackGroups.map((group) => (
+    groups.map((group) => (
       <div class="grid grid-cols-1 gap-1 border-t border-line py-5 sm:grid-cols-[11rem_1fr] sm:gap-6">
-        <dt class="font-mono text-[13px] tracking-[0.01em] text-muted">{pick(group.label, lang)}</dt>
+        <dt class="mono-label text-muted">{group.label}</dt>
         <dd>
           <ul class="middot-list text-base leading-relaxed text-ink">
-            {pick(group.items, lang).map((item) => <li>{item}</li>)}
+            {group.items.map(({ name, note, long }) => (
+              <li>
+                <span class={long ? 'stack-name stack-name--long' : 'stack-name'}>{name}</span>
+                {note && <span class="stack-note"> ({note})</span>}
+              </li>
+            ))}
           </ul>
         </dd>
       </div>

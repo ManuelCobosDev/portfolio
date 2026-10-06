@@ -21,16 +21,16 @@ const otherLangCode = lang === 'es' ? 'en' : 'es';
 ---
 
 <footer class="border-t border-line">
-  <div class="container flex flex-col gap-4 py-8 text-sm text-muted">
+  <div class="shell flex flex-col gap-4 py-8 text-sm text-muted">
     <p>
       © {year} Manuel Cobos Solís. {pick(ui['footer.rights'], lang)} {pick(ui['footer.privacy'], lang)}
     </p>
-    <nav aria-label={lang === 'es' ? 'Enlaces del pie' : 'Footer links'} class="flex flex-wrap items-center gap-x-3 gap-y-2">
-      <a href={homeHref} class="text-muted underline underline-offset-4 hover:text-ink">{pick(ui['breadcrumb.home'], lang)}</a>
-      <a href={cvHref} class="text-muted underline underline-offset-4 hover:text-ink">{pick(ui['nav.cv'], lang)}</a>
-      <a href={profile.linkedin} target="_blank" rel="me noopener noreferrer" class="text-muted underline underline-offset-4 hover:text-ink">LinkedIn</a>
-      <a href={profile.github} target="_blank" rel="me noopener noreferrer" class="text-muted underline underline-offset-4 hover:text-ink">GitHub</a>
-      <a href={alternateHref} hreflang={otherLangCode} lang={otherLangCode} class="text-muted underline underline-offset-4 hover:text-ink">
+    <nav aria-label={lang === 'es' ? 'Enlaces del pie' : 'Footer links'} class="flex flex-wrap items-center gap-x-2 gap-y-2">
+      <a href={homeHref} class="inline-flex min-h-11 min-w-11 items-center justify-center text-muted underline underline-offset-4 hover:text-ink">{pick(ui['breadcrumb.home'], lang)}</a>
+      <a href={cvHref} class="inline-flex min-h-11 min-w-11 items-center justify-center text-muted underline underline-offset-4 hover:text-ink">{pick(ui['nav.cv'], lang)}</a>
+      <a href={profile.linkedin} target="_blank" rel="me noopener noreferrer" class="inline-flex min-h-11 min-w-11 items-center justify-center text-muted underline underline-offset-4 hover:text-ink">LinkedIn</a>
+      <a href={profile.github} target="_blank" rel="me noopener noreferrer" class="inline-flex min-h-11 min-w-11 items-center justify-center text-muted underline underline-offset-4 hover:text-ink">GitHub</a>
+      <a href={alternateHref} hreflang={otherLangCode} lang={otherLangCode} class="inline-flex min-h-11 min-w-11 items-center justify-center text-muted underline underline-offset-4 hover:text-ink">
         {otherLangName}
       </a>
     </nav>

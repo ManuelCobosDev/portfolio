@@ -34,7 +34,7 @@ const readLabel = (kind: 'case-study' | 'project') => pick(ui[kind === 'case-stu
             {entry.title}
           </h3>
           <p class="mt-1.5 max-w-[62ch] text-muted">{entry.summary}</p>
-          <p class="mt-2.5 font-mono text-[13px] tracking-[0.01em] text-muted">
+          <p class="mono-label mt-2.5 text-muted">
             {entry.stack.join(' · ')}
             <span class="sr-only"> — {readLabel(entry.kind)}</span>
           </p>

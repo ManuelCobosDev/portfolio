@@ -25,7 +25,7 @@ const published = new Intl.DateTimeFormat(lang === 'es' ? 'es-ES' : 'en', { date
 );
 ---
 
-<div class="section-pad container">
+<div class="shell section-pad">
   <Breadcrumbs lang={lang} title={entry.data.title} />
 
   <article class="mt-8">
@@ -33,7 +33,7 @@ const published = new Intl.DateTimeFormat(lang === 'es' ? 'es-ES' : 'en', { date
       {entry.data.title}
     </h1>
 
-    <p class="tnum mt-4 font-mono text-[13px] tracking-[0.01em] text-muted">
+    <p class="mono-label tnum mt-4 text-muted">
       {publishedLabel}: {published} · {entry.data.stack.join(' · ')}
     </p>
 

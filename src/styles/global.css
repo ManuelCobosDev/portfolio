@@ -1,4 +1,8 @@
-@import 'tailwindcss';
+@import 'tailwindcss' source(none);
+
+/* Only scan site source. Without this, Tailwind also scans docs/*.md (the brief
+   lists forbidden classes as examples) and emits unused/forbidden utilities. */
+@source '../**/*.{astro,ts}';
 
 /* Self-hosted Latin-only font faces (files copied to public/fonts by
    scripts/prepare-assets.mjs from the Fontsource packages). */
@@ -168,7 +172,9 @@
 }
 
 @layer components {
-  .container {
+  /* Layout wrapper. Named "shell" so it does not collide with Tailwind's
+     built-in `container` utility, whose breakpoint max-widths would win. */
+  .shell {
     width: 100%;
     max-width: 72rem;
     margin-inline: auto;
@@ -176,19 +182,51 @@
   }
 
   @media (min-width: 640px) {
-    .container {
+    .shell {
       padding-inline: 1.5rem;
     }
   }
 
   @media (min-width: 1024px) {
-    .container {
+    .shell {
       padding-inline: 2rem;
     }
   }
 
   .tnum {
     font-variant-numeric: tabular-nums;
+  }
+
+  /* Mono metadata label: dates, spec-sheet labels, technology lines. */
+  .mono-label {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    letter-spacing: 0.01em;
+  }
+
+  /* Stack items: keep a technology name on one line, let notes wrap. */
+  .stack-name {
+    white-space: nowrap;
+  }
+
+  .stack-note {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  /* External-link arrow: never underlined, tight against the label. */
+  .external-icon {
+    display: inline-block;
+    margin-left: 0.2em;
+    text-decoration: none;
+  }
+
+  @media (max-width: 639.98px) {
+    .stack-name--long {
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
   }
 
   .section-pad {
@@ -315,7 +353,7 @@
   }
 
   .middot-list li {
-    display: inline;
+    display: inline-block;
   }
 
   .middot-list li:not(:last-child)::after {
@@ -435,6 +473,10 @@
     font-size: 10pt;
   }
 
+  /* Hide the site chrome (header, footer, toolbar, theme and language
+     controls) so the CV prints as a clean document. */
+  header,
+  footer,
   .no-print {
     display: none !important;
   }

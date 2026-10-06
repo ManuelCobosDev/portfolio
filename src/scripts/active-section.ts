@@ -24,13 +24,22 @@ export function initActiveSection() {
     }
   };
 
+  const visible = new Set<string>();
+
   const observer = new IntersectionObserver(
     (entries) => {
       for (const entry of entries) {
-        if (entry.isIntersecting) setCurrent(entry.target.id);
+        if (entry.isIntersecting) visible.add(entry.target.id);
+        else visible.delete(entry.target.id);
       }
+      if (visible.size === 0) {
+        setCurrent(null);
+        return;
+      }
+      const first = [...byId.keys()].find((id) => visible.has(id));
+      setCurrent(first ?? null);
     },
-    { rootMargin: '-35% 0px -55% 0px', threshold: 0 },
+    { rootMargin: '-35% 0px -60% 0px', threshold: 0 },
   );
 
   for (const id of byId.keys()) {

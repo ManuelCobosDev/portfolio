@@ -20,13 +20,13 @@ const { lang, entries, homeHref, cvHref } = Astro.props;
       <a
         href={`${homeHref}#${entry.id}`}
         data-nav-link
-        class="nav-link text-[14px] font-medium text-muted transition-colors"
+        class="nav-link inline-flex min-h-11 min-w-11 items-center justify-center text-[14px] font-medium text-muted transition-colors"
       >
         {entry.label}
       </a>
     ))
   }
-  <a href={cvHref} class="nav-link text-[14px] font-medium text-muted transition-colors">
+  <a href={cvHref} class="nav-link inline-flex min-h-11 min-w-11 items-center justify-center text-[14px] font-medium text-muted transition-colors">
     {pick(ui['nav.cv'], lang)}
   </a>
 </nav>

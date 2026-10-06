@@ -15,7 +15,5 @@ const { href, lang, rel = 'noopener noreferrer', class: className } = Astro.prop
 ---
 
 <a href={href} target="_blank" rel={rel} class={className}>
-  <slot />
-  <Icon name="lucide:arrow-up-right" class="inline h-[0.9em] w-[0.9em]" aria-hidden="true" />
-  <span class="sr-only">{pick(ui.external, lang)}</span>
+  <slot /><span class="external-icon" aria-hidden="true"><Icon name="lucide:arrow-up-right" class="h-[0.9em] w-[0.9em]" /></span><span class="sr-only">{pick(ui.external, lang)}</span>
 </a>

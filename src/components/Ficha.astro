@@ -41,7 +41,8 @@ const portraitAlt = {
       src={portrait}
       widths={[320, 480, 640]}
       sizes="(min-width: 1024px) 420px, (min-width: 640px) 50vw, 100vw"
-      formats={['avif', 'webp', 'jpg']}
+      formats={['avif', 'webp']}
+      fallbackFormat="jpg"
       width={640}
       height={512}
       alt={portraitAlt[lang]}
@@ -58,7 +59,7 @@ const portraitAlt = {
           class="rise-in grid grid-cols-1 gap-1 border-t border-line px-5 py-3.5 first:border-t-0 sm:grid-cols-[10rem_1fr] sm:gap-4"
           style={`--i:${i}`}
         >
-          <dt class="font-mono text-[13px] tracking-[0.01em] text-muted">{row.label}</dt>
+          <dt class="mono-label text-muted">{row.label}</dt>
           <dd class="tnum flex items-center text-base text-ink">
             {row.status && <span class="mr-2 inline-block h-2 w-2 shrink-0 rounded-full bg-accent" aria-hidden="true"></span>}
             {row.value}
