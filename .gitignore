@@ -5,11 +5,18 @@ dist/
 # dependencies
 node_modules/
 
+# portable toolchain (never part of the site)
+tools/
+
+# editor
+.vscode/
+
 # logs
 npm-debug.log*
 pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+*.log
 
 # environment
 .env
@@ -27,4 +34,11 @@ Thumbs.db
 test-results/
 playwright-report/
 .playwright/
+
+# Lighthouse / audit artefacts
 .lighthouseci/
+docs/audit-screenshots/
+lh-*.out
+lh-*-summary.txt
+pw-run.txt
+pw-focus.txt

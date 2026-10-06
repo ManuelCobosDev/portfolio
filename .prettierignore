@@ -1,0 +1,11 @@
+dist/
+.astro/
+node_modules/
+public/fonts/
+.lighthouseci/
+test-results/
+playwright-report/
+docs/BRIEF.md
+lh-*.mjs
+lh-*.out
+lh-*-summary.txt

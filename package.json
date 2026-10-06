@@ -15,6 +15,8 @@
     "qa": "node scripts/qa.mjs",
     "test:e2e": "playwright test",
     "lighthouse": "lhci autorun",
+    "lighthouse:desktop": "lhci autorun --config=lighthouserc.desktop.json",
+    "smoke": "node scripts/smoke.mjs",
     "verify": "npm run build && npm run qa && npm run test:e2e",
     "format": "prettier --write ."
   },
