@@ -14,9 +14,6 @@
     "preview": "astro preview",
     "qa": "node scripts/qa.mjs",
     "test:e2e": "playwright test",
-    "lighthouse": "lhci autorun",
-    "lighthouse:desktop": "lhci autorun --config=lighthouserc.desktop.json",
-    "smoke": "node scripts/smoke.mjs",
     "verify": "npm run build && npm run qa && npm run test:e2e",
     "format": "prettier --write ."
   },
@@ -36,7 +33,6 @@
     "@astrojs/check": "^0.9.4",
     "@axe-core/playwright": "^4.10.1",
     "@fontsource/ibm-plex-sans": "^5.1.1",
-    "@lhci/cli": "^0.14.0",
     "@playwright/test": "^1.49.1",
     "@resvg/resvg-js": "^2.6.2",
     "cheerio": "^1.0.0",
