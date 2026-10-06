@@ -463,14 +463,14 @@
 @media print {
   @page {
     size: A4;
-    margin: 15mm;
+    margin: 12mm;
   }
 
   html,
   body {
     background: #fff !important;
     color: #000 !important;
-    font-size: 10pt;
+    font-size: 9.5pt;
   }
 
   /* Hide the site chrome (header, footer, toolbar, theme and language
@@ -483,5 +483,44 @@
 
   .print-avoid-break {
     break-inside: avoid;
+  }
+
+  /* Compact the CV so it fits on two A4 pages. */
+  .cv-doc {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+
+  .cv-doc h1 {
+    font-size: 20pt !important;
+    line-height: 1.1 !important;
+  }
+
+  .cv-doc h2 {
+    margin-top: 10pt !important;
+    padding-top: 4pt !important;
+    font-size: 12pt !important;
+  }
+
+  .cv-doc .mt-10 {
+    margin-top: 10pt !important;
+  }
+
+  .cv-doc .mt-4,
+  .cv-doc .mt-3,
+  .cv-doc .mt-2 {
+    margin-top: 3pt !important;
+  }
+
+  .cv-doc .py-3 {
+    padding-top: 3pt !important;
+    padding-bottom: 3pt !important;
+  }
+
+  .cv-doc p,
+  .cv-doc li,
+  .cv-doc dd,
+  .cv-doc dt {
+    font-size: 9.5pt !important;
   }
 }
