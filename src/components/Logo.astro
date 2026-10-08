@@ -1,0 +1,65 @@
+---
+interface Props {
+  variant?: 'mark' | 'horizontal' | 'stacked';
+  class?: string;
+  /** Renders the monogram as purely decorative even when used on its own. */
+  decorative?: boolean;
+  /** Adds the "FULL STACK ENGINEER" tagline under the name. */
+  tagline?: boolean;
+}
+
+const { variant = 'mark', class: className, decorative = false, tagline = false } = Astro.props;
+
+const paths = [
+  'M0 80V0H24L32 8L40 0H64V80H48V16L32 32L16 16V80Z',
+  'M140.284 11.716A40 40 0 1 0 140.284 68.284L128.971 56.971A24 24 0 1 1 128.971 23.029Z',
+];
+
+const markAttrs = decorative
+  ? { 'aria-hidden': 'true' as const }
+  : { role: 'img' as const, 'aria-label': 'Monograma MC de Manuel Cobos Solís' as const };
+---
+
+{
+  variant === 'mark' && (
+    <svg viewBox="0 0 141 80" fill="currentColor" class:list={['text-logo', className]} {...markAttrs}>
+      {paths.map((d) => <path d={d} />)}
+    </svg>
+  )
+}
+
+{
+  variant === 'horizontal' && (
+    <span data-lockup class:list={['inline-flex items-center gap-2.5', className]}>
+      <svg viewBox="0 0 141 80" fill="currentColor" class="text-logo h-[25px] w-auto" aria-hidden="true">
+        {paths.map((d) => <path d={d} />)}
+      </svg>
+      <span class="flex flex-col justify-center gap-0.5">
+        <span class="text-ink text-[14px] font-bold uppercase leading-none tracking-[0.02em]">
+          Manuel Cobos Solís
+        </span>
+        {tagline && (
+          <span class="text-accent text-xs font-medium uppercase leading-none tracking-[0.22em]">
+            Full Stack Engineer
+          </span>
+        )}
+      </span>
+    </span>
+  )
+}
+
+{
+  variant === 'stacked' && (
+    <span data-lockup class:list={['inline-flex flex-col items-center gap-2', className]}>
+      <svg viewBox="0 0 141 80" fill="currentColor" class="text-logo h-[25px] w-auto" aria-hidden="true">
+        {paths.map((d) => <path d={d} />)}
+      </svg>
+      <span class="text-ink text-sm font-bold uppercase leading-none tracking-[0.02em]">Manuel Cobos Solís</span>
+      {tagline && (
+        <span class="text-accent text-xs font-medium uppercase leading-none tracking-[0.22em]">
+          Full Stack Engineer
+        </span>
+      )}
+    </span>
+  )
+}

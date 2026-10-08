@@ -23,7 +23,7 @@ test.describe('hero, ficha and navigation', () => {
         columns: getComputedStyle(row).gridTemplateColumns.split(' '),
       };
     });
-    expect(result.family).toContain('IBM Plex Sans');
+    expect(result.family).toContain('Manrope');
     expect(result.family).not.toContain('Mono');
     expect(result.weight).toBe('500');
     expect(result.size).toBe('13px');
@@ -112,7 +112,7 @@ test.describe('vertical rhythm and typography', () => {
       await page.goto(route);
       const families = await page.$$eval('dt', (labels) => labels.map((label) => getComputedStyle(label).fontFamily));
       expect(families.length).toBeGreaterThan(0);
-      for (const family of families) expect(family).toContain('IBM Plex Sans');
+      for (const family of families) expect(family).toContain('Manrope');
     }
   });
 

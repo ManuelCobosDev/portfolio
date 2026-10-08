@@ -1,12 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
-  <style>
-    .bg { fill: #1D4ED8; }
-    .tx { fill: #FFFFFF; font-family: 'IBM Plex Sans', Arial, sans-serif; font-weight: 700; font-size: 15px; }
-    @media (prefers-color-scheme: dark) {
-      .bg { fill: #7FB0FF; }
-      .tx { fill: #071226; }
-    }
-  </style>
-  <rect class="bg" width="32" height="32" rx="6" />
-  <text class="tx" x="16" y="21" text-anchor="middle">MC</text>
+  <rect width="32" height="32" rx="6" fill="#0A1931"/>
+  <g transform="translate(4 9.16) scale(0.1711)" fill="#1DE9B1">
+    <path d="M0 80V0H24L32 8L40 0H64V80H48V16L32 32L16 16V80Z"/>
+    <path d="M140.284 11.716A40 40 0 1 0 140.284 68.284L128.971 56.971A24 24 0 1 1 128.971 23.029Z"/>
+  </g>
 </svg>

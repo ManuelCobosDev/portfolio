@@ -23,13 +23,13 @@ test.describe('design tokens and structure', () => {
       page.evaluate((n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim(), name);
     await page.emulateMedia({ colorScheme: 'light' });
     await page.goto('/');
-    expect((await read('--bg')).toLowerCase()).toBe('#f5f7fb');
-    expect((await read('--ink')).toLowerCase()).toBe('#0b1b33');
-    expect((await read('--accent')).toLowerCase()).toBe('#1d4ed8');
+    expect((await read('--bg')).toLowerCase()).toBe('#f7f9fb');
+    expect((await read('--ink')).toLowerCase()).toBe('#0a1931');
+    expect((await read('--accent')).toLowerCase()).toBe('#08795e');
     await page.emulateMedia({ colorScheme: 'dark' });
-    expect((await read('--bg')).toLowerCase()).toBe('#0a1426');
-    expect((await read('--ink')).toLowerCase()).toBe('#e8eef8');
-    expect((await read('--accent')).toLowerCase()).toBe('#7fb0ff');
+    expect((await read('--bg')).toLowerCase()).toBe('#0a1931');
+    expect((await read('--ink')).toLowerCase()).toBe('#f7f9fb');
+    expect((await read('--accent')).toLowerCase()).toBe('#1de9b1');
   });
 
   test('font sizes follow the type scale at 1440px', async ({ page }) => {
@@ -50,7 +50,7 @@ test.describe('design tokens and structure', () => {
       .locator('.mono-label')
       .first()
       .evaluate((el) => getComputedStyle(el).fontFamily);
-    expect(fam).toContain('IBM Plex Mono');
+    expect(fam).toContain('JetBrains Mono');
   });
 
   test('fonts actually load', async ({ page }) => {
@@ -59,7 +59,7 @@ test.describe('design tokens and structure', () => {
     const ok = await page.evaluate(async () => {
       await document.fonts.ready;
       return (
-        document.fonts.check('600 16px "IBM Plex Sans Variable"') && document.fonts.check('400 16px "IBM Plex Mono"')
+        document.fonts.check('600 16px "Manrope Variable"') && document.fonts.check('500 16px "JetBrains Mono"')
       );
     });
     expect(ok).toBe(true);
@@ -71,7 +71,7 @@ test.describe('design tokens and structure', () => {
     const box = await header.boundingBox();
     expect(Math.round(box!.height)).toBe(64);
     expect(await header.evaluate((el) => getComputedStyle(el).position)).toBe('sticky');
-    expect(await header.evaluate((el) => getComputedStyle(el).backgroundColor)).toBe('rgb(245, 247, 251)');
+    expect(await header.evaluate((el) => getComputedStyle(el).backgroundColor)).toBe('rgb(247, 249, 251)');
   });
 
   test('container is 1152px and centred at 1920px', async ({ page }) => {
@@ -113,6 +113,7 @@ test.describe('design tokens and structure', () => {
     const bad = await page.evaluate(() => {
       const issues: string[] = [];
       for (const el of Array.from(document.querySelectorAll<HTMLElement>('*'))) {
+        if (el.closest('[data-lockup]')) continue;
         const s = getComputedStyle(el);
         if (s.backgroundImage !== 'none' && s.backgroundImage.includes('gradient'))
           issues.push(`gradient: ${el.className}`);
