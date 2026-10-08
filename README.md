@@ -2,23 +2,25 @@
 
 Portfolio personal de Manuel Cobos Solís, desarrollador Full Stack con enfoque
 backend. Es un sitio estático bilingüe (español e inglés) con páginas de inicio y
-currículum, un caso de estudio y las imágenes Open Graph generadas en el build.
+currículum, casos de estudio y las imágenes Open Graph generadas en el build.
 
-Sitio en producción: <https://manuelcobos.dev>
+- **Sitio en producción:** <https://manuelcobos.dev>
+- **Repositorio:** <https://github.com/ManuelCobosDev/portfolio>
+- **Ramas:** desarrollo en `development`, producción en `main`
 
 ## Stack
 
-- Astro 5 con salida estática e i18n integrado.
-- Tailwind CSS 4 a través de `@tailwindcss/vite`.
+- Astro 7 con salida estática e i18n integrado. Todo el sitio se prerenderiza.
+- Tailwind CSS 4 a través de `@tailwindcss/vite`, sin config JS de Tailwind.
 - `astro-icon` con los sets `lucide`, `simple-icons` y `devicon-plain`.
-- IBM Plex Sans (variable) e IBM Plex Mono autoalojadas en `public/fonts`.
-- Playwright y `@axe-core/playwright` para pruebas end-to-end y de accesibilidad.
-- `sharp`, `satori` y `@resvg/resvg-js` para los iconos y las imágenes Open Graph.
-- TypeScript estricto.
+- Manrope (variable 400-800) y JetBrains Mono (400/500) autoalojadas en `public/fonts`. Nada depende de CDNs externos.
+- `satori` y `@resvg/resvg-js` para las imágenes Open Graph; `sharp` para los iconos de marca.
+- Playwright y `@axe-core/playwright` para las pruebas end-to-end y de accesibilidad; `cheerio` para el QA estático del HTML.
+- TypeScript estricto (`astro/tsconfigs/strict`) y Prettier.
 
 ## Requisitos y comandos
 
-La versión de Node está en `.nvmrc`.
+Node 22 (`.nvmrc` y `engines.node`) y npm con `package-lock.json`.
 
 | Comando            | Para qué sirve                                                |
 | ------------------ | ------------------------------------------------------------- |
@@ -29,46 +31,66 @@ La versión de Node está en `.nvmrc`.
 | `npm run check`    | Comprueba tipos y plantillas con `astro check`.               |
 | `npm run qa`       | Ejecuta las comprobaciones de calidad sobre `dist/`.          |
 | `npm run test:e2e` | Ejecuta la suite de Playwright.                               |
-| `npm run cv:pdf`   | Regenera los dos PDF del currículum a partir de la página.    |
 | `npm run format`   | Formatea el código con Prettier.                              |
 
-En equipos sin Chromium instalado, las pruebas pueden ejecutarse sobre un
-navegador del sistema con `PW_CHANNEL=msedge` o `PW_CHANNEL=chrome`.
+`npm run build` encadena `node scripts/prepare-assets.mjs` antes de `astro
+build`: copia las fuentes a `public/fonts` y regenera los iconos del monograma.
+No llames a `astro build` por separado, o el sitio se queda sin fuentes ni
+iconos.
+
+En equipos sin Chromium propio, las pruebas pueden ejecutarse sobre un navegador
+del sistema con `PW_CHANNEL=msedge` o `PW_CHANNEL=chrome`.
 
 ## Estructura
 
 ```
 .
-├─ public/            # estáticos: robots, manifest, iconos, fuentes y PDF del CV
-├─ scripts/           # preparación de assets, QA y generación de los PDF
+├─ .github/workflows/ci.yml    # CI: check + build + qa + e2e
+├─ public/                     # estáticos que se sirven tal cual
+│  ├─ _headers                 # cabeceras HTTP, caché y noindex de Cloudflare
+│  ├─ cv/                      # PDF del currículum (nombre con hash del contenido)
+│  ├─ fonts/                   # woff2 generadas por prepare-assets (no versionadas)
+│  └─ images/                  # retrato en formato 3:4
+├─ scripts/                    # prepare-assets, brand-assets y qa
 ├─ src/
-│  ├─ assets/         # retrato original (manuel-cobos-solis.png)
-│  ├─ components/     # componentes de la interfaz
-│  ├─ content/work/   # casos y proyectos en Markdown (es/ y en/)
-│  ├─ data/           # perfil, experiencia, formación, stack y navegación
-│  ├─ i18n/           # textos de la interfaz y utilidades de idioma
-│  ├─ layouts/        # plantilla base
-│  ├─ lib/            # utilidades de SEO, JSON-LD, navegación y fechas
-│  ├─ pages/          # rutas del sitio
-│  └─ styles/         # tokens, componentes y estilos globales
-└─ tests/e2e/         # pruebas Playwright
+│  ├─ components/              # componentes de la interfaz (pages/ para vistas compuestas)
+│  ├─ content.config.ts        # colección `work` (loader glob + esquema zod)
+│  ├─ content/work/{es,en}/    # casos y proyectos en Markdown
+│  ├─ data/                    # profile, experience, education, stack, nav
+│  ├─ i18n/                    # ui.ts (textos) y utils.ts (tipo L<T> y helper pick)
+│  ├─ layouts/                 # plantilla base
+│  ├─ lib/                     # jsonld, nav, site, years
+│  ├─ pages/                   # rutas del sitio
+│  ├─ scripts/                 # JS de cliente: theme, menu, active-section
+│  └─ styles/                  # tokens de diseño, fuentes y tema claro/oscuro
+├─ tests/e2e/                  # suite Playwright
+├─ astro.config.mjs            # site, i18n, iconos, sitemap y Tailwind
+├─ playwright.config.ts
+├─ tsconfig.json
+└─ wrangler.jsonc              # configuración del Worker solo-assets de Cloudflare
 ```
 
 ## Dónde se edita el contenido
 
-- Perfil, correo, enlaces y textos de la ficha: `src/data/profile.ts`.
-- Experiencia profesional: `src/data/experience.ts`.
-- Formación y certificaciones: `src/data/education.ts`.
-- Stack técnico: `src/data/stack.ts`.
-- Textos de la interfaz en ambos idiomas: `src/i18n/ui.ts`.
-- Retrato: `src/assets/manuel-cobos-solis.png`. El build genera a partir de él
-  `public/images/manuel-cobos-solis.jpg` y los formatos derivados.
+| Qué                                               | Dónde                                                         |
+| ------------------------------------------------- | ------------------------------------------------------------- |
+| Perfil, correo, enlaces, ubicación, rol e idiomas | `src/data/profile.ts`                                         |
+| Experiencia profesional                           | `src/data/experience.ts`                                      |
+| Formación y certificaciones                       | `src/data/education.ts`                                       |
+| Stack técnico (core y agrupado)                   | `src/data/stack.ts`                                           |
+| Secciones de navegación                           | `src/data/nav.ts`                                             |
+| Textos de la interfaz en ambos idiomas            | `src/i18n/ui.ts`                                              |
+| Rutas del currículum y nombre del PDF             | `src/lib/site.ts`                                             |
+| Casos de estudio y proyectos                      | `src/content/work/es/*.md` y `.../en/*.md`                    |
+| Retrato                                           | `public/images/manuel-cobos-solis-profile-picture.jpeg` (3:4) |
+| Cabeceras HTTP y caché                            | `public/_headers`                                             |
 
 ## Cómo añadir un proyecto o un caso de estudio
 
 Crea un archivo en `src/content/work/es/` y su pareja en `src/content/work/en/`,
-con el mismo `translationKey` y el nombre de archivo que quieras para la URL
-(minúsculas, números y guiones). Ejemplo completo de frontmatter:
+con el mismo `translationKey`. El nombre del archivo (minúsculas, números y
+guiones) es el slug de la URL. El esquema completo está en
+`src/content.config.ts`:
 
 ```markdown
 ---
@@ -136,38 +158,118 @@ Qué se consiguió.
 ```
 
 El archivo en inglés repite la estructura con `lang: en`. Las dos entradas deben
-compartir `translationKey`; si falta una de las dos, el build falla.
+compartir `translationKey`; si falta una de las dos, el build falla. Las secciones
+de navegación de casos y proyectos solo aparecen cuando existe al menos una
+entrada de ese `kind`.
 
-## Regenerar los PDF del currículum
+## Currículum para descarga
 
-`/cv/` y `/en/cv/` ofrecen la descarga de un PDF generado desde la versión de
-impresión de esas páginas. Los PDF se guardan en `public/cv/` porque el build de
-Cloudflare no ejecuta ningún navegador.
+El CV real se sirve desde `public/cv/` y se enlaza en `/cv/`, `/en/cv/` y el
+footer, con las constantes `CV_PDF_PATH` y `CV_PDF_NAME` de `src/lib/site.ts`. Su
+URL lleva el hash SHA-256 del contenido (`Manuel-Cobos-Solis-CV-<hash>.pdf`) para
+poder cachearlo de forma inmutable: cada versión se descarga una sola vez y, al
+cambiar el PDF, cambia la URL.
+
+Para actualizarlo: reemplaza el archivo de `public/cv/` por el nuevo PDF, calcula
+su SHA-256 (`Get-FileHash` en PowerShell) y actualiza `CV_PDF_PATH` en
+`src/lib/site.ts` y la regla correspondiente de `public/_headers`.
+
+## SEO, indexación y Open Graph
+
+- **Idiomas y URL.** Español sin prefijo (`/`, `/cv/`, `/trabajo/<slug>/`) e
+  inglés bajo `/en/`. `trailingSlash: 'always'`, así que toda ruta termina en
+  `/`. Cada página declara su `canonical` y los `alternates` es / en /
+  x-default.
+- **Sitemap.** `@astrojs/sitemap` genera `sitemap-index.xml` e incluye los
+  `links` `hreflang` de cada pareja es/en. El `lastmod` es automático: la fecha
+  más reciente entre los casos de trabajo, calculada en `astro.config.mjs`. No
+  hay que mantener ninguna constante a mano.
+- **`robots.txt` propio.** Permite el rastreo general y, de forma explícita, el
+  de los rastreadores de IA (GPTBot, OAI-SearchBot, ChatGPT-User, ClaudeBot,
+  Claude-SearchBot, Claude-User, PerplexityBot, Google-Extended,
+  Applebot-Extended y CCBot), y apunta al sitemap. El `robots.txt` de Cloudflare
+  debe seguir desactivado para que no lo sustituya por el suyo.
+- **`/llms.txt`.** Resumen del sitio en texto plano, pensado para modelos.
+- **Open Graph.** `/og/*.png` (1200×630, fondo navy) se generan en el build con
+  `satori` y `@resvg/resvg-js`: `home-es`, `home-en`, `cv-es`, `cv-en` y
+  `work-<slug>`.
+- **JSON-LD.** `Person`, `ProfilePage` y `WebSite` en la home; `Person` y
+  `WebPage` en el CV; `TechArticle` (`case-study`) o `SoftwareSourceCode`
+  (`project`) en cada trabajo, con `@id` estables.
+- **Verificación de buscadores.** `Seo.astro` emite `google-site-verification` y
+  `msvalidate.01` solo si existen las variables de entorno
+  `PUBLIC_GSC_VERIFICATION` y `PUBLIC_BING_VERIFICATION` en el build. En
+  Cloudflare se definen como variables del Worker.
+- **Lo que queda fuera del índice, a propósito.** Las URL `*.workers.dev`
+  (producción, versiones y previews) salen con `X-Robots-Tag: noindex` por la
+  regla de `public/_headers`, y `404.html` lleva `noindex` y no entra en el
+  sitemap. El único dominio indexable es `manuelcobos.dev`.
+
+## Caché y cabeceras HTTP
+
+Todo se declara en `public/_headers`, que Cloudflare aplica al desplegar; no hay
+que configurar caché en el panel.
+
+| Ruta                | `Cache-Control`               | Por qué                                                                    |
+| ------------------- | ----------------------------- | -------------------------------------------------------------------------- |
+| `/_astro/*`         | `max-age=31536000, immutable` | Assets con hash en el nombre. Hoy el build no emite ninguno (ver la nota). |
+| `/cv/<archivo>.pdf` | `max-age=31536000, immutable` | El nombre lleva el hash del contenido (ver arriba).                        |
+| `/images/*`         | `max-age=604800` (7 días)     | El retrato conserva el nombre, así que no puede cachearse para siempre.    |
+| `/fonts/*`          | `max-age=604800` (7 días)     | Nombres estables de las fuentes woff2.                                     |
+| `/og/*`             | `max-age=86400` (1 día)       | Se regeneran en cada build.                                                |
+| `/*`                | sin `Cache-Control`           | Solo añade las cabeceras de seguridad.                                     |
+
+**No hay carpeta `_astro/` en el build.** El CSS va en línea en el HTML y el
+script de cliente también, así que `dist/` es HTML más los estáticos que ya
+viven en `public/`. La regla de `/_astro/*` se queda como red de seguridad por
+si Astro empieza a emitir assets con hash.
+
+El PDF sale además con `Content-Type: application/pdf`, sin `CSP` (el visor del
+navegador no la necesita) y con `Link: <https://manuelcobos.dev/cv/>;
+rel="canonical"`. El `manifest.webmanifest` se sirve como
+`application/manifest+json`.
+
+La primera regla aplica a todo el sitio las cabeceras de seguridad:
+`X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, `HSTS` y una
+`CSP` que solo admite recursos propios.
+
+Tras cada despliegue conviene comprobar las cabeceras:
 
 ```bash
-npm run cv:pdf
+curl -I https://manuelcobos.dev/
+curl -I https://manuelcobos.dev/fonts/manrope-latin-wght-normal.woff2
+curl -I https://manuelcobos.dev/cv/Manuel-Cobos-Solis-CV-ae560ece.pdf
+curl -I https://manuelcobos.dev/una-url-inexistente
 ```
 
-El comando construye el sitio, abre las dos páginas con Playwright, imprime a
-PDF y comprueba que cada archivo empieza por `%PDF`, ocupa como máximo dos
-páginas A4 y pesa menos de 300 KB. Hay que volver a ejecutarlo y confirmar los
-dos archivos cada vez que cambie el contenido del currículum, su maquetación o
-los estilos de impresión.
+Se espera: cabeceras de seguridad en `/`, `Cache-Control: public,
+max-age=604800` en la fuente, `Content-Type: application/pdf` en el PDF y un 404
+servido con el `404.html` del sitio en la URL inexistente.
 
 ## Comprobaciones de calidad e integración continua
 
-`npm run qa` revisa el HTML generado en `dist/`: títulos y descripciones,
-canonical, hreflang recíproco, Open Graph, JSON-LD, imágenes con dimensiones,
-enlaces internos, presupuestos de peso, sitemap, `robots.txt`, `manifest`,
-`_headers`, la página 404 y un listado de datos personales críticos.
+`npm run qa` valida el HTML generado en `dist/` y falla si algo no cuadra:
 
-La suite de Playwright cubre el diseño, la accesibilidad, el comportamiento en
-móvil, las cabeceras de seguridad, el idioma y los botones del currículum.
+- **Metadatos:** títulos y descripciones únicos, `canonical`, `html lang`,
+  `hreflang` recíproco, Open Graph y Twitter Cards, JSON-LD que parsea.
+- **Estructura y contenido:** encabezados, landmarks, imágenes con dimensiones,
+  enlaces internos, `rel="noopener"` en enlaces externos, sin hosts de terceros,
+  paridad es/en de la portada y presencia de los datos personales críticos.
+- **Archivos servidos:** sitemap, `robots.txt`, `llms.txt`, `manifest`,
+  `_headers`, favicon 32×32 válido, retrato presente y `404.html` fuera del
+  índice. Sin `_redirects` y sin comentarios HTML en el resultado.
+- **Presupuestos:** 35 KB gzip y 110 KB en bruto por documento, 10 KB de JS
+  total en gzip, 120 KB por archivo de `/_astro/` y 100 KB de fuentes.
 
-El flujo de trabajo `.github/workflows/ci.yml` ejecuta en cada push a `main` y
-`development` y en cada pull request un único trabajo `verify` que instala
-dependencias, comprueba tipos, construye el sitio, ejecuta `qa` y lanza las
-pruebas end-to-end sobre Chromium.
+La suite de Playwright (`tests/e2e/`) cubre `site`, `content`, `layout`,
+`design`, `mobile`, `headers`, `cv` y `cv-print`: diseño, accesibilidad con
+`axe-core`, comportamiento en móvil, cabeceras de seguridad, idioma y los botones
+del currículum.
+
+`.github/workflows/ci.yml` se ejecuta en cada push a `main` y `development` y en
+cada pull request. Un único job `verify` (Ubuntu, 15 min) encadena `npm ci`,
+`astro check`, build, `qa` y las e2e con Chromium. Si algo falla, sube el reporte
+de Playwright como artefacto durante 7 días.
 
 ## Despliegue en Cloudflare Workers
 
@@ -177,48 +279,26 @@ Worker vive en `wrangler.jsonc`:
 
 - `assets.directory`: `./dist`.
 - `assets.not_found_handling`: `404-page`, para servir el `404.html` del build.
-- `build.command`: `npm run build`, para que `wrangler deploy` construya el
-  sitio antes de subir los assets.
+- `build.command`: `npm run build`, para que `wrangler deploy` construya el sitio
+  antes de subir los assets.
 - Sin `main`: es un Worker solo de assets, no ejecuta código propio.
 
 En el panel de Cloudflare:
 
 - Rama de producción: `main`.
-- Comando de build: **dejarlo vacío** (el build ya lo ejecuta
-  `build.command` de `wrangler.jsonc`; si se rellena también aquí, el sitio se
-  construiría dos veces).
+- Comando de build: **dejarlo vacío** (ya lo ejecuta `build.command`; si se
+  rellena también aquí, el sitio se construye dos veces).
 - Comando de deploy: `npx wrangler deploy`.
 - Variable de entorno `NODE_VERSION` con el valor de `.nvmrc`.
 - Dominio personalizado `manuelcobos.dev`, con `www` redirigido al dominio raíz.
+- Early Hints y Crawler Hints activados; Rocket Loader, Email Address
+  Obfuscation y Web Analytics desactivados; `robots.txt` gestionado por
+  Cloudflare desactivado (el sitio sirve el suyo).
 
-No añadas el adaptador `@astrojs/cloudflare`. El sitio es totalmente estático y
-la ruta `/og/*.png` genera las imágenes Open Graph con `satori` y
-`@resvg/resvg-js`, un addon nativo que Astro prerenderiza en Node durante el
-build. Con el adaptador, esa ruta se empaqueta en el bundle del Worker y Vite
-falla con `UNLOADABLE_DEPENDENCY ... resvgjs.linux-x64-musl.node`. Tener
-`wrangler.jsonc` en el repositorio evita además que `wrangler deploy` lance su
-autoconfiguración y añada ese adaptador por su cuenta.
-
-Ajustes recomendados en el panel: Early Hints activado, Crawler Hints activado,
-Rocket Loader desactivado, Email Address Obfuscation desactivado, Web Analytics
-desactivado, rastreadores de modelos de lenguaje permitidos y el `robots.txt`
-gestionado por Cloudflare desactivado (el sitio sirve el suyo).
-
-Tras cada despliegue conviene comprobar las cabeceras:
-
-```bash
-curl -I https://manuelcobos.dev/
-curl -I https://manuelcobos.dev/_astro/<archivo-hash>.css
-curl -I https://manuelcobos.dev/cv/Manuel-Cobos-Solis-CV-ES.pdf
-curl -I https://manuelcobos.dev/una-url-inexistente
-```
-
-Se espera: cabeceras de seguridad en `/`, `Cache-Control: public, max-age=31536000,
-immutable` en un archivo de `/_astro/`, `Content-Type: application/pdf` en el PDF
-y un 404 con el `404.html` del sitio en la URL inexistente. La regla
-`https://:worker.:subdomain.workers.dev/*` de `public/_headers` marca como
-`noindex` las URL propias de Cloudflare.
-
-> Si prefieres Cloudflare Pages en lugar de Workers, cambia el tipo de proyecto en
-> el panel (comando de build `npm run build`, directorio de salida `dist`, sin
-> comando de deploy) y elimina `wrangler.jsonc`.
+> **No añadas el adaptador `@astrojs/cloudflare`.** El sitio es totalmente
+> estático y la ruta `/og/*.png` genera las imágenes con `satori` y
+> `@resvg/resvg-js`, un addon nativo que Astro prerenderiza en Node durante el
+> build. Con el adaptador, esa ruta se empaqueta en el bundle del Worker y Vite
+> falla con `UNLOADABLE_DEPENDENCY ... resvgjs.linux-x64-musl.node`. Tener
+> `wrangler.jsonc` en el repositorio evita además que `wrangler deploy` lance su
+> autoconfiguración y añada ese adaptador por su cuenta.
