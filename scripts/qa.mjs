@@ -358,7 +358,7 @@ for (const f of [
   'apple-touch-icon.png',
   'icon-192.png',
   'icon-512.png',
-  'images/manuel-cobos-solis.jpg',
+  'images/manuel-cobos-solis-profile-picture.jpeg',
 ]) {
   if (!existsSync(join(dist, f))) fail(`missing static file: ${f}.`);
 }
@@ -416,10 +416,10 @@ if (existsSync(icoFile)) {
   else if (w !== 32 || h !== 32) fail(`favicon.ico: first image is ${w}x${h}, expected 32x32.`);
 }
 
-// 21c. The portrait source is required in CI.
+// 21c. The portrait is required in CI.
 if (process.env.CI === 'true') {
-  const portraitSrc = join(root, 'src', 'assets', 'manuel-cobos-solis.png');
-  if (!existsSync(portraitSrc)) fail('src/assets/manuel-cobos-solis.png missing (required in CI).');
+  const portraitSrc = join(root, 'public', 'images', 'manuel-cobos-solis-profile-picture.jpeg');
+  if (!existsSync(portraitSrc)) fail('public/images/manuel-cobos-solis-profile-picture.jpeg missing (required in CI).');
 }
 
 // 23. Budgets: document HTML (incl. inlined CSS and JSON-LD).

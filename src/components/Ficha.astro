@@ -4,8 +4,6 @@ import { pick } from '../i18n/utils';
 import { ui } from '../i18n/ui';
 import { profile } from '../data/profile';
 import { fullYearsSince } from '../lib/years';
-import { Picture } from 'astro:assets';
-import portrait from '../assets/manuel-cobos-solis.png';
 
 interface Props {
   lang: Lang;
@@ -13,6 +11,7 @@ interface Props {
 
 const { lang } = Astro.props;
 const years = fullYearsSince(profile.experienceStart);
+const portraitSrc = '/images/manuel-cobos-solis-profile-picture.jpeg';
 
 const rows = [
   { label: lang === 'es' ? 'Rol' : 'Role', value: pick(profile.fichaRole, lang) },
@@ -35,15 +34,11 @@ const portraitAlt = {
 
 <section aria-labelledby="ficha-title" class="border-line bg-surface overflow-hidden rounded-md border">
   <h2 id="ficha-title" class="sr-only">{pick(ui['ficha.title'], lang)}</h2>
-  <div class="bg-surface-2 aspect-[4/3] w-full">
-    <Picture
-      src={portrait}
-      widths={[320, 480, 640]}
-      sizes="(min-width: 1024px) 420px, (min-width: 640px) 50vw, 100vw"
-      formats={['avif', 'webp']}
-      fallbackFormat="jpg"
-      width={640}
-      height={480}
+  <div class="bg-surface-2 aspect-[3/4] w-full">
+    <img
+      src={portraitSrc}
+      width={896}
+      height={1195}
       alt={portraitAlt[lang]}
       loading="eager"
       fetchpriority="high"

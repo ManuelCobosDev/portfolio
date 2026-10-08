@@ -31,12 +31,12 @@ test.describe('hero, ficha and navigation', () => {
     expect(result.columns[0]).toBe('120px');
   });
 
-  test('portrait keeps a 4/3 frame with the face in view', async ({ page }) => {
+  test('portrait keeps a 3/4 frame with the face in view', async ({ page }) => {
     await page.goto('/');
     const img = page.locator(`${ficha} img`).first();
     await expect(img).toBeVisible();
     const box = await img.boundingBox();
-    expect(Math.abs(box!.width / box!.height - 4 / 3)).toBeLessThan(0.02);
+    expect(Math.abs(box!.width / box!.height - 3 / 4)).toBeLessThan(0.02);
     const style = await img.evaluate((el) => {
       const s = getComputedStyle(el);
       return { fit: s.objectFit, position: s.objectPosition };
