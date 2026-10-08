@@ -62,7 +62,7 @@ function personNode(lang: Lang) {
     familyName: profile.familyName,
     alternateName: profile.alternateName,
     url: `${SITE}/`,
-    image: `${SITE}/images/manuel-cobos-solis.jpg`,
+    image: `${SITE}/images/manuel-cobos-solis-profile-picture.jpeg`,
     jobTitle: pick(profile.roleShort, lang),
     description: personDescription[lang],
     email: `mailto:${profile.email}`,
