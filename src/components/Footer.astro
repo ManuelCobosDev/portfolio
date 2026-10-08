@@ -3,6 +3,8 @@ import type { Lang } from '../i18n/utils';
 import { pick } from '../i18n/utils';
 import { ui } from '../i18n/ui';
 import { profile } from '../data/profile';
+import { CV_PDF_PATH, CV_PDF_NAME } from '../lib/site';
+import Logo from './Logo.astro';
 
 interface Props {
   lang: Lang;
@@ -12,7 +14,7 @@ interface Props {
 const { lang, alternateHref } = Astro.props;
 const homeHref = lang === 'es' ? '/' : '/en/';
 const cvHref = lang === 'es' ? '/cv/' : '/en/cv/';
-const pdfHref = lang === 'es' ? '/cv/Manuel-Cobos-Solis-CV-ES.pdf' : '/cv/Manuel-Cobos-Solis-CV-EN.pdf';
+const pdfHref = CV_PDF_PATH;
 const year = new Date().getFullYear();
 const updated = new Intl.DateTimeFormat(lang === 'es' ? 'es-ES' : 'en', { dateStyle: 'long' }).format(
   new Date(profile.lastUpdated),
@@ -23,6 +25,7 @@ const otherLangCode = lang === 'es' ? 'en' : 'es';
 
 <footer class="border-line border-t">
   <div class="shell text-muted flex flex-col gap-4 py-8 text-sm">
+    <Logo variant="horizontal" tagline />
     <p>
       © {year} Manuel Cobos Solís. {pick(ui['footer.rights'], lang)}
       {pick(ui['footer.privacy'], lang)}
@@ -43,7 +46,7 @@ const otherLangCode = lang === 'es' ? 'en' : 'es';
       >
       <a
         href={pdfHref}
-        download
+        download={CV_PDF_NAME}
         class="text-muted hover:text-ink inline-flex min-h-11 min-w-11 items-center underline underline-offset-4"
         >{pick(ui['nav.cvPdf'], lang)}</a
       >

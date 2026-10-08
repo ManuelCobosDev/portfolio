@@ -20,17 +20,11 @@
 /manifest.webmanifest
   Content-Type: application/manifest+json
 
-/cv/Manuel-Cobos-Solis-CV-ES.pdf
+/cv/Manuel-Cobos-Solis-CV-ae560ece.pdf
   ! Content-Security-Policy
   Content-Type: application/pdf
-  Cache-Control: public, max-age=3600, must-revalidate
+  Cache-Control: public, max-age=31536000, immutable
   Link: <https://manuelcobos.dev/cv/>; rel="canonical"
-
-/cv/Manuel-Cobos-Solis-CV-EN.pdf
-  ! Content-Security-Policy
-  Content-Type: application/pdf
-  Cache-Control: public, max-age=3600, must-revalidate
-  Link: <https://manuelcobos.dev/en/cv/>; rel="canonical"
 
 # Never index the Worker's own *.workers.dev URLs (production, version and preview).
 https://:worker.:subdomain.workers.dev/*

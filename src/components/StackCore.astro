@@ -7,7 +7,7 @@ import TechIcon from './TechIcon.astro';
   {
     coreTech.map((tech) => (
       <div class="group border-line bg-surface flex flex-col items-center gap-2.5 border-r border-b px-4 py-5 text-center">
-        <TechIcon name={tech.icon} class="text-ink group-hover:text-accent h-7 w-7 transition-colors duration-150" />
+        <TechIcon name={tech.icon} class="text-muted group-hover:text-ink h-7 w-7 transition-colors duration-150" />
         <span class="text-ink text-sm">{tech.label}</span>
       </div>
     ))

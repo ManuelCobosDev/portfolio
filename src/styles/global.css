@@ -7,93 +7,96 @@
 /* Self-hosted, Latin-only faces; public/fonts is filled by
    scripts/prepare-assets.mjs. */
 @font-face {
-  font-family: 'IBM Plex Sans Variable';
+  font-family: 'Manrope Variable';
   font-style: normal;
   font-display: swap;
-  font-weight: 100 700;
-  src: url('/fonts/ibm-plex-sans-latin-wght-normal.woff2') format('woff2-variations');
+  font-weight: 200 800;
+  src: url('/fonts/manrope-latin-wght-normal.woff2') format('woff2-variations');
   unicode-range:
     U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC,
     U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 @font-face {
-  font-family: 'IBM Plex Mono';
+  font-family: 'JetBrains Mono';
   font-style: normal;
   font-display: swap;
   font-weight: 400;
-  src: url('/fonts/ibm-plex-mono-latin-400-normal.woff2') format('woff2');
+  src: url('/fonts/jetbrains-mono-latin-400-normal.woff2') format('woff2');
   unicode-range:
     U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC,
-    U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    U+2122, U+2191, U+2193, U+2212, U+2215, U+2B06, U+2B07, U+FEFF, U+FFFD;
 }
 
 @font-face {
-  font-family: 'IBM Plex Mono';
+  font-family: 'JetBrains Mono';
   font-style: normal;
   font-display: swap;
   font-weight: 500;
-  src: url('/fonts/ibm-plex-mono-latin-500-normal.woff2') format('woff2');
+  src: url('/fonts/jetbrains-mono-latin-500-normal.woff2') format('woff2');
   unicode-range:
     U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC,
-    U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    U+2122, U+2191, U+2193, U+2212, U+2215, U+2B06, U+2B07, U+FEFF, U+FFFD;
 }
 
 @custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
 
 :root {
   color-scheme: light;
-  --bg: #f5f7fb;
+  --bg: #f7f9fb;
   --surface: #ffffff;
-  --surface-2: #eaeff7;
-  --ink: #0b1b33;
-  --muted: #475569;
-  --subtle: #5b6b82;
-  --line: #d3dbe8;
-  --accent: #1d4ed8;
-  --accent-hover: #1e40af;
-  --accent-ink: #1e3a8a;
-  --accent-soft: #e1eafd;
+  --surface-2: #edf1f5;
+  --ink: #0a1931;
+  --muted: #4c5c68;
+  --subtle: #5b6b78;
+  --line: #d5dbe1;
+  --accent: #08795e;
+  --accent-hover: #066a52;
+  --accent-ink: #065a45;
+  --accent-soft: #ddf3ec;
   --on-accent: #ffffff;
+  --logo: #0a1931;
 }
 
 :root[data-theme='dark'] {
   color-scheme: dark;
-  --bg: #0a1426;
-  --surface: #101c33;
-  --surface-2: #16253f;
-  --ink: #e8eef8;
-  --muted: #a9b8d0;
-  --subtle: #8d9db8;
-  --line: #25364f;
-  --accent: #7fb0ff;
-  --accent-hover: #a8c9ff;
-  --accent-ink: #a8c9ff;
-  --accent-soft: #12274a;
-  --on-accent: #071226;
+  --bg: #0a1931;
+  --surface: #0f2142;
+  --surface-2: #14294f;
+  --ink: #f7f9fb;
+  --muted: #b0b6be;
+  --subtle: #9aa5b4;
+  --line: #26395a;
+  --accent: #1de9b1;
+  --accent-hover: #5cf0ca;
+  --accent-ink: #5cf0ca;
+  --accent-soft: #0c3a47;
+  --on-accent: #0a1931;
+  --logo: #1de9b1;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
     color-scheme: dark;
-    --bg: #0a1426;
-    --surface: #101c33;
-    --surface-2: #16253f;
-    --ink: #e8eef8;
-    --muted: #a9b8d0;
-    --subtle: #8d9db8;
-    --line: #25364f;
-    --accent: #7fb0ff;
-    --accent-hover: #a8c9ff;
-    --accent-ink: #a8c9ff;
-    --accent-soft: #12274a;
-    --on-accent: #071226;
+    --bg: #0a1931;
+    --surface: #0f2142;
+    --surface-2: #14294f;
+    --ink: #f7f9fb;
+    --muted: #b0b6be;
+    --subtle: #9aa5b4;
+    --line: #26395a;
+    --accent: #1de9b1;
+    --accent-hover: #5cf0ca;
+    --accent-ink: #5cf0ca;
+    --accent-soft: #0c3a47;
+    --on-accent: #0a1931;
+    --logo: #1de9b1;
   }
 }
 
 @theme inline {
-  --font-sans: 'IBM Plex Sans Variable', 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-sans: 'Manrope Variable', 'Manrope', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --color-bg: var(--bg);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
@@ -106,6 +109,7 @@
   --color-accent-ink: var(--accent-ink);
   --color-accent-soft: var(--accent-soft);
   --color-on-accent: var(--on-accent);
+  --color-logo: var(--logo);
   --radius-sm: 4px;
   --radius-md: 8px;
 }
@@ -156,7 +160,7 @@
 
   :focus-visible {
     outline: 2px solid var(--accent);
-    outline-offset: 3px;
+    outline-offset: 2px;
     border-radius: inherit;
   }
 
@@ -200,6 +204,7 @@
   .mono-label {
     font-family: var(--font-mono);
     font-size: 0.8125rem;
+    font-weight: 500;
     line-height: 1.4;
     letter-spacing: 0.01em;
   }
@@ -242,7 +247,7 @@
 
   .prose-work h2 {
     font-size: 24px;
-    font-weight: 600;
+    font-weight: 800;
     line-height: 1.3;
     margin-top: 2.5rem;
     margin-bottom: 0.75rem;
@@ -463,10 +468,28 @@
     margin: 12mm;
   }
 
+  /* Force the print palette: white paper, navy ink, Teal Deep accent, navy logo. */
+  :root,
+  :root[data-theme='dark'] {
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --surface-2: #edf1f5;
+    --ink: #0a1931;
+    --muted: #4c5c68;
+    --subtle: #5b6b78;
+    --line: #d5dbe1;
+    --accent: #08795e;
+    --accent-hover: #066a52;
+    --accent-ink: #065a45;
+    --accent-soft: #ddf3ec;
+    --on-accent: #ffffff;
+    --logo: #0a1931;
+  }
+
   html,
   body {
     background: #fff !important;
-    color: #000 !important;
+    color: #0a1931 !important;
     font-size: 9.5pt;
   }
 

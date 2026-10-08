@@ -76,7 +76,7 @@ test.describe('content security policy', () => {
     await page.goto('/cv/');
     const link = page.locator('a[download]').first();
     const [download] = await Promise.all([page.waitForEvent('download'), link.click()]);
-    expect(download.suggestedFilename()).toBe('Manuel-Cobos-Solis-CV-ES.pdf');
+    expect(download.suggestedFilename()).toBe('Manuel-Cobos-Solis-CV.pdf');
     expect(violations).toEqual([]);
   });
 });

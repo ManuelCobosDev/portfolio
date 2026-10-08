@@ -24,7 +24,7 @@ test.describe('case rows, footer and contact', () => {
       const hrefs = links.map((link) => link.href);
       const home = lang === 'es' ? '/' : '/en/';
       const cv = lang === 'es' ? '/cv/' : '/en/cv/';
-      const pdf = lang === 'es' ? '/cv/Manuel-Cobos-Solis-CV-ES.pdf' : '/cv/Manuel-Cobos-Solis-CV-EN.pdf';
+      const pdf = '/cv/Manuel-Cobos-Solis-CV-ae560ece.pdf';
       expect(hrefs).toContain(home);
       expect(hrefs).toContain(cv);
       expect(hrefs).toContain(pdf);

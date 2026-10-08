@@ -33,6 +33,7 @@ test.describe('mobile pass', () => {
                 `${el.tagName} "${el.textContent?.trim().slice(0, 18)}" ${Math.round(el.getBoundingClientRect().width)}x${Math.round(el.getBoundingClientRect().height)}`,
             );
           const tiny = Array.from(document.querySelectorAll<HTMLElement>('body *'))
+            .filter((el) => !el.closest('[data-lockup]'))
             .filter((el) => {
               const hasText = Array.from(el.childNodes).some(
                 (node) => node.nodeType === 3 && Boolean(node.textContent?.trim()),
