@@ -11,7 +11,7 @@ interface Props {
 
 const { lang } = Astro.props;
 const years = fullYearsSince(profile.experienceStart);
-const portraitSrc = '/images/manuel-cobos-solis-profile-picture.jpeg';
+const portraitSrc = '/images/manuel-cobos-solis-profile-picture.png';
 
 const rows = [
   { label: lang === 'es' ? 'Rol' : 'Role', value: pick(profile.fichaRole, lang) },

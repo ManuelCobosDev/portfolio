@@ -82,7 +82,7 @@ del sistema con `PW_CHANNEL=msedge` o `PW_CHANNEL=chrome`.
 | Textos de la interfaz en ambos idiomas            | `src/i18n/ui.ts`                                              |
 | Rutas del currículum y nombre del PDF             | `src/lib/site.ts`                                             |
 | Casos de estudio y proyectos                      | `src/content/work/es/*.md` y `.../en/*.md`                    |
-| Retrato                                           | `public/images/manuel-cobos-solis-profile-picture.jpeg` (3:4) |
+| Retrato                                           | `public/images/manuel-cobos-solis-profile-picture.png` (3:4) |
 | Cabeceras HTTP y caché                            | `public/_headers`                                             |
 
 ## Cómo añadir un proyecto o un caso de estudio
