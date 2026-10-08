@@ -205,7 +205,7 @@ for (const p of pages) {
     if (!$(el).attr('alt') && $(el).attr('alt') !== '') fail(`${p.url}: img missing alt.`);
     if (!$(el).attr('width') || !$(el).attr('height')) fail(`${p.url}: img missing width/height.`);
   });
-  $('svg[aria-hidden="true"]').each(() => {});
+  $('svg[aria-hidden="true"]').each(() => { });
 
   // 9. Landmarks
   if ($('main').length !== 1) fail(`${p.url}: expected exactly one <main>.`);
@@ -358,7 +358,7 @@ for (const f of [
   'apple-touch-icon.png',
   'icon-192.png',
   'icon-512.png',
-  'images/manuel-cobos-solis-profile-picture.jpeg',
+  'images/manuel-cobos-solis-profile-picture.png',
 ]) {
   if (!existsSync(join(dist, f))) fail(`missing static file: ${f}.`);
 }
@@ -418,8 +418,8 @@ if (existsSync(icoFile)) {
 
 // 21c. The portrait is required in CI.
 if (process.env.CI === 'true') {
-  const portraitSrc = join(root, 'public', 'images', 'manuel-cobos-solis-profile-picture.jpeg');
-  if (!existsSync(portraitSrc)) fail('public/images/manuel-cobos-solis-profile-picture.jpeg missing (required in CI).');
+  const portraitSrc = join(root, 'public', 'images', 'manuel-cobos-solis-profile-picture.png');
+  if (!existsSync(portraitSrc)) fail('public/images/manuel-cobos-solis-profile-picture.png missing (required in CI).');
 }
 
 // 23. Budgets: document HTML (incl. inlined CSS and JSON-LD).
