@@ -6,7 +6,9 @@ import { profile } from '../../data/profile';
 import { degrees, certifications } from '../../data/education';
 import { stackGroups } from '../../data/stack';
 import { fullYearsSince } from '../../lib/years';
+import { CV_PDF_PATH, CV_PDF_NAME } from '../../lib/site';
 import Experience from '../Experience.astro';
+import Logo from '../Logo.astro';
 
 interface Props {
   lang: Lang;
@@ -14,7 +16,7 @@ interface Props {
 
 const { lang } = Astro.props;
 const years = fullYearsSince(profile.experienceStart);
-const pdfHref = lang === 'es' ? '/cv/Manuel-Cobos-Solis-CV-ES.pdf' : '/cv/Manuel-Cobos-Solis-CV-EN.pdf';
+const pdfHref = CV_PDF_PATH;
 
 const profileText = {
   es: `Desarrollador Full Stack con enfoque backend y más de ${years} años de experiencia en el sector bancario. Java 17 y 21, Spring Boot, microservicios y mensajería con Kafka y RabbitMQ en el servidor; Angular y TypeScript en el cliente.`,
@@ -32,15 +34,15 @@ const headings = {
   certifications: lang === 'es' ? 'Certificaciones e idiomas' : 'Certifications and languages',
 };
 
-const h2Class = 'mt-10 border-t border-line pt-4 text-[1.5rem] font-semibold leading-[1.2] tracking-[-0.02em] text-ink';
+const h2Class = 'mt-10 border-t border-line pt-4 text-[1.5rem] font-extrabold leading-[1.2] tracking-[-0.02em] text-ink';
 ---
 
 <div class="shell section-pad cv-doc">
   <div class="no-print mb-8 flex flex-col gap-3 md:flex-row md:items-center md:justify-end">
     <a
       href={pdfHref}
-      download
-      class="bg-accent text-on-accent hover:bg-accent-hover inline-flex min-h-11 w-full items-center justify-center rounded-md px-5 py-3 text-[15px] font-medium transition-colors md:w-auto"
+      download={CV_PDF_NAME}
+      class="bg-accent text-on-accent hover:bg-accent-hover inline-flex min-h-11 w-full items-center justify-center rounded-md px-5 py-3 text-[15px] font-semibold transition-colors md:w-auto"
     >
       {pick(ui['cv.download'], lang)}
     </a>
@@ -48,14 +50,15 @@ const h2Class = 'mt-10 border-t border-line pt-4 text-[1.5rem] font-semibold lea
       type="button"
       data-print-pdf
       data-pdf-href={pdfHref}
-      class="border-accent text-accent hover:bg-accent-soft inline-flex min-h-11 w-full items-center justify-center rounded-md border px-5 py-3 text-[15px] font-medium transition-colors md:w-auto"
+      class="border-accent text-accent hover:bg-accent-soft inline-flex min-h-11 w-full items-center justify-center rounded-md border px-5 py-3 text-[15px] font-semibold transition-colors md:w-auto"
     >
       {pick(ui['cv.print'], lang)}
     </button>
   </div>
 
   <div class="max-w-[72ch]">
-    <h1 class="text-ink text-[clamp(2.5rem,1.6rem+4vw,4.5rem)] leading-[1.02] font-semibold tracking-[-0.03em]">
+    <Logo variant="mark" decorative class="mb-5 h-[30px] w-auto" />
+    <h1 class="text-ink text-[clamp(2.5rem,1.6rem+4vw,4.5rem)] leading-[1.02] font-extrabold tracking-[-0.02em]">
       {profile.name}
     </h1>
     <p class="text-muted mt-3 text-[clamp(1.25rem,1rem+1vw,1.75rem)] leading-[1.25]">{pick(profile.role, lang)}</p>

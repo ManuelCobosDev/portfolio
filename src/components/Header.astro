@@ -4,6 +4,7 @@ import type { NavEntry } from '../lib/nav';
 import { pick } from '../i18n/utils';
 import { ui } from '../i18n/ui';
 import { Icon } from 'astro-icon/components';
+import Logo from './Logo.astro';
 import NavMenu from './NavMenu.astro';
 import LangSwitch from './LangSwitch.astro';
 import ThemeToggle from './ThemeToggle.astro';
@@ -22,12 +23,10 @@ const cvHref = lang === 'es' ? '/cv/' : '/en/cv/';
 <header class="border-line bg-bg sticky top-0 z-40 h-16 border-b">
   <div class="shell relative flex h-full items-center justify-between gap-3">
     <a href={homeHref} class="flex min-h-11 min-w-11 items-center justify-center gap-2.5">
-      <span
-        class="bg-accent text-on-accent flex h-7 w-7 items-center justify-center rounded-[6px] font-sans text-[13px] font-semibold"
-      >
-        MC
+      <Logo variant="mark" decorative class="h-[25px] w-auto" />
+      <span data-lockup class="brand-name text-ink text-[14px] font-bold uppercase tracking-[0.02em]">
+        Manuel Cobos Solís
       </span>
-      <span class="brand-name text-ink text-[15px] font-semibold">Manuel Cobos Solís</span>
     </a>
 
     <NavMenu lang={lang} entries={entries} homeHref={homeHref} cvHref={cvHref} />
@@ -50,13 +49,13 @@ const cvHref = lang === 'es' ? '/cv/' : '/en/cv/';
               entries.map((entry) => (
                 <a
                   href={`${homeHref}#${entry.id}`}
-                  class="border-line text-ink flex h-14 items-center border-t text-lg first:border-t-0"
+                  class="border-line text-ink flex h-14 items-center border-t text-lg font-semibold first:border-t-0"
                 >
                   {entry.label}
                 </a>
               ))
             }
-            <a href={cvHref} class="border-line text-ink flex h-14 items-center border-t text-lg">
+            <a href={cvHref} class="border-line text-ink flex h-14 items-center border-t text-lg font-semibold">
               {pick(ui['nav.cv'], lang)}
             </a>
           </div>

@@ -385,8 +385,7 @@ if (!existsSync(headersFile)) {
     'X-Robots-Tag: noindex',
     '/_astro/*',
     '/fonts/*',
-    '/cv/Manuel-Cobos-Solis-CV-ES.pdf',
-    '/cv/Manuel-Cobos-Solis-CV-EN.pdf',
+    '/cv/Manuel-Cobos-Solis-CV-ae560ece.pdf',
   ]) {
     if (!raw.includes(rule)) fail(`_headers is missing "${rule}".`);
   }

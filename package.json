@@ -13,14 +13,13 @@
     "check": "astro check",
     "qa": "node scripts/qa.mjs",
     "test:e2e": "playwright test",
-    "cv:pdf": "npm run build && node scripts/build-cv-pdf.mjs",
     "format": "prettier --write . --ignore-path .gitignore"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.2.1",
-    "@fontsource-variable/ibm-plex-sans": "^5.1.1",
-    "@fontsource/ibm-plex-mono": "^5.1.1",
-    "@fontsource/ibm-plex-sans": "^5.1.1",
+    "@fontsource-variable/manrope": "^5.3.0",
+    "@fontsource/jetbrains-mono": "^5.3.0",
+    "@fontsource/manrope": "^5.3.0",
     "@iconify-json/devicon-plain": "^1.2.61",
     "@iconify-json/lucide": "^1.2.16",
     "@iconify-json/simple-icons": "^1.2.16",
