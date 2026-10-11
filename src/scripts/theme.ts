@@ -1,4 +1,14 @@
-const currentTheme = (): 'light' | 'dark' => (document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
+const prefersDark = (): boolean => window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+/** Tema efectivo: un `data-theme` explícito manda; si no hay elección del usuario,
+ *  se usa la preferencia del sistema. Debe coincidir con la cascada de tokens en
+ *  global.css (`:root[data-theme='dark']` + `prefers-color-scheme`). */
+const currentTheme = (): 'light' | 'dark' => {
+  const attr = document.documentElement.dataset.theme;
+  if (attr === 'dark') return 'dark';
+  if (attr === 'light') return 'light';
+  return prefersDark() ? 'dark' : 'light';
+};
 
 const syncLabel = (btn: HTMLButtonElement) => {
   btn.setAttribute(

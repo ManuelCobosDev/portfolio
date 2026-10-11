@@ -39,7 +39,20 @@
     U+2122, U+2191, U+2193, U+2212, U+2215, U+2B06, U+2B07, U+FEFF, U+FFFD;
 }
 
-@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+/* La variante `dark:` debe reproducir la misma cascada que los tokens de color
+   (`:root[data-theme='dark']` + `prefers-color-scheme` en `:root:not([data-theme='light'])`),
+   o los iconos del selector de tema se desincronizan del color de fondo. */
+@custom-variant dark {
+  &:where([data-theme='dark'], [data-theme='dark'] *) {
+    @slot;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    &:where(:root:not([data-theme='light']) *) {
+      @slot;
+    }
+  }
+}
 
 :root {
   color-scheme: light;
@@ -175,6 +188,7 @@
 }
 
 @layer components {
+
   /* Layout wrapper. Named "shell" to avoid Tailwind's built-in `container`,
      whose breakpoint max-widths would take precedence. */
   .shell {
@@ -426,6 +440,7 @@
     opacity: 0;
     transform: translateY(8px);
   }
+
   to {
     opacity: 1;
     transform: none;
