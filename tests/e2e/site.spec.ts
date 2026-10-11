@@ -1,5 +1,5 @@
-import { test, expect, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { expect, test, type Page } from '@playwright/test';
 
 const widths = [360, 390, 768, 1024, 1280, 1536];
 const pages = ['/', '/en/', '/cv/', '/trabajo/microservicio-orquestador/'];
@@ -89,6 +89,22 @@ test.describe('theme', () => {
 
     await page.reload();
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  });
+
+  test('first click switches on a dark OS with no stored choice', async ({ page }) => {
+    await page.emulateMedia({ colorScheme: 'dark' });
+    await page.goto('/');
+    // Sin elección guardada el tema sigue al SO, así que no hay `data-theme`.
+    expect(await page.locator('html').getAttribute('data-theme')).toBeNull();
+    expect(await page.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe('rgb(10, 25, 49)');
+
+    // Un solo clic debe pasar a claro (lo que ofrece el icono de sol), no quedarse igual.
+    await page.locator('button[data-theme-toggle]').click();
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+    // El color se transiciona (150ms), así que se espera a que se asiente.
+    await expect
+      .poll(() => page.evaluate(() => getComputedStyle(document.body).backgroundColor))
+      .toBe('rgb(247, 249, 251)');
   });
 });
 
