@@ -8,6 +8,7 @@ export const profile = {
   email: 'manuel.cobos.dev@gmail.com',
   linkedin: 'https://www.linkedin.com/in/manuelcobos/',
   github: 'https://github.com/ManuelCobosDev',
+  orcid: 'https://orcid.org/0009-0000-5426-8924',
   certificationsUrl: 'https://www.linkedin.com/in/manuelcobos/details/certifications/',
   lastUpdated: '2026-10-05',
   experienceStart: '2024-03-01',

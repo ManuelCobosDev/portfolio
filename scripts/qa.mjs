@@ -2,11 +2,11 @@
  * Quality gates for the built site. Runs against dist/ and exits non-zero on
  * any failure.
  */
-import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
+import * as cheerio from 'cheerio';
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { gzipSync } from 'node:zlib';
-import * as cheerio from 'cheerio';
 import sharp from 'sharp';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
@@ -189,10 +189,20 @@ for (const p of pages) {
       for (const u of urls) {
         if (!u.startsWith('"http')) fail(`${p.url}: JSON-LD URL not absolute: ${u}`);
       }
+      if (node.dateModified !== undefined) {
+        const ok =
+          typeof node.dateModified === 'string' &&
+          /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?(\.\d+)?(Z|[+-]\d{2}:\d{2})$/.test(node.dateModified);
+        if (!ok) fail(`${p.url}: dateModified must be a full ISO 8601 date-time: ${node.dateModified}`);
+      }
       if (node['@type'] === 'Person') {
         if (node.name !== 'Manuel Cobos Solís') fail(`${p.url}: Person name incorrect.`);
         const sameAs = JSON.stringify(node.sameAs ?? []);
-        if (!sameAs.includes('github.com/ManuelCobosDev') || !sameAs.includes('linkedin.com/in/manuelcobos')) {
+        if (
+          !sameAs.includes('github.com/ManuelCobosDev') ||
+          !sameAs.includes('linkedin.com/in/manuelcobos') ||
+          !sameAs.includes('orcid.org')
+        ) {
           fail(`${p.url}: Person sameAs missing profiles.`);
         }
         if (node.address?.addressLocality !== 'Cáceres') fail(`${p.url}: Person addressLocality incorrect.`);

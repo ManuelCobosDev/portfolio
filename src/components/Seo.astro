@@ -2,6 +2,7 @@
 import type { Lang } from '../i18n/utils';
 import type { Alternates } from '../lib/site';
 import { jsonLdScript } from '../lib/jsonld';
+import { profile } from '../data/profile';
 
 export interface HeadProps {
   lang: Lang;
@@ -110,8 +111,9 @@ const robots = noindex ? 'noindex,follow' : 'index,follow,max-image-preview:larg
 <link rel="icon" href="/favicon.ico" sizes="32x32" />
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 <link rel="manifest" href="/manifest.webmanifest" />
-<link rel="me" href="https://github.com/ManuelCobosDev" />
-<link rel="me" href="https://www.linkedin.com/in/manuelcobos/" />
+<link rel="me" href={profile.github} />
+<link rel="me" href={profile.linkedin} />
+<link rel="me" href={profile.orcid} />
 <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
 <link rel="preload" as="font" type="font/woff2" href="/fonts/manrope-latin-wght-normal.woff2" crossorigin />
 <link rel="preload" as="font" type="font/woff2" href="/fonts/jetbrains-mono-latin-500-normal.woff2" crossorigin />

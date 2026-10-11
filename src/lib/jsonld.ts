@@ -1,8 +1,8 @@
+import { profile } from '../data/profile';
+import { ui } from '../i18n/ui';
 import type { Lang } from '../i18n/utils';
 import { pick } from '../i18n/utils';
-import { ui } from '../i18n/ui';
-import { profile } from '../data/profile';
-import { SITE } from './site';
+import { PORTRAIT_PATH, SITE } from './site';
 
 const PERSON_ID = `${SITE}/#person`;
 const WEBSITE_ID = `${SITE}/#website`;
@@ -53,6 +53,13 @@ const profilePageName: Record<Lang, string> = {
   en: 'Manuel Cobos Solís | Full Stack Developer (Java, Angular)',
 };
 
+/** `profile.lastUpdated` es una fecha sin hora; los validadores de schema.org
+ *  esperan un date-time ISO 8601 completo, así que se normaliza a medianoche UTC
+ *  (mismo día natural que la fecha de origen, independiente del TZ del build). */
+function isoDateTime(dateOnly: string): string {
+  return new Date(`${dateOnly}T00:00:00Z`).toISOString();
+}
+
 function personNode(lang: Lang) {
   return {
     '@type': 'Person',
@@ -62,7 +69,7 @@ function personNode(lang: Lang) {
     familyName: profile.familyName,
     alternateName: profile.alternateName,
     url: `${SITE}/`,
-    image: `${SITE}/images/manuel-cobos-solis-profile-picture.png`,
+    image: `${SITE}${PORTRAIT_PATH}`,
     jobTitle: pick(profile.roleShort, lang),
     description: personDescription[lang],
     email: `mailto:${profile.email}`,
@@ -90,7 +97,7 @@ function personNode(lang: Lang) {
         recognizedBy: { '@type': 'Organization', name: 'Linux Professional Institute' },
       },
     ],
-    sameAs: [profile.github, profile.linkedin],
+    sameAs: [profile.github, profile.linkedin, profile.orcid],
   };
 }
 
@@ -129,7 +136,7 @@ export function homeGraph(lang: Lang, pageUrl: string) {
         name: profilePageName[lang],
         inLanguage: lang === 'es' ? 'es-ES' : 'en',
         isPartOf: { '@id': WEBSITE_ID },
-        dateModified: profile.lastUpdated,
+        dateModified: isoDateTime(profile.lastUpdated),
         mainEntity: { '@id': PERSON_ID },
       },
       personNode(lang),

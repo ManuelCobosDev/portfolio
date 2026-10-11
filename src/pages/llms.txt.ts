@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
-import { slugFromId, CV_PDF_PATH } from '../lib/site';
+import { CV_PDF_PATH, slugFromId } from '../lib/site';
 
 export const GET: APIRoute = async () => {
   const works = await getCollection('work');
@@ -42,6 +42,7 @@ ${pages.join('\n')}
 
 - [LinkedIn](https://www.linkedin.com/in/manuelcobos/)
 - [GitHub](https://github.com/ManuelCobosDev)
+- [ORCID](https://orcid.org/0009-0000-5426-8924)
 `;
 
   return new Response(text, {
