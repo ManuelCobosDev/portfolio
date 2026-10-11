@@ -6,6 +6,10 @@ export const SITE = 'https://manuelcobos.dev';
 export const CV_PDF_PATH = '/cv/Manuel-Cobos-Solis-CV-ae560ece.pdf';
 export const CV_PDF_NAME = 'Manuel-Cobos-Solis-CV.pdf';
 
+/** Retrato del héroe. Vive en `public/` (sin huella de contenido) y se precarga
+ *  en las páginas que lo muestran para que no haya parpadeo al cargar. */
+export const PORTRAIT_PATH = '/images/manuel-cobos-solis-profile-picture.png';
+
 export interface Alternates {
   es: string;
   en: string;

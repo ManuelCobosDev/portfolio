@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import HomePage from '../components/pages/HomePage.astro';
 import { homeGraph } from '../lib/jsonld';
+import { PORTRAIT_PATH } from '../lib/site';
 
 const lang = 'es';
 const canonical = 'https://manuelcobos.dev/';
@@ -22,6 +23,7 @@ const description =
   ogImage="https://manuelcobos.dev/og/home-es.png"
   ogImageAlt="Manuel Cobos Solís – Desarrollador Full Stack"
   jsonLd={homeGraph(lang, canonical)}
+  portraitPreloadUrl={PORTRAIT_PATH}
 >
   <HomePage lang={lang} />
 </BaseLayout>

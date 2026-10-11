@@ -3,6 +3,7 @@ import type { Lang } from '../i18n/utils';
 import { pick } from '../i18n/utils';
 import { ui } from '../i18n/ui';
 import { profile } from '../data/profile';
+import { PORTRAIT_PATH } from '../lib/site';
 import { fullYearsSince } from '../lib/years';
 
 interface Props {
@@ -11,7 +12,7 @@ interface Props {
 
 const { lang } = Astro.props;
 const years = fullYearsSince(profile.experienceStart);
-const portraitSrc = '/images/manuel-cobos-solis-profile-picture.png';
+const portraitSrc = PORTRAIT_PATH;
 
 const rows = [
   { label: lang === 'es' ? 'Rol' : 'Role', value: pick(profile.fichaRole, lang) },
@@ -42,7 +43,7 @@ const portraitAlt = {
       alt={portraitAlt[lang]}
       loading="eager"
       fetchpriority="high"
-      decoding="async"
+      decoding="sync"
       class="h-full w-full object-cover object-[50%_15%]"
     />
   </div>
