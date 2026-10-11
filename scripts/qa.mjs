@@ -197,12 +197,21 @@ for (const p of pages) {
       }
       if (node['@type'] === 'Person') {
         if (node.name !== 'Manuel Cobos Solís') fail(`${p.url}: Person name incorrect.`);
-        const sameAs = JSON.stringify(node.sameAs ?? []);
-        if (
-          !sameAs.includes('github.com/ManuelCobosDev') ||
-          !sameAs.includes('linkedin.com/in/manuelcobos') ||
-          !sameAs.includes('orcid.org')
-        ) {
+        const sameAs = Array.isArray(node.sameAs) ? node.sameAs : [];
+        const hasUrl = (predicate) =>
+          sameAs.some((entry) => {
+            if (typeof entry !== 'string') return false;
+            try {
+              return predicate(new URL(entry));
+            } catch {
+              return false;
+            }
+          });
+        const hostMatches = (host, expected) => host === expected || host.endsWith(`.${expected}`);
+        const hasGitHub = hasUrl((u) => hostMatches(u.hostname, 'github.com') && u.pathname.startsWith('/ManuelCobosDev'));
+        const hasLinkedIn = hasUrl((u) => hostMatches(u.hostname, 'linkedin.com') && u.pathname.startsWith('/in/manuelcobos'));
+        const hasOrcid = hasUrl((u) => hostMatches(u.hostname, 'orcid.org'));
+        if (!hasGitHub || !hasLinkedIn || !hasOrcid) {
           fail(`${p.url}: Person sameAs missing profiles.`);
         }
         if (node.address?.addressLocality !== 'Cáceres') fail(`${p.url}: Person addressLocality incorrect.`);
