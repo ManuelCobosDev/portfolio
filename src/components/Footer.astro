@@ -16,9 +16,6 @@ const homeHref = lang === 'es' ? '/' : '/en/';
 const cvHref = lang === 'es' ? '/cv/' : '/en/cv/';
 const pdfHref = CV_PDF_PATH;
 const year = new Date().getFullYear();
-const updated = new Intl.DateTimeFormat(lang === 'es' ? 'es-ES' : 'en', { dateStyle: 'long' }).format(
-  new Date(profile.lastUpdated),
-);
 const otherLangName = lang === 'es' ? 'English' : 'Español';
 const otherLangCode = lang === 'es' ? 'en' : 'es';
 ---
@@ -26,10 +23,7 @@ const otherLangCode = lang === 'es' ? 'en' : 'es';
 <footer class="border-line border-t">
   <div class="shell text-muted flex flex-col gap-4 py-8 text-sm">
     <Logo variant="horizontal" tagline />
-    <p>
-      © {year} Manuel Cobos Solís. {pick(ui['footer.rights'], lang)}
-      {pick(ui['footer.privacy'], lang)}
-    </p>
+    <p>© {year} Manuel Cobos Solís</p>
     <nav
       aria-label={lang === 'es' ? 'Enlaces del pie' : 'Footer links'}
       class="flex flex-wrap items-center gap-x-6 gap-y-2"
@@ -73,9 +67,5 @@ const otherLangCode = lang === 'es' ? 'en' : 'es';
         {otherLangName}
       </a>
     </nav>
-    <p>
-      {pick(ui['footer.updated'], lang)}
-      {updated} · {pick(ui['footer.built'], lang)}
-    </p>
   </div>
 </footer>

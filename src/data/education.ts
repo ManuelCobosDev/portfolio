@@ -28,28 +28,38 @@ export const degrees: EducationItem[] = [
     org: 'IES Ágora',
     period: '2022 – 2024',
   },
+  {
+    title: {
+      es: 'Ingeniería Informática (solo el primer año)',
+      en: 'Computer Software Engineering (first year only)',
+    },
+    org: 'Universidad de Extremadura',
+    period: '2021 – 2022',
+  },
 ];
 
 export const certifications: CertificationItem[] = [
   {
-    title: {
-      es: 'MuleSoft Certified Developer – Level 1',
-      en: 'MuleSoft Certified Developer – Level 1',
-    },
-    issuer: { es: 'MuleSoft', en: 'MuleSoft' },
+    title: { es: 'Certificación B1 en Inglés', en: 'English B1 Certificate' },
+    issuer: { es: 'Cambridge University Press & Assessment', en: 'Cambridge University Press & Assessment' },
+  },
+  {
+    title: { es: 'Certificación B2 en Inglés', en: 'English B2 Certificate' },
+    issuer: { es: 'goFLUENT', en: 'goFLUENT' },
+  },
+  {
+    title: { es: 'Escuela Desarrollo Java', en: 'Java Development School' },
+    issuer: { es: 'Sinensia IT Solutions', en: 'Sinensia IT Solutions' },
+  },
+  {
+    title: { es: 'LPIC 1', en: 'LPIC 1' },
+    issuer: { es: 'Linux Professional Institute (LPI)', en: 'Linux Professional Institute (LPI)' },
   },
   {
     title: {
-      es: 'LPIC-1 Linux Administrator',
-      en: 'LPIC-1 Linux Administrator',
+      es: 'MuleSoft Certified Developer – Integration and API Associate (Mule 3)',
+      en: 'MuleSoft Certified Developer – Integration and API Associate (Mule 3)',
     },
-    issuer: { es: 'Linux Professional Institute', en: 'Linux Professional Institute' },
-  },
-  {
-    title: {
-      es: 'Inglés B2',
-      en: 'English B2',
-    },
-    issuer: { es: 'Nivel de idioma', en: 'Language level' },
+    issuer: { es: 'Salesforce', en: 'Salesforce' },
   },
 ];

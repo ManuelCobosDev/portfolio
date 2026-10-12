@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 const cv = {
   es: {
@@ -7,12 +7,12 @@ const cv = {
       'Manuel Cobos Solís',
       'manuel.cobos.dev@gmail.com',
       'Viewnext',
-      'Full Stack Developer',
-      'Java Backend Developer',
-      'Integration Developer',
-      'MuleSoft Certified Developer – Level 1',
-      'LPIC-1 Linux Administrator',
-      'Inglés B2',
+      'Desarrollador Full Stack',
+      'Desarrollador Full Stack (Backend oriented)',
+      'Desarrollador de Integración',
+      'MuleSoft Certified Developer – Integration and API Associate (Mule 3)',
+      'LPIC 1',
+      'Certificación B2 en Inglés',
     ],
   },
   en: {
@@ -22,11 +22,11 @@ const cv = {
       'manuel.cobos.dev@gmail.com',
       'Viewnext',
       'Full Stack Developer',
-      'Java Backend Developer',
+      'Full Stack Developer (Backend oriented)',
       'Integration Developer',
-      'MuleSoft Certified Developer – Level 1',
-      'LPIC-1 Linux Administrator',
-      'English B2',
+      'MuleSoft Certified Developer – Integration and API Associate (Mule 3)',
+      'LPIC 1',
+      'English B2 Certificate',
     ],
   },
 } as const;

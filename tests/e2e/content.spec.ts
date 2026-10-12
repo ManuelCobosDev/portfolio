@@ -1,18 +1,10 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
-test.describe('case rows, footer and contact', () => {
-  for (const [lang, route, label] of [
-    ['es', '/', 'Leer el caso'],
-    ['en', '/en/', 'Read the case'],
+test.describe('footer and contact', () => {
+  for (const [lang, route] of [
+    ['es', '/'],
+    ['en', '/en/'],
   ] as const) {
-    test(`case row shows the visible ${lang} label as a single link`, async ({ page }) => {
-      await page.goto(route);
-      const row = page.locator('section#casos a, section#case-studies a').first();
-      await expect(row).toContainText(label);
-      await expect(row).toContainText('→');
-      expect(await row.locator('a').count()).toBe(0);
-    });
-
     test(`footer lists every destination in ${lang}`, async ({ page }) => {
       await page.goto(route);
       const footer = page.locator('footer nav[aria-label]');

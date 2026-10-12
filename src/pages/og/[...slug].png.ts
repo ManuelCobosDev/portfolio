@@ -1,24 +1,16 @@
-import type { APIRoute } from 'astro';
-import { getCollection } from 'astro:content';
-import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
-import sharp from 'sharp';
+import type { APIRoute } from 'astro';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
+import satori from 'satori';
+import sharp from 'sharp';
 import { profile } from '../../data/profile';
-import { slugFromId } from '../../lib/site';
 
 async function getTitle(name: string): Promise<string> {
   if (name === 'home-es') return profile.name;
   if (name === 'home-en') return profile.name;
   if (name === 'cv-es') return 'Currículum';
   if (name === 'cv-en') return 'Résumé';
-  if (name.startsWith('work-')) {
-    const slug = name.slice('work-'.length);
-    const works = await getCollection('work');
-    const entry = works.find((w) => slugFromId(w.id) === slug);
-    if (entry) return entry.data.seoTitle;
-  }
   return profile.name;
 }
 
@@ -43,8 +35,7 @@ function toArrayBuffer(buffer: Buffer): ArrayBuffer {
 }
 
 export async function getStaticPaths() {
-  const works = await getCollection('work');
-  const names = ['home-es', 'home-en', 'cv-es', 'cv-en', ...works.map((w) => `work-${slugFromId(w.id)}`)];
+  const names = ['home-es', 'home-en', 'cv-es', 'cv-en'];
   return names.map((name) => ({ params: { slug: name } }));
 }
 
@@ -95,7 +86,7 @@ export const GET: APIRoute = async ({ params }) => {
                     {
                       type: 'div',
                       props: {
-                        children: 'FULL STACK ENGINEER',
+                        children: 'FULL STACK DEVELOPER',
                         style: { fontSize: 15, fontWeight: 500, color: '#1DE9B1', letterSpacing: '0.22em' },
                       },
                     },
