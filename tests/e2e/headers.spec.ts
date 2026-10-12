@@ -1,7 +1,7 @@
-import { test, expect, type Page } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../..', import.meta.url));
 
@@ -12,14 +12,7 @@ const csp = (() => {
   return match[1].trim();
 })();
 
-const pages = [
-  '/',
-  '/en/',
-  '/cv/',
-  '/en/cv/',
-  '/trabajo/microservicio-orquestador/',
-  '/en/work/orchestrator-microservice/',
-];
+const pages = ['/', '/en/', '/cv/', '/en/cv/'];
 
 async function applyCsp(page: Page): Promise<string[]> {
   const violations: string[] = [];

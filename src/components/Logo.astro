@@ -4,7 +4,7 @@ interface Props {
   class?: string;
   /** Renders the monogram as purely decorative even when used on its own. */
   decorative?: boolean;
-  /** Adds the "FULL STACK ENGINEER" tagline under the name. */
+  /** Adds the "FULL STACK DEVELOPER" tagline under the name. */
   tagline?: boolean;
 }
 
@@ -40,7 +40,7 @@ const markAttrs = decorative
         </span>
         {tagline && (
           <span class="text-accent text-xs font-medium uppercase leading-none tracking-[0.22em]">
-            Full Stack Engineer
+            Full Stack Developer
           </span>
         )}
       </span>
@@ -57,7 +57,7 @@ const markAttrs = decorative
       <span class="text-ink text-sm font-bold uppercase leading-none tracking-[0.02em]">Manuel Cobos Solís</span>
       {tagline && (
         <span class="text-accent text-xs font-medium uppercase leading-none tracking-[0.22em]">
-          Full Stack Engineer
+          Full Stack Developer
         </span>
       )}
     </span>

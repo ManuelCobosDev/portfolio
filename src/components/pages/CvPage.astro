@@ -19,11 +19,11 @@ const years = fullYearsSince(profile.experienceStart);
 const pdfHref = CV_PDF_PATH;
 
 const profileText = {
-  es: `Desarrollador Full Stack con enfoque backend y más de ${years} años de experiencia en el sector bancario. Java 17 y 21, Spring Boot, microservicios y mensajería con Kafka y RabbitMQ en el servidor; Angular y TypeScript en el cliente.`,
+  es: `Desarrollador Full Stack con orientación backend y más de ${years} años de experiencia en el sector bancario. Java 17 y 21, Spring Boot, microservicios y mensajería con Kafka y RabbitMQ en el servidor; Angular y TypeScript en el cliente.`,
   en: `Backend-oriented Full Stack Developer with over ${years} years of experience in the banking sector. Java 17 and 21, Spring Boot, microservices and messaging with Kafka and RabbitMQ on the server; Angular and TypeScript on the client.`,
 } as const;
 
-const workModeLine = lang === 'es' ? '100 % remoto' : 'fully remote';
+const workModeLine = lang === 'es' ? 'Remoto desde España' : 'Remote from Spain';
 const locationLine = lang === 'es' ? 'Cáceres, Extremadura, España' : 'Cáceres, Extremadura, Spain';
 
 const headings = {
@@ -34,7 +34,8 @@ const headings = {
   certifications: lang === 'es' ? 'Certificaciones e idiomas' : 'Certifications and languages',
 };
 
-const h2Class = 'mt-10 border-t border-line pt-4 text-[1.5rem] font-extrabold leading-[1.2] tracking-[-0.02em] text-ink';
+const h2Class =
+  'mt-10 border-t border-line pt-4 text-[1.5rem] font-extrabold leading-[1.2] tracking-[-0.02em] text-ink';
 ---
 
 <div class="shell section-pad cv-doc">

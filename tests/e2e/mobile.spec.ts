@@ -1,13 +1,6 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
-const pages = [
-  '/',
-  '/en/',
-  '/cv/',
-  '/en/cv/',
-  '/trabajo/microservicio-orquestador/',
-  '/en/work/orchestrator-microservice/',
-];
+const pages = ['/', '/en/', '/cv/', '/en/cv/'];
 const widths = [360, 390, 768];
 
 test.describe('mobile pass', () => {

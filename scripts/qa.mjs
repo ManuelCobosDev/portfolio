@@ -208,8 +208,12 @@ for (const p of pages) {
             }
           });
         const hostMatches = (host, expected) => host === expected || host.endsWith(`.${expected}`);
-        const hasGitHub = hasUrl((u) => hostMatches(u.hostname, 'github.com') && u.pathname.startsWith('/ManuelCobosDev'));
-        const hasLinkedIn = hasUrl((u) => hostMatches(u.hostname, 'linkedin.com') && u.pathname.startsWith('/in/manuelcobos'));
+        const hasGitHub = hasUrl(
+          (u) => hostMatches(u.hostname, 'github.com') && u.pathname.startsWith('/ManuelCobosDev'),
+        );
+        const hasLinkedIn = hasUrl(
+          (u) => hostMatches(u.hostname, 'linkedin.com') && u.pathname.startsWith('/in/manuelcobos'),
+        );
         const hasOrcid = hasUrl((u) => hostMatches(u.hostname, 'orcid.org'));
         if (!hasGitHub || !hasLinkedIn || !hasOrcid) {
           fail(`${p.url}: Person sameAs missing profiles.`);
@@ -494,10 +498,9 @@ const FACT_SCOPES = {
   home: { es: ['/'], en: ['/en/'] },
   cv: { es: ['/cv/'], en: ['/en/cv/'] },
   'home+cv': { es: ['/', '/cv/'], en: ['/en/', '/en/cv/'] },
-  work: { es: ['/trabajo/microservicio-orquestador/'], en: ['/en/work/orchestrator-microservice/'] },
   all: {
-    es: ['/', '/cv/', '/trabajo/microservicio-orquestador/'],
-    en: ['/en/', '/en/cv/', '/en/work/orchestrator-microservice/'],
+    es: ['/', '/cv/'],
+    en: ['/en/', '/en/cv/'],
   },
 };
 
@@ -505,15 +508,15 @@ const FACTS = [
   { id: 'name', es: 'Manuel Cobos Solís', en: 'Manuel Cobos Solís', scope: 'all', caseSensitive: true },
   {
     id: 'role',
-    es: 'Desarrollador Full Stack con enfoque backend',
+    es: 'Desarrollador Full Stack con orientación backend',
     en: 'Backend-oriented Full Stack Developer',
     scope: 'home',
   },
   { id: 'city', es: 'Cáceres, Extremadura, España', en: 'Cáceres, Extremadura, Spain', scope: 'home+cv' },
-  { id: 'remote', es: '100 % remoto', en: 'fully remote', scope: 'home+cv' },
+  { id: 'remote', es: 'Remoto desde España', en: 'Remote from Spain', scope: 'home+cv' },
   { id: 'employer', es: 'Viewnext', en: 'Viewnext', scope: 'home+cv' },
   { id: 'client', es: 'Banco Santander', en: 'Banco Santander', scope: 'home+cv' },
-  { id: 'role1', es: 'Full Stack Developer', en: 'Full Stack Developer', scope: 'home+cv' },
+  { id: 'role1', es: 'Desarrollador Full Stack', en: 'Full Stack Developer', scope: 'home+cv' },
   { id: 'backend', es: 'Spring Boot', en: 'Spring Boot', scope: 'home+cv' },
   { id: 'frontend', es: 'TypeScript', en: 'TypeScript', scope: 'home+cv' },
   { id: 'messaging', es: 'Apache Kafka', en: 'Apache Kafka', scope: 'home+cv' },
@@ -527,8 +530,8 @@ const FACTS = [
   },
   {
     id: 'cert1',
-    es: 'MuleSoft Certified Developer – Level 1',
-    en: 'MuleSoft Certified Developer – Level 1',
+    es: 'MuleSoft Certified Developer – Integration and API Associate (Mule 3)',
+    en: 'MuleSoft Certified Developer – Integration and API Associate (Mule 3)',
     scope: 'home+cv',
   },
   { id: 'status', es: 'Abierto a oportunidades', en: 'Open to opportunities', scope: 'home' },

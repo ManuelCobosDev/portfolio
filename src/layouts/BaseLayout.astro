@@ -1,5 +1,4 @@
 ---
-import { getCollection } from 'astro:content';
 import type { HeadProps } from '../components/Seo.astro';
 import Seo from '../components/Seo.astro';
 import SkipLink from '../components/SkipLink.astro';
@@ -14,10 +13,7 @@ interface Props extends HeadProps {}
 const props = Astro.props;
 const { lang, alternates } = props;
 
-const works = await getCollection('work', (entry) => entry.data.lang === lang && !entry.data.draft);
-const hasCases = works.some((w) => w.data.kind === 'case-study');
-const hasProjects = works.some((w) => w.data.kind === 'project');
-const entries = visibleNav(lang, hasCases, hasProjects);
+const entries = visibleNav(lang);
 const alternateHref = (lang === 'es' ? alternates.en : alternates.es).replace(SITE, '');
 const htmlLang = lang === 'es' ? 'es-ES' : 'en';
 ---

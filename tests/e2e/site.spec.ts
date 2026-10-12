@@ -2,7 +2,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
 
 const widths = [360, 390, 768, 1024, 1280, 1536];
-const pages = ['/', '/en/', '/cv/', '/trabajo/microservicio-orquestador/'];
+const pages = ['/', '/en/', '/cv/', '/en/cv/'];
 
 test.describe('responsive layout', () => {
   for (const width of widths) {
@@ -46,14 +46,7 @@ test.describe('responsive layout', () => {
 });
 
 test.describe('accessibility', () => {
-  const scanPages = [
-    '/',
-    '/en/',
-    '/cv/',
-    '/en/cv/',
-    '/trabajo/microservicio-orquestador/',
-    '/en/work/orchestrator-microservice/',
-  ];
+  const scanPages = ['/', '/en/', '/cv/', '/en/cv/'];
   for (const path of scanPages) {
     for (const width of [360, 768, 1440]) {
       for (const colorScheme of ['light', 'dark'] as const) {
@@ -118,14 +111,6 @@ test.describe('language switch', () => {
     await page.locator('a[hreflang="es"]').first().click();
     await page.waitForURL('**/');
     await expect(page.locator('h1')).toContainText('Desarrollador Full Stack');
-  });
-
-  test('case study links to its translation', async ({ page }) => {
-    await page.goto('/trabajo/microservicio-orquestador/');
-    const enLink = page.locator('a[hreflang="en"]').last();
-    await enLink.click();
-    await page.waitForURL('**/en/work/orchestrator-microservice/');
-    await expect(page.locator('h1')).toContainText('Orchestrator microservice');
   });
 });
 

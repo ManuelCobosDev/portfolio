@@ -23,7 +23,7 @@ const knowsAbout: Record<Lang, string[]> = {
     'Kubernetes',
     'OpenShift',
     'GitHub Actions',
-    'Arquitectura limpia',
+    'Arquitectura hexagonal',
   ],
   en: [
     'Java',
@@ -39,12 +39,12 @@ const knowsAbout: Record<Lang, string[]> = {
     'Kubernetes',
     'OpenShift',
     'GitHub Actions',
-    'Clean Architecture',
+    'Hexagonal Architecture',
   ],
 };
 
 const personDescription: Record<Lang, string> = {
-  es: 'Desarrollador Full Stack con enfoque backend (Java, Spring Boot, Kafka) y Angular, en el sector bancario. Cáceres, España. Remoto.',
+  es: 'Desarrollador Full Stack con orientación backend (Java, Spring Boot, Kafka) y Angular, en el sector bancario. Cáceres, España. Remoto.',
   en: 'Backend-oriented Full Stack Developer (Java, Spring Boot, Kafka) and Angular, in the banking sector. Based in Cáceres, Spain. Remote.',
 };
 
@@ -80,21 +80,42 @@ function personNode(lang: Lang) {
       addressCountry: profile.addressCountry,
     },
     worksFor: { '@type': 'Organization', name: profile.employer, url: profile.employerUrl },
-    alumniOf: [{ '@type': 'EducationalOrganization', name: 'IES Ágora' }],
+    alumniOf: [
+      { '@type': 'EducationalOrganization', name: 'IES Ágora' },
+      { '@type': 'EducationalOrganization', name: 'Universidad de Extremadura' },
+    ],
     knowsLanguage: ['es', 'en'],
     knowsAbout: knowsAbout[lang],
     hasCredential: [
       {
         '@type': 'EducationalOccupationalCredential',
-        name: 'MuleSoft Certified Developer – Level 1',
+        name: 'English B1 Certificate',
         credentialCategory: 'certification',
-        recognizedBy: { '@type': 'Organization', name: 'MuleSoft' },
+        recognizedBy: { '@type': 'Organization', name: 'Cambridge University Press & Assessment' },
       },
       {
         '@type': 'EducationalOccupationalCredential',
-        name: 'LPIC-1 Linux Administrator',
+        name: 'English B2 Certificate',
+        credentialCategory: 'certification',
+        recognizedBy: { '@type': 'Organization', name: 'goFLUENT' },
+      },
+      {
+        '@type': 'EducationalOccupationalCredential',
+        name: 'Java Development School',
+        credentialCategory: 'certification',
+        recognizedBy: { '@type': 'Organization', name: 'Sinensia IT Solutions' },
+      },
+      {
+        '@type': 'EducationalOccupationalCredential',
+        name: 'LPIC 1',
         credentialCategory: 'certification',
         recognizedBy: { '@type': 'Organization', name: 'Linux Professional Institute' },
+      },
+      {
+        '@type': 'EducationalOccupationalCredential',
+        name: 'MuleSoft Certified Developer – Integration and API Associate (Mule 3)',
+        credentialCategory: 'certification',
+        recognizedBy: { '@type': 'Organization', name: 'Salesforce' },
       },
     ],
     sameAs: [profile.github, profile.linkedin, profile.orcid],
@@ -164,62 +185,6 @@ export function cvGraph(lang: Lang, pageUrl: string, title: string) {
         { name: pick(ui['nav.cv'], lang), url: pageUrl },
       ]),
       personNode(lang),
-    ],
-  };
-}
-
-export interface WorkJsonLdInput {
-  lang: Lang;
-  pageUrl: string;
-  title: string;
-  description: string;
-  stack: string[];
-  publishedAt: string;
-  updatedAt?: string;
-  kind: 'case-study' | 'project';
-  ogImageUrl: string;
-  repo?: string;
-}
-
-export function workGraph(input: WorkJsonLdInput) {
-  const homeUrl = input.lang === 'es' ? `${SITE}/` : `${SITE}/en/`;
-  const inLanguage = input.lang === 'es' ? 'es-ES' : 'en';
-  const common = {
-    description: input.description,
-    inLanguage,
-    datePublished: input.publishedAt,
-    dateModified: input.updatedAt ?? input.publishedAt,
-    keywords: input.stack.join(', '),
-    author: { '@id': PERSON_ID },
-    publisher: { '@id': PERSON_ID },
-    mainEntityOfPage: input.pageUrl,
-    image: input.ogImageUrl,
-  };
-  const article =
-    input.kind === 'project'
-      ? {
-          '@type': 'SoftwareSourceCode',
-          name: input.title,
-          ...common,
-          ...(input.repo ? { codeRepository: input.repo } : {}),
-          programmingLanguage: input.stack,
-        }
-      : {
-          '@type': 'TechArticle',
-          headline: input.title,
-          ...common,
-        };
-
-  return {
-    '@context': 'https://schema.org',
-    '@graph': [
-      websiteNode(),
-      article,
-      breadcrumb([
-        { name: pick(ui['breadcrumb.home'], input.lang), url: homeUrl },
-        { name: input.title, url: input.pageUrl },
-      ]),
-      personNode(input.lang),
     ],
   };
 }

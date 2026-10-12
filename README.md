@@ -1,8 +1,8 @@
 # manuelcobos.dev
 
-Portfolio personal de Manuel Cobos Solís, desarrollador Full Stack con enfoque
+Portfolio personal de Manuel Cobos Solís, desarrollador Full Stack con orientación
 backend. Es un sitio estático bilingüe (español e inglés) con páginas de inicio y
-currículum, casos de estudio y las imágenes Open Graph generadas en el build.
+currículum, y las imágenes Open Graph generadas en el build.
 
 - **Sitio en producción:** <https://manuelcobos.dev>
 - **Repositorio:** <https://github.com/ManuelCobosDev/portfolio>
@@ -54,8 +54,6 @@ del sistema con `PW_CHANNEL=msedge` o `PW_CHANNEL=chrome`.
 ├─ scripts/                    # prepare-assets, brand-assets y qa
 ├─ src/
 │  ├─ components/              # componentes de la interfaz (pages/ para vistas compuestas)
-│  ├─ content.config.ts        # colección `work` (loader glob + esquema zod)
-│  ├─ content/work/{es,en}/    # casos y proyectos en Markdown
 │  ├─ data/                    # profile, experience, education, stack, nav
 │  ├─ i18n/                    # ui.ts (textos) y utils.ts (tipo L<T> y helper pick)
 │  ├─ layouts/                 # plantilla base
@@ -72,95 +70,17 @@ del sistema con `PW_CHANNEL=msedge` o `PW_CHANNEL=chrome`.
 
 ## Dónde se edita el contenido
 
-| Qué                                               | Dónde                                                         |
-| ------------------------------------------------- | ------------------------------------------------------------- |
-| Perfil, correo, enlaces, ubicación, rol e idiomas | `src/data/profile.ts`                                         |
-| Experiencia profesional                           | `src/data/experience.ts`                                      |
-| Formación y certificaciones                       | `src/data/education.ts`                                       |
-| Stack técnico (core y agrupado)                   | `src/data/stack.ts`                                           |
-| Secciones de navegación                           | `src/data/nav.ts`                                             |
-| Textos de la interfaz en ambos idiomas            | `src/i18n/ui.ts`                                              |
-| Rutas del currículum y nombre del PDF             | `src/lib/site.ts`                                             |
-| Casos de estudio y proyectos                      | `src/content/work/es/*.md` y `.../en/*.md`                    |
+| Qué                                               | Dónde                                                        |
+| ------------------------------------------------- | ------------------------------------------------------------ |
+| Perfil, correo, enlaces, ubicación, rol e idiomas | `src/data/profile.ts`                                        |
+| Experiencia profesional                           | `src/data/experience.ts`                                     |
+| Formación y certificaciones                       | `src/data/education.ts`                                      |
+| Stack técnico (core y agrupado)                   | `src/data/stack.ts`                                          |
+| Secciones de navegación                           | `src/data/nav.ts`                                            |
+| Textos de la interfaz en ambos idiomas            | `src/i18n/ui.ts`                                             |
+| Rutas del currículum y nombre del PDF             | `src/lib/site.ts`                                            |
 | Retrato                                           | `public/images/manuel-cobos-solis-profile-picture.png` (3:4) |
-| Cabeceras HTTP y caché                            | `public/_headers`                                             |
-
-## Cómo añadir un proyecto o un caso de estudio
-
-Crea un archivo en `src/content/work/es/` y su pareja en `src/content/work/en/`,
-con el mismo `translationKey`. El nombre del archivo (minúsculas, números y
-guiones) es el slug de la URL. El esquema completo está en
-`src/content.config.ts`:
-
-```markdown
----
-# idioma del contenido: "es" | "en"
-lang: es
-
-# clave compartida por la pareja es/en
-translationKey: my-project
-
-# "case-study" (artículo técnico) | "project" (repositorio o demo)
-kind: project
-
-# título visible en la página
-title: 'Mi proyecto'
-
-# título para <title> y Open Graph, máximo 62 caracteres
-seoTitle: 'Mi proyecto: descripción breve'
-
-# meta description, entre 80 y 155 caracteres
-description: 'Descripción de 80 a 155 caracteres que resume el proyecto para buscadores y previsualizaciones.'
-
-# resumen de la lista de la portada, máximo 200 caracteres
-summary: 'Resumen breve de una o dos frases para la tarjeta de la portada.'
-
-# tecnologías, mínimo una
-stack: ['Java', 'Spring Boot', 'Angular']
-
-# fecha de publicación (AAAA-MM-DD)
-publishedAt: 2026-10-05
-
-# opcional: fecha de la última actualización
-updatedAt: 2026-10-05
-
-# solo para kind: project
-links:
-  repo: https://github.com/ManuelCobosDev/my-project
-  demo: https://my-project.example.com
-
-# opcional: "orchestrator" para dibujar el diagrama
-# diagram: orchestrator
-
-# orden en la lista (menor primero)
-order: 1
-
-# true oculta la entrada de la portada, las rutas, el sitemap y el JSON-LD
-draft: false
----
-
-# Contexto
-
-Explica qué problema resuelve el proyecto.
-
-## Qué hace
-
-- Punto clave 1.
-- Punto clave 2.
-
-## Decisiones
-
-- Decisión técnica y por qué.
-
-## Resultado
-
-Qué se consiguió.
-```
-
-El archivo en inglés repite la estructura con `lang: en`. Las dos entradas deben
-compartir `translationKey`; si falta una de las dos, el build falla. Las secciones
-de navegación de casos y proyectos solo aparecen cuando existe al menos una
-entrada de ese `kind`.
+| Cabeceras HTTP y caché                            | `public/_headers`                                            |
 
 ## Currículum para descarga
 
@@ -176,14 +96,12 @@ su SHA-256 (`Get-FileHash` en PowerShell) y actualiza `CV_PDF_PATH` en
 
 ## SEO, indexación y Open Graph
 
-- **Idiomas y URL.** Español sin prefijo (`/`, `/cv/`, `/trabajo/<slug>/`) e
-  inglés bajo `/en/`. `trailingSlash: 'always'`, así que toda ruta termina en
+- **Idiomas y URL.** Español sin prefijo (`/`, `/cv/`) e inglés bajo `/en/`.
+  `trailingSlash: 'always'`, así que toda ruta termina en
   `/`. Cada página declara su `canonical` y los `alternates` es / en /
   x-default.
-- **Sitemap.** `@astrojs/sitemap` genera `sitemap-index.xml` e incluye los
-  `links` `hreflang` de cada pareja es/en. El `lastmod` es automático: la fecha
-  más reciente entre los casos de trabajo, calculada en `astro.config.mjs`. No
-  hay que mantener ninguna constante a mano.
+- **Sitemap.** `@astrojs/sitemap` genera `sitemap-index.xml` con las rutas
+  estáticas del sitio. El `lastmod` lo fija el propio plugin en cada build.
 - **`robots.txt` propio.** Permite el rastreo general y, de forma explícita, el
   de los rastreadores de IA (GPTBot, OAI-SearchBot, ChatGPT-User, ClaudeBot,
   Claude-SearchBot, Claude-User, PerplexityBot, Google-Extended,
@@ -191,11 +109,9 @@ su SHA-256 (`Get-FileHash` en PowerShell) y actualiza `CV_PDF_PATH` en
   debe seguir desactivado para que no lo sustituya por el suyo.
 - **`/llms.txt`.** Resumen del sitio en texto plano, pensado para modelos.
 - **Open Graph.** `/og/*.png` (1200×630, fondo navy) se generan en el build con
-  `satori` y `@resvg/resvg-js`: `home-es`, `home-en`, `cv-es`, `cv-en` y
-  `work-<slug>`.
+  `satori` y `@resvg/resvg-js`: `home-es`, `home-en`, `cv-es` y `cv-en`.
 - **JSON-LD.** `Person`, `ProfilePage` y `WebSite` en la home; `Person` y
-  `WebPage` en el CV; `TechArticle` (`case-study`) o `SoftwareSourceCode`
-  (`project`) en cada trabajo, con `@id` estables.
+  `WebPage` en el CV, con `@id` estables.
 - **Verificación de buscadores.** `Seo.astro` emite `google-site-verification` y
   `msvalidate.01` solo si existen las variables de entorno
   `PUBLIC_GSC_VERIFICATION` y `PUBLIC_BING_VERIFICATION` en el build. En

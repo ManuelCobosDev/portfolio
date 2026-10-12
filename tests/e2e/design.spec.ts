@@ -1,17 +1,10 @@
-import { test, expect, type Page } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../..', import.meta.url));
-const pages = [
-  '/',
-  '/en/',
-  '/cv/',
-  '/en/cv/',
-  '/trabajo/microservicio-orquestador/',
-  '/en/work/orchestrator-microservice/',
-];
+const pages = ['/', '/en/', '/cv/', '/en/cv/'];
 
 async function settle(page: Page) {
   await page.evaluate(() => document.fonts.ready);
@@ -58,9 +51,7 @@ test.describe('design tokens and structure', () => {
     await settle(page);
     const ok = await page.evaluate(async () => {
       await document.fonts.ready;
-      return (
-        document.fonts.check('600 16px "Manrope Variable"') && document.fonts.check('500 16px "JetBrains Mono"')
-      );
+      return document.fonts.check('600 16px "Manrope Variable"') && document.fonts.check('500 16px "JetBrains Mono"');
     });
     expect(ok).toBe(true);
   });
@@ -209,15 +200,6 @@ test.describe('interactions', () => {
       const res = await request.get(new URL(p, origin).href);
       expect(res.status(), `${p} resolves`).toBeLessThan(400);
     }
-  });
-
-  test('case-study row is a single link with a working target', async ({ page }) => {
-    await page.goto('/');
-    const row = page.locator('section#casos a').first();
-    await expect(row).toHaveAttribute('href', '/trabajo/microservicio-orquestador/');
-    await row.click();
-    await page.waitForURL('**/trabajo/microservicio-orquestador/');
-    await expect(page.locator('h1')).toContainText('Microservicio orquestador');
   });
 
   test('mobile menu opens, closes with Escape and returns focus', async ({ page }) => {
