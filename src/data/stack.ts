@@ -116,6 +116,8 @@ export const stackGroups: StackGroup[] = [
         'JMeter',
         'Fortify',
         'Harbor',
+        'GNU/Linux (LPIC-1)',
+        'Bash',
       ],
       en: [
         'Docker',
@@ -134,6 +136,8 @@ export const stackGroups: StackGroup[] = [
         'JMeter',
         'Fortify',
         'Harbor',
+        'GNU/Linux (LPIC-1)',
+        'Bash',
       ],
     },
   },

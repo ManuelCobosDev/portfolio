@@ -2,6 +2,7 @@
 import type { Lang } from '../i18n/utils';
 import { pick } from '../i18n/utils';
 import { experience } from '../data/experience';
+import ExternalLink from './ExternalLink.astro';
 
 interface Props {
   lang: Lang;
@@ -45,6 +46,23 @@ function fmtMonth(date: string, lang: Lang): string {
               <li class="text-ink">{bullet}</li>
             ))}
           </ul>
+          {entry.link && (
+            <p class="mt-3 text-[15px]">
+              <ExternalLink
+                href={entry.link.href}
+                lang={lang}
+                class="text-accent hover:text-accent-hover font-medium underline decoration-1 underline-offset-[0.2em] hover:decoration-2"
+              >
+                {pick(entry.link.label, lang)}
+              </ExternalLink>
+              {entry.link.note && (
+                <span class="text-muted">
+                  {' — '}
+                  {pick(entry.link.note, lang)}
+                </span>
+              )}
+            </p>
+          )}
           {showTech && (
             <p class="mono-label text-muted mt-4 flex flex-wrap items-center">
               {entry.tech.map((tech, i) => (

@@ -24,6 +24,8 @@ const knowsAbout: Record<Lang, string[]> = {
     'OpenShift',
     'GitHub Actions',
     'Arquitectura hexagonal',
+    'GNU/Linux',
+    'Bash',
   ],
   en: [
     'Java',
@@ -40,6 +42,8 @@ const knowsAbout: Record<Lang, string[]> = {
     'OpenShift',
     'GitHub Actions',
     'Hexagonal Architecture',
+    'GNU/Linux',
+    'Bash',
   ],
 };
 
