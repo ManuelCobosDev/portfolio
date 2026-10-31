@@ -10,7 +10,7 @@ export const profile = {
   github: 'https://github.com/ManuelCobosDev',
   orcid: 'https://orcid.org/0009-0000-5426-8924',
   certificationsUrl: 'https://www.linkedin.com/in/manuelcobos/details/certifications/',
-  lastUpdated: '2026-10-12',
+  lastUpdated: '2026-10-31',
   experienceStart: '2024-03-01',
   employer: 'Viewnext',
   employerUrl: 'https://www.viewnext.com/',

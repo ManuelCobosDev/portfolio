@@ -1,11 +1,18 @@
 import type { L } from '../i18n/utils';
 
+export interface ExperienceLink {
+  href: string;
+  label: L<string>;
+  note?: L<string>;
+}
+
 export interface ExperienceEntry {
   start: string;
   end: string | null;
   title: L<string>;
   orgLine: L<string>;
   bullets: L<string[]>;
+  link?: ExperienceLink;
   tech: string[];
 }
 
@@ -54,6 +61,39 @@ export const experience: ExperienceEntry[] = [
       'JUnit',
       'Vitest',
     ],
+  },
+  {
+    start: '2026-10',
+    end: '2026-11',
+    title: {
+      es: 'Formador Linux LPIC-1 (Docente en Administración de Sistemas)',
+      en: 'Linux LPIC-1 Trainer (Systems Administration Instructor)',
+    },
+    orgLine: {
+      es: 'EIGP · Centro de Tecnologías Avanzadas (CTA · INAEM) · Zaragoza (presencial, autónomo)',
+      en: 'EIGP · Advanced Technologies Center (CTA · INAEM) · Zaragoza (on-site, freelance)',
+    },
+    bullets: {
+      es: [
+        'Docencia de la certificación «Administración de sistemas Linux – Nivel LPIC-1» (60 horas lectivas), organizada por la Escuela Internacional de Gestión de Proyectos (EIGP) para el Centro de Tecnologías Avanzadas (CTA) en el marco de los programas del INAEM.',
+        'Capacitación teórica y práctica orientada a la superación de las certificaciones LPIC-1 (exámenes oficiales 101 y 102 del Linux Professional Institute).',
+        'Diseño e implementación de laboratorios prácticos en entornos GNU/Linux, comandos esenciales GNU/Unix, administración de sistemas y creación de simulacros de examen.',
+      ],
+      en: [
+        'Instructor for the "Linux Systems Administration – LPIC-1 Level" certification course (60 teaching hours), organised by the International School of Project Management (EIGP) for the Advanced Technologies Center (CTA) under the INAEM training programmes.',
+        'Theoretical and hands-on training focused on passing the official Linux Professional Institute (LPI) LPIC-1 certification exams (101 and 102).',
+        'Design and implementation of practical GNU/Linux labs, essential GNU/Unix commands, system administration and exam simulations.',
+      ],
+    },
+    link: {
+      href: 'https://lpic1.manuelcobos.dev/',
+      label: { es: 'lpic1.manuelcobos.dev', en: 'lpic1.manuelcobos.dev' },
+      note: {
+        es: 'Web LPIC-1 con temario interactivo en diapositivas, laboratorios prácticos y simulacros de examen.',
+        en: 'LPIC-1 web platform with interactive slide deck, hands-on labs and practice exams.',
+      },
+    },
+    tech: ['GNU/Linux', 'LPIC-1 (101 · 102)', 'Bash', 'Systemd', 'LVM', 'OpenSSH', 'Networking'],
   },
   {
     start: '2024-11',
